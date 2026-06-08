@@ -138,6 +138,9 @@
     <Compile Include="BackEnd\BuildManager\CoordinatorClient.cs" />
     <Compile Include="BackEnd\BuildManager\CoordinatorClient.DefaultOutput.cs" />
     <Compile Include="BackEnd\BuildManager\CoordinatorClient.TestAccessor.cs" />
+    <Compile Include="BackEnd\BuildManager\CoordinatorLaunchOperations.cs" />
+    <Compile Include="BackEnd\BuildManager\CoordinatorProcessHandle.cs" />
+    <Compile Include="BackEnd\BuildManager\CoordinatorProcessState.cs" />
     <Compile Include="BackEnd\BuildManager\EnvironmentVariableValidator.cs" />
     <Compile Include="BackEnd\BuildManager\GlobalPropertiesLookup.cs" />
     <Compile Include="BackEnd\BuildManager\ProjectIsolationMode.cs" />

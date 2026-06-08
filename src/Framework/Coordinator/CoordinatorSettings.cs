@@ -20,7 +20,10 @@ internal sealed record class CoordinatorSettings()
     public const string PipeNameBase = "msbuild-coordinator";
     public const int DefaultHeartbeatIntervalMs = 5_000;
     public const int DefaultMissedHeartbeatsThreshold = 3;
+    public const int DefaultInitialConnectionTimeoutMs = 200;
     public const int DefaultConnectionTimeoutMs = 5_000;
+    public const int DefaultStartupTimeoutMs = DefaultConnectionTimeoutMs;
+    public const int DefaultLaunchMutexTimeoutMs = (DefaultStartupTimeoutMs * 2) + 1_000;
     public const int DefaultShutdownTimeoutMs = 60_000;
     public const int MaxHeartbeatIntervalMs = 300_000;
 
@@ -28,7 +31,10 @@ internal sealed record class CoordinatorSettings()
 
     private int? _heartbeatIntervalMs;
     private int? _missedHeartbeatsThreshold;
+    private int? _initialConnectionTimeoutMs;
     private int? _connectionTimeoutMs;
+    private int? _startupTimeoutMs;
+    private int? _launchMutexTimeoutMs;
     private int? _shutdownTimeoutMs;
     private int? _totalNodeBudget;
     private int? _processId;
@@ -70,10 +76,30 @@ internal sealed record class CoordinatorSettings()
         init => _shutdownTimeoutMs = value >= 0 ? value : DefaultShutdownTimeoutMs;
     }
 
+    public int InitialConnectionTimeoutMs
+    {
+        get => _initialConnectionTimeoutMs ??= DefaultInitialConnectionTimeoutMs;
+        init => _initialConnectionTimeoutMs = value > 0 ? value : DefaultInitialConnectionTimeoutMs;
+    }
+
     public int ConnectionTimeoutMs
     {
         get => _connectionTimeoutMs ??= DefaultConnectionTimeoutMs;
         init => _connectionTimeoutMs = value > 0 ? value : DefaultConnectionTimeoutMs;
+    }
+
+    public int StartupTimeoutMs
+    {
+        get => _startupTimeoutMs ??= DefaultStartupTimeoutMs;
+        init => _startupTimeoutMs = value > 0 ? value : DefaultStartupTimeoutMs;
+    }
+
+    public int LaunchMutexTimeoutMs
+    {
+        // A launch-mutex waiter must outlive a holder waiting for a launched
+        // coordinator process to advertise its server mutex.
+        get => _launchMutexTimeoutMs ??= ComputeDefaultLaunchMutexTimeoutMs(StartupTimeoutMs);
+        init => _launchMutexTimeoutMs = value > 0 ? value : ComputeDefaultLaunchMutexTimeoutMs(StartupTimeoutMs);
     }
 
     public int ProcessId
@@ -104,6 +130,24 @@ internal sealed record class CoordinatorSettings()
             ? pipeNameOverride
             : DefaultPipeName;
 
+        int connectionTimeoutMs = EnvironmentUtilities.GetValueAsInt32OrDefault(
+            Traits.CoordinatorConnectionTimeoutEnvVarName,
+            DefaultConnectionTimeoutMs);
+
+        if (connectionTimeoutMs <= 0)
+        {
+            connectionTimeoutMs = DefaultConnectionTimeoutMs;
+        }
+
+        int startupTimeoutMs = EnvironmentUtilities.GetValueAsInt32OrDefault(
+            Traits.CoordinatorStartupTimeoutEnvVarName,
+            DefaultStartupTimeoutMs);
+
+        if (startupTimeoutMs <= 0)
+        {
+            startupTimeoutMs = DefaultStartupTimeoutMs;
+        }
+
         return Default with
         {
             PipeName = pipeName,
@@ -117,9 +161,22 @@ internal sealed record class CoordinatorSettings()
             ShutdownTimeoutMs = EnvironmentUtilities.GetValueAsInt32OrDefault(
                 Traits.CoordinatorShutdownTimeoutEnvVarName,
                 DefaultShutdownTimeoutMs),
-            ConnectionTimeoutMs = DefaultConnectionTimeoutMs,
+            InitialConnectionTimeoutMs = EnvironmentUtilities.GetValueAsInt32OrDefault(
+                Traits.CoordinatorInitialConnectionTimeoutEnvVarName,
+                DefaultInitialConnectionTimeoutMs),
+            ConnectionTimeoutMs = connectionTimeoutMs,
+            StartupTimeoutMs = startupTimeoutMs,
+            LaunchMutexTimeoutMs = EnvironmentUtilities.GetValueAsInt32OrDefault(
+                Traits.CoordinatorLaunchMutexTimeoutEnvVarName,
+                ComputeDefaultLaunchMutexTimeoutMs(startupTimeoutMs)),
             ProcessId = EnvironmentUtilities.CurrentProcessId,
         };
+    }
+
+    private static int ComputeDefaultLaunchMutexTimeoutMs(int connectionTimeoutMs)
+    {
+        long timeout = ((long)Math.Max(connectionTimeoutMs, 1) * 2) + 1_000;
+        return timeout >= int.MaxValue ? int.MaxValue : (int)timeout;
     }
 
     /// <summary>

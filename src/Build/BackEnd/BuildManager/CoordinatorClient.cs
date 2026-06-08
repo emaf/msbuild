@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
@@ -121,16 +122,19 @@ internal sealed partial class CoordinatorClient : IDisposable
 
         try
         {
-            pipeStream = new NamedPipeClientStream(".", settings.PipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+#pragma warning disable CA2000 // pipeStream is disposed in finally or transferred to CoordinatorClient by TryNegotiate.
+            pipeStream = CreatePipeStream(settings);
+#pragma warning restore CA2000
 
-            output.WriteLine($"CoordinatorClient: Connecting to pipe '{settings.PipeName}'");
+            output.WriteLine($"CoordinatorClient: Connecting to pipe '{settings.PipeName}' (timeout {settings.InitialConnectionTimeoutMs}ms)");
 
             // Try to connect to an existing coordinator.
-            if (!TryConnectToPipe(pipeStream, settings.ConnectionTimeoutMs))
+            if (!TryConnectToPipe(pipeStream, settings.InitialConnectionTimeoutMs))
             {
                 output.WriteLine("CoordinatorClient: No coordinator running, attempting to launch");
 
                 pipeStream.Dispose();
+                pipeStream = null;
                 pipeStream = TryLaunchAndConnect(settings, loggingService, output);
 
                 if (pipeStream is null)
@@ -150,8 +154,11 @@ internal sealed partial class CoordinatorClient : IDisposable
             output.WriteLine($"CoordinatorClient: Exception during connect: {ex.Message}");
 
             // Any failure in coordinator communication should not break the build.
-            pipeStream?.Dispose();
             return null;
+        }
+        finally
+        {
+            pipeStream?.Dispose();
         }
     }
 
@@ -162,71 +169,73 @@ internal sealed partial class CoordinatorClient : IDisposable
     /// <param name="settings">Coordinator connection settings.</param>
     /// <param name="loggingService">The MSBuild logging service for user-visible messages.</param>
     /// <param name="output">Debug trace output.</param>
+    /// <param name="operations">Launch and pipe operations. Tests can replace these to exercise launch races deterministically.</param>
     /// <returns>
     ///  A connected pipe stream, or <see langword="null"/> if the coordinator could not be started or reached.
     /// </returns>
     private static NamedPipeClientStream? TryLaunchAndConnect(
         CoordinatorSettings settings,
-        ILoggingService loggingService,
-        ICoordinatorOutput output)
+        ILoggingService? loggingService,
+        ICoordinatorOutput output,
+        CoordinatorLaunchOperations? operations = null)
     {
-        // Acquire a launch mutex so only one client launches the coordinator.
-        // Other clients racing here will block until the launcher finishes, then
-        // connect to the now-running coordinator.
-        using Mutex launchMutex = new(initiallyOwned: false, settings.LaunchMutexName);
+        operations ??= CoordinatorLaunchOperations.Default;
 
-        try
+        if (!TryEnsureCoordinatorProcess(settings, loggingService, output, operations, out CoordinatorProcessState coordinatorState))
         {
-            if (!launchMutex.WaitOne(settings.ConnectionTimeoutMs))
-            {
-                output.WriteLine("CoordinatorClient: Timed out waiting for launch mutex");
-                loggingService.LogComment(BuildEventContext.Invalid, MessageImportance.Normal, "CoordinatorLaunchTimedOut");
-                return null;
-            }
-        }
-        catch (AbandonedMutexException)
-        {
-            // The previous holder crashed — we now own the mutex and should proceed with launch.
-            output.WriteLine("CoordinatorClient: Acquired abandoned launch mutex");
+            return null;
         }
 
         NamedPipeClientStream? pipeStream = null;
 
         try
         {
-            // After acquiring the mutex, try connecting again — another client may have
-            // already launched the coordinator while we were waiting.
-            pipeStream = new NamedPipeClientStream(".", settings.PipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+            // At this point either this client launched the coordinator or the server
+            // mutex says another coordinator process is responsible for opening the pipe.
+            // The launch mutex has been released: pipe connection is a readiness wait,
+            // not an existence probe, and concurrent clients can wait in parallel.
+            pipeStream = operations.CreatePipeStream(settings);
 
-            if (TryConnectToPipe(pipeStream, settings.ConnectionTimeoutMs))
+            output.WriteLine($"CoordinatorClient: Connecting to pipe '{settings.PipeName}' (timeout {settings.ConnectionTimeoutMs}ms)");
+
+            if (!operations.TryConnectToPipe(pipeStream, settings.ConnectionTimeoutMs))
             {
-                output.WriteLine("CoordinatorClient: Coordinator was launched by another client");
-                NamedPipeClientStream result = pipeStream;
-                pipeStream = null; // Ownership transferred to caller.
-                return result;
-            }
+                CoordinatorProcessState stateAfterFailedConnect = operations.GetCoordinatorProcessState(settings, output);
 
-            // Still no coordinator. Launch one.
-            pipeStream.Dispose();
-            pipeStream = null;
+                if (stateAfterFailedConnect == CoordinatorProcessState.DoesNotExist)
+                {
+                    output.WriteLine("CoordinatorClient: Coordinator process exited before opening pipe, attempting relaunch");
 
-            if (!TryLaunchCoordinator(loggingService, output))
-            {
-                output.WriteLine("CoordinatorClient: Failed to launch coordinator");
+                    if (!TryEnsureCoordinatorProcess(settings, loggingService, output, operations, out coordinatorState))
+                    {
+                        return null;
+                    }
+
+                    pipeStream.Dispose();
+                    pipeStream = operations.CreatePipeStream(settings);
+
+                    output.WriteLine($"CoordinatorClient: Connecting to pipe '{settings.PipeName}' (timeout {settings.ConnectionTimeoutMs}ms)");
+
+                    if (operations.TryConnectToPipe(pipeStream, settings.ConnectionTimeoutMs))
+                    {
+                        output.WriteLine("CoordinatorClient: Coordinator launched successfully");
+                        NamedPipeClientStream relaunched = pipeStream;
+                        pipeStream = null; // Ownership transferred to caller.
+                        return relaunched;
+                    }
+                }
+
+                output.WriteLine("CoordinatorClient: Failed to connect to coordinator");
+                loggingService?.LogComment(BuildEventContext.Invalid, MessageImportance.Normal, "CoordinatorFailedToConnect");
                 return null;
             }
 
-            // Retry connection after launch.
-            pipeStream = new NamedPipeClientStream(".", settings.PipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
-
-            if (!TryConnectToPipe(pipeStream, settings.ConnectionTimeoutMs))
+            output.WriteLine(coordinatorState switch
             {
-                output.WriteLine("CoordinatorClient: Failed to connect to newly launched coordinator");
-                loggingService.LogComment(BuildEventContext.Invalid, MessageImportance.Normal, "CoordinatorFailedToConnect");
-                return null;
-            }
-
-            output.WriteLine("CoordinatorClient: Coordinator launched successfully");
+                CoordinatorProcessState.Exists => "CoordinatorClient: Connected to existing coordinator process",
+                CoordinatorProcessState.Unknown => "CoordinatorClient: Connected to coordinator after unknown process state",
+                _ => "CoordinatorClient: Coordinator launched successfully",
+            });
             NamedPipeClientStream connected = pipeStream;
             pipeStream = null; // Ownership transferred to caller.
             return connected;
@@ -234,7 +243,185 @@ internal sealed partial class CoordinatorClient : IDisposable
         finally
         {
             pipeStream?.Dispose();
-            launchMutex.ReleaseMutex();
+        }
+    }
+
+    private static bool TryEnsureCoordinatorProcess(
+        CoordinatorSettings settings,
+        ILoggingService? loggingService,
+        ICoordinatorOutput output,
+        CoordinatorLaunchOperations operations,
+        out CoordinatorProcessState coordinatorState)
+    {
+        coordinatorState = CoordinatorProcessState.Unknown;
+
+        // Acquire a launch mutex so only one client decides whether to launch the
+        // coordinator. Release it before the full pipe readiness wait so racing
+        // clients do not serialize on a slow or hung coordinator pipe.
+        using Mutex launchMutex = new(initiallyOwned: false, settings.LaunchMutexName);
+        bool ownsLaunchMutex = false;
+
+        try
+        {
+            if (!launchMutex.WaitOne(settings.LaunchMutexTimeoutMs))
+            {
+                output.WriteLine("CoordinatorClient: Timed out waiting for launch mutex");
+                loggingService?.LogComment(BuildEventContext.Invalid, MessageImportance.Normal, "CoordinatorLaunchTimedOut");
+                return false;
+            }
+
+            ownsLaunchMutex = true;
+        }
+        catch (AbandonedMutexException)
+        {
+            // The previous holder crashed — we now own the mutex and should proceed.
+            ownsLaunchMutex = true;
+            output.WriteLine("CoordinatorClient: Acquired abandoned launch mutex");
+        }
+
+        try
+        {
+            coordinatorState = operations.GetCoordinatorProcessState(settings, output);
+
+            if (coordinatorState == CoordinatorProcessState.Exists)
+            {
+                return true;
+            }
+
+            // Unknown state is allowed to launch. The coordinator process also has
+            // its own single-instance guard, so this favors liveness without risking
+            // two active coordinators for the same pipe.
+            using ICoordinatorProcess? launchedProcess = operations.TryLaunchCoordinator(loggingService, output);
+
+            if (launchedProcess is null)
+            {
+                output.WriteLine("CoordinatorClient: Failed to launch coordinator");
+
+                return coordinatorState != CoordinatorProcessState.DoesNotExist;
+            }
+
+            coordinatorState = operations.WaitForCoordinatorProcessState(settings, output, launchedProcess);
+            return coordinatorState != CoordinatorProcessState.DoesNotExist;
+        }
+        finally
+        {
+            if (ownsLaunchMutex)
+            {
+                launchMutex.ReleaseMutex();
+            }
+        }
+    }
+
+    internal static CoordinatorProcessState GetCoordinatorProcessState(CoordinatorSettings settings, ICoordinatorOutput output)
+        => GetCoordinatorProcessState(settings, output, logResult: true);
+
+    private static CoordinatorProcessState GetCoordinatorProcessState(CoordinatorSettings settings, ICoordinatorOutput output, bool logResult)
+    {
+        try
+        {
+            if (Mutex.TryOpenExisting(settings.ServerMutexName, out Mutex? existingServerMutex))
+            {
+                existingServerMutex.Dispose();
+
+                if (logResult)
+                {
+                    output.WriteLine("CoordinatorClient: Coordinator server mutex exists");
+                }
+
+                return CoordinatorProcessState.Exists;
+            }
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException and not StackOverflowException)
+        {
+            if (logResult)
+            {
+                output.WriteLine($"CoordinatorClient: Failed to inspect coordinator server mutex: {ex.Message}");
+            }
+
+            return CoordinatorProcessState.Unknown;
+        }
+
+        if (logResult)
+        {
+            output.WriteLine("CoordinatorClient: Coordinator server mutex does not exist");
+        }
+
+        return CoordinatorProcessState.DoesNotExist;
+    }
+
+    internal static CoordinatorProcessState WaitForCoordinatorProcessState(CoordinatorSettings settings, ICoordinatorOutput output, ICoordinatorProcess? launchedProcess)
+        => WaitForCoordinatorProcessState(
+            settings,
+            output,
+            launchedProcess,
+            () => GetCoordinatorProcessState(settings, output, logResult: false));
+
+    internal static CoordinatorProcessState WaitForCoordinatorProcessState(
+        CoordinatorSettings settings,
+        ICoordinatorOutput output,
+        ICoordinatorProcess? launchedProcess,
+        Func<CoordinatorProcessState> getCoordinatorProcessState)
+    {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        while (stopwatch.ElapsedMilliseconds < settings.StartupTimeoutMs)
+        {
+            CoordinatorProcessState state = getCoordinatorProcessState();
+
+            if (state != CoordinatorProcessState.DoesNotExist)
+            {
+                output.WriteLine(state == CoordinatorProcessState.Exists
+                    ? "CoordinatorClient: Coordinator server mutex appeared"
+                    : "CoordinatorClient: Coordinator server mutex state became unknown during startup");
+
+                return state;
+            }
+
+            if (launchedProcess?.HasExited == true)
+            {
+                output.WriteLine($"CoordinatorClient: Launched coordinator process {launchedProcess.Id} exited before advertising server mutex");
+                return CoordinatorProcessState.DoesNotExist;
+            }
+
+            Thread.Sleep(Math.Min(50, Math.Max(1, settings.StartupTimeoutMs - (int)stopwatch.ElapsedMilliseconds)));
+        }
+
+        output.WriteLine($"CoordinatorClient: Timed out waiting {settings.StartupTimeoutMs}ms for coordinator server mutex");
+
+        CoordinatorProcessState finalState = getCoordinatorProcessState();
+
+        if (finalState != CoordinatorProcessState.DoesNotExist)
+        {
+            output.WriteLine(finalState == CoordinatorProcessState.Exists
+                ? "CoordinatorClient: Coordinator server mutex appeared before startup timeout recovery"
+                : "CoordinatorClient: Coordinator server mutex state became unknown before startup timeout recovery");
+
+            return finalState;
+        }
+
+        if (launchedProcess is not null && !launchedProcess.HasExited)
+        {
+            TerminateLaunchedCoordinatorProcess(launchedProcess, output);
+        }
+
+        return CoordinatorProcessState.DoesNotExist;
+    }
+
+    private static void TerminateLaunchedCoordinatorProcess(ICoordinatorProcess launchedProcess, ICoordinatorOutput output)
+    {
+        try
+        {
+            output.WriteLine($"CoordinatorClient: Terminating coordinator process {launchedProcess.Id} after startup timeout");
+            launchedProcess.Kill();
+
+            if (!launchedProcess.WaitForExit(milliseconds: 1_000))
+            {
+                output.WriteLine($"CoordinatorClient: Coordinator process {launchedProcess.Id} did not exit promptly after termination request");
+            }
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or Win32Exception or NotSupportedException)
+        {
+            output.WriteLine($"CoordinatorClient: Failed to terminate coordinator process {launchedProcess.Id}: {ex.Message}");
         }
     }
 
@@ -368,7 +555,10 @@ internal sealed partial class CoordinatorClient : IDisposable
             dueTime: intervalMs,
             period: intervalMs);
 
-    private static bool TryConnectToPipe(NamedPipeClientStream pipeStream, int timeoutMs)
+    internal static NamedPipeClientStream CreatePipeStream(CoordinatorSettings settings)
+        => new(".", settings.PipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+
+    internal static bool TryConnectToPipe(NamedPipeClientStream pipeStream, int timeoutMs)
     {
         try
         {
@@ -381,7 +571,7 @@ internal sealed partial class CoordinatorClient : IDisposable
         }
     }
 
-    private static bool TryLaunchCoordinator(ILoggingService loggingService, ICoordinatorOutput output)
+    internal static ICoordinatorProcess? TryLaunchCoordinator(ILoggingService? loggingService, ICoordinatorOutput output)
     {
         try
         {
@@ -389,19 +579,19 @@ internal sealed partial class CoordinatorClient : IDisposable
 
             if (startInfo is null)
             {
-                return false;
+                return null;
             }
 
             output.WriteLine($"CoordinatorClient: Launching coordinator: {startInfo.FileName} {startInfo.Arguments}");
 
             Process? process = Process.Start(startInfo);
-            return process is not null;
+            return process is null ? null : new CoordinatorProcessHandle(process);
         }
         catch (Exception ex) when (!Debugger.IsAttached)
         {
             output.WriteLine($"CoordinatorClient: Exception during launch: {ex}");
-            loggingService.LogComment(BuildEventContext.Invalid, MessageImportance.Normal, "CoordinatorFailedToLaunch");
-            return false;
+            loggingService?.LogComment(BuildEventContext.Invalid, MessageImportance.Normal, "CoordinatorFailedToLaunch");
+            return null;
         }
     }
 

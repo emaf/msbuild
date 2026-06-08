@@ -152,6 +152,26 @@ namespace Microsoft.Build.Framework
         public const string CoordinatorHeartbeatIntervalEnvVarName = "MSBUILDCOORDINATORHEARTBEAT";
 
         /// <summary>
+        /// Name of environment variable that overrides coordinator readiness probe timeout in milliseconds.
+        /// </summary>
+        public const string CoordinatorInitialConnectionTimeoutEnvVarName = "MSBUILDCOORDINATORINITIALCONNECT";
+
+        /// <summary>
+        /// Name of environment variable that overrides coordinator pipe connection timeout in milliseconds.
+        /// </summary>
+        public const string CoordinatorConnectionTimeoutEnvVarName = "MSBUILDCOORDINATORCONNECTTIMEOUT";
+
+        /// <summary>
+        /// Name of environment variable that overrides coordinator startup timeout in milliseconds.
+        /// </summary>
+        public const string CoordinatorStartupTimeoutEnvVarName = "MSBUILDCOORDINATORSTARTUPTIMEOUT";
+
+        /// <summary>
+        /// Name of environment variable that overrides coordinator launch mutex timeout in milliseconds.
+        /// </summary>
+        public const string CoordinatorLaunchMutexTimeoutEnvVarName = "MSBUILDCOORDINATORLAUNCHTIMEOUT";
+
+        /// <summary>
         /// Name of environment variable that overrides coordinator total node budget.
         /// </summary>
         public const string CoordinatorNodeBudgetEnvVarName = "MSBUILDCOORDINATORNODEBUDGET";

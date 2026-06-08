@@ -50,5 +50,18 @@ internal sealed partial class CoordinatorClient
                 return null;
             }
         }
+
+        public static NamedPipeClientStream? TryLaunchAndConnect(CoordinatorSettings settings, ICoordinatorOutput output, CoordinatorLaunchOperations operations)
+            => CoordinatorClient.TryLaunchAndConnect(settings, loggingService: null, output, operations);
+
+        public static CoordinatorProcessState GetCoordinatorProcessState(CoordinatorSettings settings, ICoordinatorOutput output)
+            => CoordinatorClient.GetCoordinatorProcessState(settings, output);
+
+        public static CoordinatorProcessState WaitForCoordinatorProcessState(
+            CoordinatorSettings settings,
+            ICoordinatorOutput output,
+            ICoordinatorProcess? launchedProcess,
+            Func<CoordinatorProcessState> getCoordinatorProcessState)
+            => CoordinatorClient.WaitForCoordinatorProcessState(settings, output, launchedProcess, getCoordinatorProcessState);
     }
 }
