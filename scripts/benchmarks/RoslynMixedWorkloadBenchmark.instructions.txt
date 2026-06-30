@@ -1,0 +1,94 @@
+Roslyn mixed workload benchmark
+
+Purpose
+-------
+Stress a real Roslyn workload with concurrent normal builds and one CDK
+ProjectDataBuild DTB/cache build. This compares:
+
+1. strict coordinator simulation: hard reservation/cap, no overflow
+2. overflow coordinator simulation: hard reservation/cap plus overflow
+3. no-coordinator/default simulation: every client requests the full machine
+
+The script simulates the node shapes with /m and process scheduling. It does not
+require the coordinator protocol.
+
+Workloads
+---------
+Normal build clients:
+  dotnet build Compilers.slnf --no-restore
+
+DTB/cache client:
+  dotnet build Roslyn.slnx /t:ProjectDataBuild --no-restore
+
+The script creates isolated Roslyn git worktrees so parallel builds do not race
+on the same obj/bin outputs. With -Prepare, it restores every worktree and warms
+normal builds before timing scenarios. Before each timed scenario, it touches a
+C# compiler source file in each normal worktree to force incremental compiler
+work.
+
+Recommended M1 Pro run
+----------------------
+First check logical cores:
+
+  sysctl -n hw.logicalcpu
+
+Then run from the msbuild checkout:
+
+  pwsh ./scripts/benchmarks/Run-RoslynMixedWorkloadBenchmark.ps1 \
+    -RoslynRoot /path/to/roslyn \
+    -ProjectDataTargets /path/to/vs-green/extension/dist/msbuild/Microsoft.NET.ProjectData.targets \
+    -Prepare
+
+For the 10-core M1 Pro default heuristic this should use:
+
+  slice = 4
+  reservation = 4
+  overflow = 2
+  strict max normal = 1
+  overflow max normal = 2
+  no-coordinator/default normal count = 2
+
+If you want to stress a queued extra normal build too, pass:
+
+  -NormalBuildCount 3
+
+What to report
+--------------
+Please report:
+
+1. Machine details: logical cores, chip/model, memory, OS, dotnet --info,
+   pwsh --version.
+2. The console configuration lines: Slice, Reservation, Overflow,
+   NormalBuildCount, Strict max normal, Overflow max normal.
+3. scenario-summary.csv.
+4. For each scenario, runs.csv with per-run normal and DTB durations.
+5. Peak process count and peak working set from scenario-summary.csv.
+6. Whether stderr logs are empty or contain warnings/errors.
+7. OutputRoot path with artifacts.
+
+Questions to answer
+-------------------
+1. Does overflow improve total completion time compared with strict no-overflow?
+2. How much DTB latency does overflow cost compared with strict?
+3. Is no-coordinator/default worse for normal builds, total time, process count,
+   or memory?
+4. On M1 Pro, does overflow=2 look like the right compromise for a 10-core
+   machine, or should 8-10 core machines default to strict/no overflow?
+
+Windows 16-logical-core reference result
+----------------------------------------
+Prepared 4 normal worktrees plus 1 DTB worktree. Normal builds used Compilers.slnf;
+DTB used Roslyn.slnx ProjectDataBuild.
+
+Scenario                       Total sec  DTB sec  Avg normal sec  Peak proc  Peak WS MB
+strict cap/reservation         194.63     106.42   128.91          17         10848.6
++4 overflow                    177.68     132.97   170.03          21         10780.9
+no coordinator/default         236.83     117.02   229.92          82         16527.6
+
+Interpretation from Windows:
+
+- No coordinator/default caused a process storm and highest memory.
+- Overflow improved total completion time vs strict, but made DTB slower.
+- Strict protected DTB latency best.
+- Overflow should stay configurable because it is a real throughput-vs-DTB
+  latency tradeoff.

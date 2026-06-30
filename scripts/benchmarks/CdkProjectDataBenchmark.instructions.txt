@@ -1,0 +1,84 @@
+C# Dev Kit ProjectDataBuild node-count benchmark
+
+Purpose
+-------
+Run the same ProjectDataBuild node-scaling experiment on another machine, such
+as an M1 Pro MacBook Pro, so coordinator defaults can be compared across
+hardware.
+
+Prerequisites
+-------------
+1. Clone this branch of dotnet/msbuild.
+2. Have a local Roslyn checkout.
+3. Have a local C# Dev Kit/vs-green checkout with the deployed target bundle:
+   extension/dist/msbuild/Microsoft.NET.ProjectData.targets
+4. Restore Roslyn before timing, or pass -IncludeRestore if you intentionally
+   want restore included.
+5. Use PowerShell 7+.
+
+Recommended M1 Pro run
+----------------------
+First check logical cores:
+
+  sysctl -n hw.logicalcpu
+
+For a 10-core M1 Pro:
+
+  pwsh ./scripts/benchmarks/Run-CdkProjectDataBenchmark.ps1 \
+    -RoslynRoot /path/to/roslyn \
+    -BuildPath Roslyn.slnx \
+    -ProjectDataTargets /path/to/vs-green/extension/dist/msbuild/Microsoft.NET.ProjectData.targets \
+    -NodeCounts 2 3 4 6 8 10 \
+    -Rounds 3
+
+For an 8-core M1 Pro:
+
+  pwsh ./scripts/benchmarks/Run-CdkProjectDataBenchmark.ps1 \
+    -RoslynRoot /path/to/roslyn \
+    -BuildPath Roslyn.slnx \
+    -ProjectDataTargets /path/to/vs-green/extension/dist/msbuild/Microsoft.NET.ProjectData.targets \
+    -NodeCounts 2 3 4 6 8 \
+    -Rounds 3
+
+Optional compiler-solution-filter comparison:
+
+  pwsh ./scripts/benchmarks/Run-CdkProjectDataBenchmark.ps1 \
+    -RoslynRoot /path/to/roslyn \
+    -BuildPath Compilers.slnf \
+    -ProjectDataTargets /path/to/vs-green/extension/dist/msbuild/Microsoft.NET.ProjectData.targets \
+    -NodeCounts 2 3 4 6 8 10 \
+    -Rounds 3
+
+Outputs
+-------
+The script defaults output under the user's temp directory unless -OutputRoot is
+provided. Capture these files:
+
+  cdk-projectdata-node-results.csv
+  cdk-projectdata-node-summary.csv
+  per-run *.out.log and *.err.log files
+  per-run *.samples.csv process and memory samples
+
+What to report back
+-------------------
+1. Logical processor count and machine model.
+2. The summary table for Roslyn.slnx.
+3. Whether /m:4 is close enough to the fastest run to be a good default cap.
+4. Whether /m:2 is visibly slower for DTB/cache work.
+5. Whether full capacity regresses or uses much more memory.
+
+Windows reference results from a 16-logical-processor machine
+------------------------------------------------------------
+Roslyn.slnx, 3 rounds:
+
+  /m:2   avg 41.14s, peak WS 1810.0 MB
+  /m:4   avg 30.07s, peak WS 1999.5 MB
+  /m:8   avg 27.74s, peak WS 2705.9 MB
+  /m:16  avg 34.50s, peak WS 3915.4 MB
+
+Compilers.slnf, 3 rounds:
+
+  /m:2   avg 14.56s, peak WS 593.1 MB
+  /m:4   avg 10.15s, peak WS 849.0 MB
+  /m:8   avg 8.17s, peak WS 1310.7 MB
+  /m:16  avg 9.06s, peak WS 2249.6 MB
