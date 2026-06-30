@@ -16,6 +16,7 @@ using Microsoft.Build.Internal;
 using Microsoft.Build.ProjectCache;
 using Microsoft.Build.Shared;
 using Microsoft.Build.Shared.FileSystem;
+using CoordinatorConstants = Microsoft.Build.Framework.Coordinator.Constants;
 using ForwardingLoggerRecord = Microsoft.Build.Logging.ForwardingLoggerRecord;
 
 #nullable disable
@@ -242,6 +243,8 @@ namespace Microsoft.Build.Execution
 
         private bool _reportFileAccesses;
 
+        private BuildRequestPriority _buildRequestPriority = BuildRequestPriority.Normal;
+
         /// <summary>
         /// Constructor for those who intend to set all properties themselves.
         /// </summary>
@@ -329,6 +332,7 @@ namespace Microsoft.Build.Execution
             _inputResultsCacheFiles = other._inputResultsCacheFiles;
             _outputResultsCacheFile = other._outputResultsCacheFile;
             _reportFileAccesses = other._reportFileAccesses;
+            _buildRequestPriority = other.BuildRequestPriority;
             DiscardBuildResults = other.DiscardBuildResults;
             LowPriority = other.LowPriority;
             Question = other.Question;
@@ -343,6 +347,26 @@ namespace Microsoft.Build.Execution
         /// Gets or sets the desired thread priority for building.
         /// </summary>
         public ThreadPriority BuildThreadPriority { get; set; } = ThreadPriority.Normal;
+
+        /// <summary>
+        /// Gets or sets the priority the build coordinator should use when ordering this build request in its queue.
+        /// </summary>
+        /// <remarks>
+        /// This value affects coordinator queue scheduling only. The default is <see cref="BuildRequestPriority.Normal"/>.
+        /// </remarks>
+        public BuildRequestPriority BuildRequestPriority
+        {
+            get => _buildRequestPriority;
+            set
+            {
+                if (value is < BuildRequestPriority.Low or > BuildRequestPriority.High)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), value, $"Build request priority must be {BuildRequestPriority.Low}, {BuildRequestPriority.Normal}, or {BuildRequestPriority.High}.");
+                }
+
+                _buildRequestPriority = value;
+            }
+        }
 
         /// <summary>
         /// By default if the number of processes is set to 1 we will use Asynchronous logging. However if we want to use synchronous logging when the number of cpu's is set to 1
@@ -1028,6 +1052,7 @@ namespace Microsoft.Build.Execution
             // InputResultsCacheFiles and OutputResultsCacheFile are not transmitted, as they are only used by the BuildManager
             // DiscardBuildResults is not transmitted.
             // LowPriority is passed as an argument to new nodes, so it doesn't need to be transmitted here.
+            // BuildRequestPriority is consumed before nodes are launched, so it doesn't need to be transmitted here.
         }
 
         #region INodePacketTranslatable Members
@@ -1063,7 +1088,36 @@ namespace Microsoft.Build.Execution
                 DetailedSummary = true;
             }
 
+            _buildRequestPriority = GetBuildRequestPriorityFromEnvironment();
+
             _nodeExeLocation = FindMSBuildExe();
+        }
+
+        private static BuildRequestPriority GetBuildRequestPriorityFromEnvironment()
+        {
+            string value = Environment.GetEnvironmentVariable(CoordinatorConstants.BuildRequestPriorityEnvVarName);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return BuildRequestPriority.Normal;
+            }
+
+            string trimmedValue = value.Trim();
+            if (string.Equals(trimmedValue, nameof(BuildRequestPriority.Low), StringComparison.OrdinalIgnoreCase))
+            {
+                return BuildRequestPriority.Low;
+            }
+
+            if (string.Equals(trimmedValue, nameof(BuildRequestPriority.Normal), StringComparison.OrdinalIgnoreCase))
+            {
+                return BuildRequestPriority.Normal;
+            }
+
+            if (string.Equals(trimmedValue, nameof(BuildRequestPriority.High), StringComparison.OrdinalIgnoreCase))
+            {
+                return BuildRequestPriority.High;
+            }
+
+            return BuildRequestPriority.Normal;
         }
 
         /// <summary>
