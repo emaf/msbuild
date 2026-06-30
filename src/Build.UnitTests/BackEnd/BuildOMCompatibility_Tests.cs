@@ -36,6 +36,22 @@ namespace Microsoft.Build.Engine.UnitTests.BackEnd
             => VerifyPropertyExists(typeof(GraphBuildRequestData), propertyName);
 
         [Theory]
+        [InlineData("BuildRequestPriority")]
+        public void BuildParametersPropertyCompatTest(string propertyName)
+            => VerifyPropertyExists(typeof(BuildParameters), propertyName);
+
+        [Theory]
+        [InlineData(BuildRequestPriority.Low, 0, "Low")]
+        [InlineData(BuildRequestPriority.Normal, 1, "Normal")]
+        [InlineData(BuildRequestPriority.High, 2, "High")]
+        public void BuildRequestPriorityCompatTest(BuildRequestPriority priority, int expectedValue, string expectedName)
+        {
+            ((int)priority).ShouldBe(expectedValue);
+            priority.ToString().ShouldBe(expectedName);
+            Enum.IsDefined(typeof(BuildRequestPriority), priority).ShouldBeTrue();
+        }
+
+        [Theory]
         [InlineData("BuildManager")]
         [InlineData("SubmissionId")]
         [InlineData("AsyncContext")]

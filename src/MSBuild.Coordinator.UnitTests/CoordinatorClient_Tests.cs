@@ -1,8 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Immutable;
 using System.IO.Pipes;
+using System.Text;
 using Microsoft.Build.BackEnd;
+using Microsoft.Build.Execution;
 using Microsoft.Build.Framework.Coordinator;
 using Microsoft.Build.UnitTests;
 using Shouldly;
@@ -41,15 +44,46 @@ public class CoordinatorClient_Tests(ITestOutputHelper testOutput) : IDisposable
         using CoordinatorServer server = CreateServer(totalNodeBudget: 16);
         Task serverTask = server.RunAsync(_cts.Token);
 
-        using CoordinatorClient? client = TryConnectToServer(requestedNodes: 8, processId: Pid1);
+        using (CoordinatorClient? client = TryConnectToServer(requestedNodes: 8, processId: Pid1))
+        {
+            client.ShouldNotBeNull();
+            client.GrantedNodes.ShouldBe(8);
+            client.ServerCapabilities.ShouldContain(Capabilities.Priority);
+        }
 
-        client.ShouldNotBeNull();
-        client.GrantedNodes.ShouldBe(8);
-
-        client.Dispose();
         _cts.Cancel();
 
         return serverTask;
+    }
+
+    [Fact]
+    public async Task TryConnect_ServerSupportsPriority_SendsPriorityRequest()
+    {
+        Task<ClientMessage> requestTask = RunSingleRequestServerAsync([Capabilities.Priority]);
+
+        using (CoordinatorClient? client = TryConnectToServer(requestedNodes: 4, processId: Pid1, buildRequestPriority: BuildRequestPriority.High))
+        {
+            client.ShouldNotBeNull();
+            client.GrantedNodes.ShouldBe(1);
+        }
+
+        RequestNodesWithPriorityMessage request = (await requestTask).ShouldBeOfType<RequestNodesWithPriorityMessage>();
+        request.RequestedNodes.ShouldBe(4);
+        request.Priority.ShouldBe(CoordinatorBuildPriority.High);
+    }
+
+    [Fact]
+    public async Task TryConnect_ServerWithoutPriorityCapability_SendsLegacyRequest()
+    {
+        Task<ClientMessage> requestTask = RunSingleRequestServerAsync([]);
+
+        using (CoordinatorClient? client = TryConnectToServer(requestedNodes: 4, processId: Pid1, buildRequestPriority: BuildRequestPriority.High))
+        {
+            client.ShouldNotBeNull();
+            client.GrantedNodes.ShouldBe(1);
+        }
+
+        (await requestTask).ShouldBe(new RequestNodesMessage(requestedNodes: 4));
     }
 
     [Fact]
@@ -58,12 +92,12 @@ public class CoordinatorClient_Tests(ITestOutputHelper testOutput) : IDisposable
         using CoordinatorServer server = CreateServer(totalNodeBudget: 16);
         Task serverTask = server.RunAsync(_cts.Token);
 
-        using CoordinatorClient? client = TryConnectToServer(requestedNodes: 4, processId: Pid1);
+        using (CoordinatorClient? client = TryConnectToServer(requestedNodes: 4, processId: Pid1))
+        {
+            client.ShouldNotBeNull();
+            client.GrantedNodes.ShouldBe(4);
+        }
 
-        client.ShouldNotBeNull();
-        client.GrantedNodes.ShouldBe(4);
-
-        client.Dispose();
         _cts.Cancel();
 
         return serverTask;
@@ -75,12 +109,12 @@ public class CoordinatorClient_Tests(ITestOutputHelper testOutput) : IDisposable
         using CoordinatorServer server = CreateServer(totalNodeBudget: 4);
         Task serverTask = server.RunAsync(_cts.Token);
 
-        using CoordinatorClient? client = TryConnectToServer(requestedNodes: 16, processId: Pid1);
+        using (CoordinatorClient? client = TryConnectToServer(requestedNodes: 16, processId: Pid1))
+        {
+            client.ShouldNotBeNull();
+            client.GrantedNodes.ShouldBe(4);
+        }
 
-        client.ShouldNotBeNull();
-        client.GrantedNodes.ShouldBe(4);
-
-        client.Dispose();
         _cts.Cancel();
 
         return serverTask;
@@ -206,18 +240,18 @@ public class CoordinatorClient_Tests(ITestOutputHelper testOutput) : IDisposable
         using CoordinatorServer server = CreateServer(totalNodeBudget: 16);
         Task serverTask = server.RunAsync(_cts.Token);
 
-        using CoordinatorClient? client = TryConnectToServer(
+        using (CoordinatorClient? client = TryConnectToServer(
             requestedNodes: 8,
             DefaultSettings with
             {
                 ProcessId = Pid1,
                 HeartbeatIntervalMs = 50,
-            });
+            }))
+        {
+            client.ShouldNotBeNull();
+            client.GrantedNodes.ShouldBe(8);
+        }
 
-        client.ShouldNotBeNull();
-        client.GrantedNodes.ShouldBe(8);
-
-        client.Dispose();
         _cts.Cancel();
 
         return serverTask;
@@ -244,14 +278,42 @@ public class CoordinatorClient_Tests(ITestOutputHelper testOutput) : IDisposable
         // Release the first client's grant. This should unblock the second client.
         client1.Dispose();
 
-        CoordinatorClient? client2 = await client2Task;
-        client2.ShouldNotBeNull();
-        client2.GrantedNodes.ShouldBeGreaterThan(0);
+        using (CoordinatorClient? client2 = await client2Task)
+        {
+            client2.ShouldNotBeNull();
+            client2.GrantedNodes.ShouldBeGreaterThan(0);
+        }
 
-        client2.Dispose();
         _cts.Cancel();
 
         await serverTask;
+    }
+
+    [Fact]
+    public async Task TryConnect_DeferredGrantStopsWaitHeartbeatPumpBeforeRelease()
+    {
+        Task<IReadOnlyList<ClientMessage>> postGrantMessagesTask = RunDeferredGrantServerAsync();
+
+        using (CoordinatorClient? client = TryConnectToServer(
+            requestedNodes: 4,
+            BuildRequestPriority.Normal,
+            DefaultSettings with
+            {
+                ProcessId = Pid1,
+                HeartbeatIntervalMs = 100,
+            }))
+        {
+            client.ShouldNotBeNull();
+            client.GrantedNodes.ShouldBe(1);
+        }
+
+        IReadOnlyList<ClientMessage> postGrantMessages = await postGrantMessagesTask;
+        postGrantMessages.ShouldNotBeEmpty();
+        postGrantMessages[^1].ShouldBe(ReleaseNodesMessage.Instance);
+        for (int i = 0; i < postGrantMessages.Count - 1; i++)
+        {
+            postGrantMessages[i].ShouldBe(HeartbeatMessage.Instance);
+        }
     }
 
     [Fact]
@@ -269,22 +331,101 @@ public class CoordinatorClient_Tests(ITestOutputHelper testOutput) : IDisposable
         client1.Dispose();
 
         // Second client connects and should also get up to 8.
-        using CoordinatorClient? client2 = TryConnectToServer(requestedNodes: 8, processId: Pid2);
-        client2.ShouldNotBeNull();
-        client2.GrantedNodes.ShouldBe(8);
+        using (CoordinatorClient? client2 = TryConnectToServer(requestedNodes: 8, processId: Pid2))
+        {
+            client2.ShouldNotBeNull();
+            client2.GrantedNodes.ShouldBe(8);
+        }
 
-        client2.Dispose();
         _cts.Cancel();
 
         return serverTask;
     }
 
     private CoordinatorServer CreateServer(int totalNodeBudget)
-        => new(DefaultSettings with { TotalNodeBudget = totalNodeBudget }, _output);
+        => new(DefaultSettings with
+        {
+            TotalNodeBudget = totalNodeBudget,
+            HighPriorityReservedNodes = 0,
+            MaxNodesPerBuild = 0,
+        }, _output);
 
-    private CoordinatorClient? TryConnectToServer(int requestedNodes, int processId)
-        => TryConnectToServer(requestedNodes, DefaultSettings with { ProcessId = processId });
+    private CoordinatorClient? TryConnectToServer(int requestedNodes, int processId, BuildRequestPriority buildRequestPriority = BuildRequestPriority.Normal)
+        => TryConnectToServer(requestedNodes, buildRequestPriority, DefaultSettings with { ProcessId = processId });
 
     private CoordinatorClient? TryConnectToServer(int requestedNodes, CoordinatorSettings settings)
-        => CoordinatorClient.TestAccessor.TryConnectToServer(requestedNodes, settings, _output);
+        => TryConnectToServer(requestedNodes, BuildRequestPriority.Normal, settings);
+
+    private CoordinatorClient? TryConnectToServer(int requestedNodes, BuildRequestPriority buildRequestPriority, CoordinatorSettings settings)
+        => CoordinatorClient.TestAccessor.TryConnectToServer(requestedNodes, buildRequestPriority, settings, _output);
+
+    private async Task<ClientMessage> RunSingleRequestServerAsync(ImmutableArray<string> serverCapabilities)
+    {
+        using NamedPipeServerStream server = new(
+            _pipeName,
+            PipeDirection.InOut,
+            maxNumberOfServerInstances: 1,
+            PipeTransmissionMode.Byte,
+            PipeOptions.Asynchronous);
+
+        await server.WaitForConnectionAsync(_cts.Token);
+
+        using BinaryReader reader = new(server, Encoding.UTF8, leaveOpen: true);
+        using BinaryWriter writer = new(server, Encoding.UTF8, leaveOpen: true);
+
+        reader.ReadClientMessage().ShouldBeOfType<ClientHandshakeMessage>();
+        writer.Write(new ServerHandshakeMessage(serverCapabilities));
+
+        ClientMessage request = reader.ReadClientMessage();
+        writer.Write(new NodeGrantMessage(grantedNodes: 1));
+
+        reader.ReadClientMessage().ShouldBe(ReleaseNodesMessage.Instance);
+
+        return request;
+    }
+
+    private async Task<IReadOnlyList<ClientMessage>> RunDeferredGrantServerAsync()
+    {
+        using NamedPipeServerStream server = new(
+            _pipeName,
+            PipeDirection.InOut,
+            maxNumberOfServerInstances: 1,
+            PipeTransmissionMode.Byte,
+            PipeOptions.Asynchronous);
+
+        await server.WaitForConnectionAsync(_cts.Token);
+
+        using BinaryReader reader = new(server, Encoding.UTF8, leaveOpen: true);
+        using BinaryWriter writer = new(server, Encoding.UTF8, leaveOpen: true);
+
+        reader.ReadClientMessage().ShouldBeOfType<ClientHandshakeMessage>();
+        writer.Write(new ServerHandshakeMessage([Capabilities.Priority]));
+
+        reader.ReadClientMessage().ShouldBeOfType<RequestNodesWithPriorityMessage>();
+        writer.Write(WaitMessage.Instance);
+
+        ClientMessage waitHeartbeat = await ReadClientMessageWithTimeout(reader);
+        waitHeartbeat.ShouldBe(HeartbeatMessage.Instance);
+
+        writer.Write(new NodeGrantMessage(grantedNodes: 1));
+
+        List<ClientMessage> postGrantMessages = [];
+        while (true)
+        {
+            ClientMessage message = await ReadClientMessageWithTimeout(reader);
+            postGrantMessages.Add(message);
+            if (message == ReleaseNodesMessage.Instance)
+            {
+                return postGrantMessages;
+            }
+        }
+    }
+
+    private static async Task<ClientMessage> ReadClientMessageWithTimeout(BinaryReader reader)
+    {
+        Task<ClientMessage> readTask = Task.Run(() => reader.ReadClientMessage());
+        Task completedTask = await Task.WhenAny(readTask, Task.Delay(TimeSpan.FromSeconds(5)));
+        completedTask.ShouldBeSameAs(readTask);
+        return await readTask;
+    }
 }
