@@ -639,6 +639,7 @@ namespace Microsoft.Build.Execution
                 {
                     _coordinatorClient = CoordinatorClient.TryConnect(
                         requestedNodes: _buildParameters.MaxNodeCount,
+                        buildRequestPriority: _buildParameters.BuildRequestPriority,
                         settings: CoordinatorSettings.FromEnvironment(),
                         loggingService);
 

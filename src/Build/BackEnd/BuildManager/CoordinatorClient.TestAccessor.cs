@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO.Pipes;
+using Microsoft.Build.Execution;
 using Microsoft.Build.Framework.Coordinator;
 
 namespace Microsoft.Build.BackEnd;
@@ -17,12 +18,17 @@ internal sealed partial class CoordinatorClient
         ///  This overload does not attempt to launch the coordinator and is intended for testing.
         /// </summary>
         /// <param name="requestedNodes">The number of nodes to request from the coordinator.</param>
+        /// <param name="buildRequestPriority">The coordinator queue scheduling priority to request.</param>
         /// <param name="settings">Coordinator connection settings (pipe name, timeouts, etc.).</param>
         /// <param name="output">Debug trace output for diagnostic logging.</param>
         /// <returns>
         ///  A connected <see cref="CoordinatorClient"/> instance, or <see langword="null"/> if the connection fails.
         /// </returns>
-        public static CoordinatorClient? TryConnectToServer(int requestedNodes, CoordinatorSettings settings, ICoordinatorDebugOutput output)
+        public static CoordinatorClient? TryConnectToServer(
+            int requestedNodes,
+            BuildRequestPriority buildRequestPriority,
+            CoordinatorSettings settings,
+            ICoordinatorDebugOutput output)
         {
             NamedPipeClientStream? pipeStream = null;
 
@@ -41,7 +47,7 @@ internal sealed partial class CoordinatorClient
 
                 output.WriteLine("CoordinatorClient: Connected to test server");
 
-                return TryNegotiate(pipeStream, requestedNodes, settings, output, loggingService: null);
+                return TryNegotiate(pipeStream, requestedNodes, ToCoordinatorPriority(buildRequestPriority), settings, output, loggingService: null);
             }
             catch (Exception ex) when (!Debugger.IsAttached)
             {

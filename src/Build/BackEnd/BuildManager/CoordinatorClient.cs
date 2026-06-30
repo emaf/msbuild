@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using Microsoft.Build.BackEnd.Logging;
+using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Framework.Coordinator;
 using Microsoft.Build.Shared;
@@ -128,12 +129,13 @@ internal sealed partial class CoordinatorClient : IDisposable
     ///  Returns null if the coordinator is not available or an error occurs.
     /// </summary>
     /// <param name="requestedNodes">The maximum number of nodes to request from the coordinator.</param>
+    /// <param name="buildRequestPriority">The coordinator queue scheduling priority to request.</param>
     /// <param name="settings">Coordinator connection settings (pipe name, timeouts, etc.).</param>
     /// <param name="loggingService">The MSBuild logging service used to emit user-visible messages.</param>
     /// <returns>
     ///  A connected <see cref="CoordinatorClient"/> instance, or <see langword="null"/> if the coordinator is not available.
     /// </returns>
-    public static CoordinatorClient? TryConnect(int requestedNodes, CoordinatorSettings settings, ILoggingService loggingService)
+    public static CoordinatorClient? TryConnect(int requestedNodes, BuildRequestPriority buildRequestPriority, CoordinatorSettings settings, ILoggingService loggingService)
     {
         ICoordinatorDebugOutput output = DefaultDebugOutput.Instance;
 
@@ -164,7 +166,7 @@ internal sealed partial class CoordinatorClient : IDisposable
 
             output.WriteLine("CoordinatorClient: Connected to coordinator");
 
-            CoordinatorClient? client = TryNegotiate(pipeStream, requestedNodes, settings, output, loggingService);
+            CoordinatorClient? client = TryNegotiate(pipeStream, requestedNodes, ToCoordinatorPriority(buildRequestPriority), settings, output, loggingService);
             pipeStream = null; // Ownership transferred unconditionally; TryNegotiate disposes on failure.
 
             if (client is null)
@@ -329,6 +331,7 @@ internal sealed partial class CoordinatorClient : IDisposable
     /// </summary>
     /// <param name="pipeStream">The connected named pipe stream.</param>
     /// <param name="requestedNodes">The number of nodes to request.</param>
+    /// <param name="priority">The coordinator queue scheduling priority to request.</param>
     /// <param name="settings">Coordinator settings including heartbeat interval and process ID.</param>
     /// <param name="output">Debug trace output for diagnostic logging.</param>
     /// <param name="loggingService">Optional MSBuild logging service for user-visible messages.</param>
@@ -338,6 +341,7 @@ internal sealed partial class CoordinatorClient : IDisposable
     private static CoordinatorClient? TryNegotiate(
         NamedPipeClientStream pipeStream,
         int requestedNodes,
+        CoordinatorBuildPriority priority,
         CoordinatorSettings settings,
         ICoordinatorDebugOutput output,
         ILoggingService? loggingService)
@@ -355,7 +359,7 @@ internal sealed partial class CoordinatorClient : IDisposable
         // Root builds keep it in BuildParameters.BuildProcessEnvironment to avoid races
         // between concurrent BuildManager instances in the same process.
         if (TryGetInheritedGrantId(out Guid inheritedGrantId) &&
-            connection.ServerCapabilities.Contains(Capabilities.NestedGrants))
+            HasCapability(connection.ServerCapabilities, Capabilities.NestedGrants))
         {
             grantOwnership = GrantOwnership.Nested;
             output.WriteLine($"CoordinatorClient: Joining coordinator grant {inheritedGrantId} for {requestedNodes} nodes (PID {processId}, ConnectionId {connection.Id})");
@@ -364,8 +368,17 @@ internal sealed partial class CoordinatorClient : IDisposable
         else
         {
             grantOwnership = GrantOwnership.Root;
-            output.WriteLine($"CoordinatorClient: Requesting {requestedNodes} nodes (PID {processId}, ConnectionId {connection.Id})");
-            connection.WriteClientMessage(new RequestNodesMessage(requestedNodes));
+
+            if (HasCapability(connection.ServerCapabilities, Capabilities.Priority))
+            {
+                output.WriteLine($"CoordinatorClient: Requesting {requestedNodes} nodes at {priority} priority (PID {processId}, ConnectionId {connection.Id})");
+                connection.WriteClientMessage(new RequestNodesWithPriorityMessage(requestedNodes, priority));
+            }
+            else
+            {
+                output.WriteLine($"CoordinatorClient: Requesting {requestedNodes} nodes (PID {processId}, ConnectionId {connection.Id})");
+                connection.WriteClientMessage(new RequestNodesMessage(requestedNodes));
+            }
         }
 
         // Read the response.
@@ -470,6 +483,28 @@ internal sealed partial class CoordinatorClient : IDisposable
         int heartbeatIntervalMs,
         ICoordinatorDebugOutput output)
         => new(connection, grant.GrantId, grant.GrantedNodes, GrantOwnership.Nested, heartbeatIntervalMs, output);
+
+    private static bool HasCapability(ImmutableArray<string> capabilities, string capability)
+    {
+        foreach (string supportedCapability in capabilities)
+        {
+            if (StringComparer.Ordinal.Equals(supportedCapability, capability))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static CoordinatorBuildPriority ToCoordinatorPriority(BuildRequestPriority priority)
+        => priority switch
+        {
+            BuildRequestPriority.Low => CoordinatorBuildPriority.Low,
+            BuildRequestPriority.Normal => CoordinatorBuildPriority.Normal,
+            BuildRequestPriority.High => CoordinatorBuildPriority.High,
+            _ => throw new ArgumentOutOfRangeException(nameof(priority)),
+        };
 
     private static bool TryConnectToPipe(NamedPipeClientStream pipeStream, int timeoutMs)
     {
