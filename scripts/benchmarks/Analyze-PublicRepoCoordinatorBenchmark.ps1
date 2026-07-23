@@ -247,43 +247,58 @@ function Format-Percent {
 function Test-RecordedBootstrap {
     param(
         [pscustomobject]$Bootstrap,
-        [Collections.Generic.List[string]]$Errors
+        [Collections.Generic.List[string]]$Errors,
+        [Collections.Generic.List[string]]$Warnings
     )
 
     if ($Bootstrap.ValidationStatus -ne 'Verified') {
         Add-ValidationError $Errors "Recorded $($Bootstrap.Role) bootstrap was not verified."
         return
     }
-    foreach ($path in @($Bootstrap.DotNetPath, $Bootstrap.MSBuildDllPath)) {
-        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-            Add-ValidationError $Errors "Recorded $($Bootstrap.Role) bootstrap file '$path' is missing."
+
+    $trackedFiles = if ($null -ne $Bootstrap.PSObject.Properties['TrackedFiles']) {
+        @($Bootstrap.TrackedFiles)
+    }
+    else {
+        @(
+            [pscustomobject]@{ Name = 'dotnet.exe'; Path = $Bootstrap.DotNetPath; Sha256 = $Bootstrap.DotNetSha256 },
+            [pscustomobject]@{ Name = 'MSBuild.dll'; Path = $Bootstrap.MSBuildDllPath; Sha256 = $Bootstrap.MSBuildDllSha256 }
+        )
+    }
+    $missingCanonicalFile = $false
+    foreach ($trackedFile in $trackedFiles) {
+        if (-not (Test-Path -LiteralPath $trackedFile.Path -PathType Leaf)) {
+            Add-ValidationError $Errors "Recorded $($Bootstrap.Role) tracked file '$($trackedFile.Path)' is missing."
+            $missingCanonicalFile = $true
+            continue
+        }
+        $hash = (Get-FileHash -LiteralPath $trackedFile.Path -Algorithm SHA256).Hash
+        if ($hash -ne $trackedFile.Sha256) {
+            Add-ValidationError $Errors "Recorded $($Bootstrap.Role) tracked file '$($trackedFile.Path)' no longer matches its hash."
         }
     }
-    if ($Errors.Count -gt 0 -and
-        (-not (Test-Path -LiteralPath $Bootstrap.DotNetPath -PathType Leaf) -or
-         -not (Test-Path -LiteralPath $Bootstrap.MSBuildDllPath -PathType Leaf))) {
-        return
+    if (-not $missingCanonicalFile) {
+        $msbuildFile = $trackedFiles | Where-Object Name -eq 'MSBuild.dll' | Select-Object -First 1
+        $productVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo($msbuildFile.Path).ProductVersion
+        if ($productVersion -ne $Bootstrap.ProductVersion -or
+            -not $productVersion.Contains($Bootstrap.ExpectedCommit, [StringComparison]::OrdinalIgnoreCase)) {
+            Add-ValidationError $Errors "Recorded $($Bootstrap.Role) bootstrap ProductVersion no longer identifies '$($Bootstrap.ExpectedCommit)'."
+        }
     }
 
-    $productVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo($Bootstrap.MSBuildDllPath).ProductVersion
-    if ($productVersion -ne $Bootstrap.ProductVersion -or
-        -not $productVersion.Contains($Bootstrap.ExpectedCommit, [StringComparison]::OrdinalIgnoreCase)) {
-        Add-ValidationError $Errors "Recorded $($Bootstrap.Role) bootstrap ProductVersion no longer identifies '$($Bootstrap.ExpectedCommit)'."
-    }
-    $dotnetHash = (Get-FileHash -LiteralPath $Bootstrap.DotNetPath -Algorithm SHA256).Hash
-    $msbuildHash = (Get-FileHash -LiteralPath $Bootstrap.MSBuildDllPath -Algorithm SHA256).Hash
-    if ($dotnetHash -ne $Bootstrap.DotNetSha256 -or $msbuildHash -ne $Bootstrap.MSBuildDllSha256) {
-        Add-ValidationError $Errors "Recorded $($Bootstrap.Role) bootstrap binaries no longer match their hashes."
-    }
-    if ($null -ne $Bootstrap.PSObject.Properties['TrackedFiles']) {
-        foreach ($trackedFile in @($Bootstrap.TrackedFiles)) {
-            if (-not (Test-Path -LiteralPath $trackedFile.Path -PathType Leaf)) {
-                Add-ValidationError $Errors "Recorded $($Bootstrap.Role) tracked file '$($trackedFile.Path)' is missing."
+    if ($null -ne $Bootstrap.PSObject.Properties['StagedTrackedFiles']) {
+        $stagedFiles = @($Bootstrap.StagedTrackedFiles)
+        $missingStagedFiles = @($stagedFiles | Where-Object { -not (Test-Path -LiteralPath $_.Path -PathType Leaf) })
+        if ($missingStagedFiles.Count -gt 0) {
+            $Warnings.Add("Recorded $($Bootstrap.Role) staging files are no longer available; canonical bootstrap identity remains authoritative.")
+        }
+        foreach ($stagedFile in $stagedFiles) {
+            if (-not (Test-Path -LiteralPath $stagedFile.Path -PathType Leaf)) {
                 continue
             }
-            $hash = (Get-FileHash -LiteralPath $trackedFile.Path -Algorithm SHA256).Hash
-            if ($hash -ne $trackedFile.Sha256) {
-                Add-ValidationError $Errors "Recorded $($Bootstrap.Role) tracked file '$($trackedFile.Path)' no longer matches its hash."
+            $hash = (Get-FileHash -LiteralPath $stagedFile.Path -Algorithm SHA256).Hash
+            if ($hash -ne $stagedFile.Sha256) {
+                Add-ValidationError $Errors "Recorded $($Bootstrap.Role) staged file '$($stagedFile.Path)' no longer matches its hash."
             }
         }
     }
@@ -320,8 +335,8 @@ else {
 $validationErrors = [Collections.Generic.List[string]]::new()
 $validationWarnings = [Collections.Generic.List[string]]::new()
 if (-not $metadata.PlanOnly) {
-    Test-RecordedBootstrap -Bootstrap $metadata.BaseBootstrap -Errors $validationErrors
-    Test-RecordedBootstrap -Bootstrap $metadata.CandidateBootstrap -Errors $validationErrors
+    Test-RecordedBootstrap -Bootstrap $metadata.BaseBootstrap -Errors $validationErrors -Warnings $validationWarnings
+    Test-RecordedBootstrap -Bootstrap $metadata.CandidateBootstrap -Errors $validationErrors -Warnings $validationWarnings
 }
 
 $conditionByKey = @{}
@@ -391,6 +406,60 @@ if ($metadata.PlanOnly) {
         throw "Plan validation failed: $($validationErrors -join '; ')"
     }
     Write-Host "PLAN_VALIDATION=True"
+    Write-Host "ANALYSIS_ROOT=$OutputRoot"
+    return
+}
+
+$isPrepareOnly = $null -ne $metadata.PSObject.Properties['PrepareOnly'] -and [bool]$metadata.PrepareOnly
+if ($isPrepareOnly) {
+    if (-not (Test-Path -LiteralPath (Join-Path $RunRoot 'preparation-completion.json'))) {
+        Add-ValidationError $validationErrors 'Preparation completion marker is missing.'
+    }
+    $keepAwakePath = Join-Path $RunRoot 'keep-awake.json'
+    if (-not (Test-Path -LiteralPath $keepAwakePath)) {
+        Add-ValidationError $validationErrors 'Keep-awake cleanup record is missing.'
+    }
+    else {
+        $keepAwake = Get-Content -LiteralPath $keepAwakePath -Raw | ConvertFrom-Json
+        if ($keepAwake.Restored -ne $true) {
+            Add-ValidationError $validationErrors 'SetThreadExecutionState was not restored.'
+        }
+    }
+    foreach ($repository in $metadata.Repositories) {
+        foreach ($role in @('base', 'candidate')) {
+            $smokePath = Join-Path $RunRoot "_setup\$($repository.Name)-$role-preparation-smoke.json"
+            if (-not (Test-Path -LiteralPath $smokePath -PathType Leaf)) {
+                Add-ValidationError $validationErrors "Preparation smoke '$smokePath' is missing."
+                continue
+            }
+            $smoke = Get-Content -LiteralPath $smokePath -Raw | ConvertFrom-Json
+            if ($smoke.Valid -ne $true) {
+                Add-ValidationError $validationErrors "Preparation smoke '$smokePath' is invalid."
+            }
+        }
+        if (-not (Test-Path -LiteralPath (Join-Path $RunRoot "_setup\$($repository.Name)\scenario-summary.csv"))) {
+            Add-ValidationError $validationErrors "Preparation summary for '$($repository.Name)' is missing."
+        }
+    }
+    $scenarioMetadataCount = @(Get-ChildItem -LiteralPath $RunRoot -Recurse -Filter scenario-metadata.json -ErrorAction SilentlyContinue).Count
+    if ($scenarioMetadataCount -ne 0) {
+        Add-ValidationError $validationErrors "PrepareOnly root contains $scenarioMetadataCount measured scenario metadata file(s)."
+    }
+
+    $preparationValidation = [ordered]@{
+        RunRoot = $RunRoot
+        PrepareOnly = $true
+        Valid = $validationErrors.Count -eq 0
+        RepositoryCount = @($metadata.Repositories).Count
+        MeasuredScenarioCount = $scenarioMetadataCount
+        Errors = $validationErrors
+        Warnings = $validationWarnings
+    }
+    $preparationValidation | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $OutputRoot 'validation.json') -Encoding UTF8
+    if ($validationErrors.Count -gt 0) {
+        throw "Preparation validation failed: $($validationErrors -join '; ')"
+    }
+    Write-Host 'PREPARATION_VALIDATION=True'
     Write-Host "ANALYSIS_ROOT=$OutputRoot"
     return
 }

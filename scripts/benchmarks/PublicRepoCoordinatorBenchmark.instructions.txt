@@ -57,6 +57,16 @@ The bootstrap MSBuild.dll ProductVersion must identify its expected commit.
 run-metadata.json also records SDK version, dotnet --info, ProductVersion,
 FileVersion, and SHA-256 hashes. The analyzer rechecks these identities.
 
+Before execution, the Windows matrix stages both validated bootstraps beneath
+BootstrapStagingRoot (by default, a reusable directory under the system temp
+directory). This keeps SDK import paths short and gives base and candidate the
+same invocation layout. Every tracked staged file must match its source SHA-256;
+staging-metadata.json records source and staged paths. Staging directories are
+content-addressed, published atomically, and immutable after publication, so
+concurrent runs can safely verify and reuse them. Use an explicit short, persistent
+BootstrapStagingRoot when the staging records must outlive temp-file cleanup.
+PlanOnly does not copy or stage bootstraps.
+
 Conditions
 ----------
   A-no-coordinator
@@ -116,6 +126,7 @@ design has zero position imbalance and zero first-order carryover imbalance.
     AspireRoot = '<repos>\aspire'
     AspireExpectedCommit = '110a63da8357af437a00d9efc5887ffdcbdfbb3c'
     AspireWorkRoot = '<worktrees>\aspire'
+    BootstrapStagingRoot = '<short-path>\coordinator-bootstrap-staging'
   }
 
   pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
@@ -127,6 +138,22 @@ design has zero position imbalance and zero first-order carryover imbalance.
 
   pwsh .\scripts\benchmarks\Analyze-PublicRepoCoordinatorBenchmark.ps1 `
     -RunRoot '<results>\plan-<timestamp>'
+
+Use PrepareOnly to run the staged-bootstrap evaluation smoke plus restore/warm
+preparation and then stop before any measured scenario. It writes
+preparation-completion.json and keep-awake.json. The analyzer validates both
+bootstrap identities, both evaluation smokes, cleanup, and zero measured scenarios:
+
+  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
+    -OutputRoot '<results>\prepare-<timestamp>' `
+    -Workload solution-propagated `
+    -RepositoryNames aspire `
+    -WarmupBlocks 0 `
+    -PrimaryBlocks 1 `
+    -PrepareOnly
+
+  pwsh .\scripts\benchmarks\Analyze-PublicRepoCoordinatorBenchmark.ps1 `
+    -RunRoot '<results>\prepare-<timestamp>'
 
 Predeclared execution
 ---------------------
@@ -182,6 +209,12 @@ require three consecutive acceptable samples and time out after five minutes.
 Thresholds are configurable and are recorded; the runner never waits forever.
 SetThreadExecutionState requests system-awake execution and is restored in
 finally. keep-awake.json must report Restored=true.
+
+Before restore/warm preparation, the runner evaluates representative Roslyn and
+Aspire projects through both staged bootstraps. The recorded preparation smokes
+require Roslyn OutputType=Library and Aspire Dashboard OutputType=Exe. Dedicated
+MSBuild result files keep property JSON separate from console warnings. This
+catches incomplete SDK imports before the expensive five-worktree warm-up.
 
 Any of these invalidates the entire attempted block:
 

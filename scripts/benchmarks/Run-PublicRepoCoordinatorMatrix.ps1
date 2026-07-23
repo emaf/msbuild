@@ -42,6 +42,8 @@ param(
     [Parameter(Mandatory)]
     [string]$OutputRoot,
 
+    [string]$BootstrapStagingRoot = (Join-Path ([IO.Path]::GetTempPath()) 'MSBuildCoordinatorBenchmarkBootstraps'),
+
     [ValidateSet('project-incremental', 'project-clean', 'solution-propagated', 'solution-clean')]
     [string]$Workload = 'solution-propagated',
 
@@ -75,6 +77,7 @@ param(
     [int]$CooldownSeconds = 30,
     [string]$BuildConfiguration = 'Debug',
     [switch]$SkipPrepare,
+    [switch]$PrepareOnly,
     [switch]$PlanOnly
 )
 
@@ -104,6 +107,12 @@ if ($MaximumBlockAttempts -le 0 -or $MaxTelemetryGapSeconds -le 0 -or
     $MaxProcessSnapshotGapSeconds -le 0 -or $MaxProbeGapSeconds -le 0) {
     throw 'MaximumBlockAttempts and all telemetry gap thresholds must be positive.'
 }
+if ($PrepareOnly -and $SkipPrepare) {
+    throw 'PrepareOnly cannot be combined with SkipPrepare.'
+}
+if ($PrepareOnly -and $PlanOnly) {
+    throw 'PrepareOnly cannot be combined with PlanOnly.'
+}
 
 $benchmarkScript = Join-Path $PSScriptRoot 'Run-PublicRepoCoordinatorBenchmark.ps1'
 $monitorScript = Join-Path $PSScriptRoot 'Monitor-PublicRepoCoordinatorBenchmark.ps1'
@@ -124,6 +133,8 @@ function Resolve-BootstrapIdentity {
     $identity = [ordered]@{
         Role = $Role
         Root = $Root
+        StagingRoot = $null
+        StagingMetadataPath = $null
         ExpectedCommit = $ExpectedCommit
         ValidationStatus = 'Deferred'
         DotNetPath = $null
@@ -134,6 +145,7 @@ function Resolve-BootstrapIdentity {
         DotNetSha256 = $null
         MSBuildDllSha256 = $null
         TrackedFiles = @()
+        StagedTrackedFiles = @()
         DotNetInfo = @()
     }
 
@@ -201,6 +213,105 @@ function Resolve-BootstrapIdentity {
     }
 
     return [pscustomobject]$identity
+}
+
+function Get-ValidatedStagedFiles {
+    param(
+        [pscustomobject]$Bootstrap,
+        [string]$StageRoot
+    )
+
+    foreach ($file in $Bootstrap.TrackedFiles) {
+        $relativePath = [IO.Path]::GetRelativePath($Bootstrap.Root, $file.Path)
+        $stagedPath = Join-Path $StageRoot $relativePath
+        if (-not (Test-Path -LiteralPath $stagedPath -PathType Leaf)) {
+            throw "Staged $($Bootstrap.Role) bootstrap file '$stagedPath' is missing."
+        }
+        $stagedHash = (Get-FileHash -LiteralPath $stagedPath -Algorithm SHA256).Hash
+        if ($stagedHash -ne $file.Sha256) {
+            throw "Staged $($Bootstrap.Role) bootstrap file '$stagedPath' does not match its validated source hash."
+        }
+        [pscustomobject]@{
+            Name = $file.Name
+            Path = $stagedPath
+            SourcePath = $file.Path
+            Sha256 = $stagedHash
+        }
+    }
+}
+
+function Copy-BootstrapToStaging {
+    param(
+        [pscustomobject]$Bootstrap,
+        [string]$StagingRoot
+    )
+
+    $commitKeyLength = [Math]::Min(12, $Bootstrap.ExpectedCommit.Length)
+    if ($commitKeyLength -eq 0) {
+        throw "$($Bootstrap.Role) expected commit cannot be empty."
+    }
+    $key = '{0}-{1}' -f $Bootstrap.ExpectedCommit.Substring(0, $commitKeyLength), $Bootstrap.MSBuildDllSha256.Substring(0, 12)
+    $stageParent = Join-Path $StagingRoot $key
+    $stageRoot = Join-Path $stageParent 'core'
+    $metadataPath = Join-Path $stageParent 'staging-metadata.json'
+    New-Item -ItemType Directory -Force -Path $StagingRoot | Out-Null
+    $lockPath = Join-Path $StagingRoot "$key.lock"
+    try {
+        $lock = [IO.File]::Open($lockPath, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+    }
+    catch {
+        throw "Staging directory '$stageParent' is in use by another process: $($_.Exception.Message)"
+    }
+    try {
+        if (Test-Path -LiteralPath $stageParent) {
+            if (-not (Test-Path -LiteralPath $stageRoot -PathType Container) -or
+                -not (Test-Path -LiteralPath $metadataPath -PathType Leaf)) {
+                throw "Staged $($Bootstrap.Role) bootstrap '$stageParent' is incomplete and will not be mutated."
+            }
+        }
+        else {
+            $temporaryParent = "$stageParent.incomplete-$PID-$([guid]::NewGuid().ToString('N'))"
+            $temporaryRoot = Join-Path $temporaryParent 'core'
+            New-Item -ItemType Directory -Force -Path $temporaryRoot | Out-Null
+            & robocopy $Bootstrap.Root $temporaryRoot /MIR /COPY:DAT /DCOPY:DAT /R:2 /W:1 /NFL /NDL /NJH /NJS /NP
+            if ($LASTEXITCODE -ge 8) {
+                throw "Staging $($Bootstrap.Role) bootstrap with robocopy failed with exit code $LASTEXITCODE."
+            }
+            [void]@(Get-ValidatedStagedFiles -Bootstrap $Bootstrap -StageRoot $temporaryRoot)
+            $publishedFiles = @(
+                foreach ($file in $Bootstrap.TrackedFiles) {
+                    $relativePath = [IO.Path]::GetRelativePath($Bootstrap.Root, $file.Path)
+                    [pscustomobject]@{
+                        Name = $file.Name
+                        Path = Join-Path $stageRoot $relativePath
+                        SourcePath = $file.Path
+                        Sha256 = $file.Sha256
+                    }
+                }
+            )
+            [ordered]@{
+                SchemaVersion = 1
+                CreatedUtc = [DateTime]::UtcNow.ToString('O')
+                Role = $Bootstrap.Role
+                SourceRoot = $Bootstrap.Root
+                StagingRoot = $stageRoot
+                ExpectedCommit = $Bootstrap.ExpectedCommit
+                ProductVersion = $Bootstrap.ProductVersion
+                Files = $publishedFiles
+            } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $temporaryParent 'staging-metadata.json') -Encoding UTF8
+            Move-Item -LiteralPath $temporaryParent -Destination $stageParent
+        }
+
+        $stagedFiles = @(Get-ValidatedStagedFiles -Bootstrap $Bootstrap -StageRoot $stageRoot)
+        $Bootstrap.StagingRoot = $stageRoot
+        $Bootstrap.StagingMetadataPath = $metadataPath
+        $Bootstrap.DotNetPath = Join-Path $stageRoot 'dotnet.exe'
+        $Bootstrap.MSBuildDllPath = Join-Path $stageRoot "sdk\$($Bootstrap.SdkVersion)\MSBuild.dll"
+        $Bootstrap.StagedTrackedFiles = $stagedFiles
+    }
+    finally {
+        $lock.Dispose()
+    }
 }
 
 function Resolve-RepositoryIdentity {
@@ -511,6 +622,77 @@ function Invoke-PrepareRepository {
     }
     & $benchmarkScript @parameters | Out-Host
     Assert-WorktreeCommits -Repository $Repository
+}
+
+function Invoke-PreparationEvaluationSmoke {
+    param(
+        [pscustomobject]$Repository,
+        [pscustomobject]$Bootstrap,
+        [string]$RecordPath
+    )
+
+    $recordDirectory = Split-Path -Parent $RecordPath
+    New-Item -ItemType Directory -Force -Path $recordDirectory | Out-Null
+    $resultOutputPath = Join-Path $recordDirectory "$([IO.Path]::GetFileNameWithoutExtension($RecordPath))-result.json"
+    $projectPath = Join-Path $Repository.Root $Repository.PreparationSmokeProject
+    $arguments = @(
+        $Bootstrap.MSBuildDllPath,
+        $projectPath,
+        '-getProperty:OutputType;UsingMicrosoftNETSdkWeb;UsingMicrosoftNETSdkWebProjectSystem;MSBuildSDKsPath;Configuration',
+        "-getResultOutputFile:$resultOutputPath"
+    ) + $Repository.AdditionalBuildArguments
+    $oldDotNetRoot = $env:DOTNET_ROOT
+    $oldDotNetRootX64 = $env:DOTNET_ROOT_X64
+    $oldPath = $env:PATH
+    try {
+        $env:DOTNET_ROOT = $Bootstrap.StagingRoot
+        $env:DOTNET_ROOT_X64 = $Bootstrap.StagingRoot
+        $env:PATH = "$($Bootstrap.StagingRoot)$([IO.Path]::PathSeparator)$oldPath"
+        $output = @(& $Bootstrap.DotNetPath @arguments 2>&1 | ForEach-Object { [string]$_ })
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $env:DOTNET_ROOT = $oldDotNetRoot
+        $env:DOTNET_ROOT_X64 = $oldDotNetRootX64
+        $env:PATH = $oldPath
+    }
+
+    $properties = $null
+    $parseError = $null
+    if ($exitCode -eq 0) {
+        if (Test-Path -LiteralPath $resultOutputPath -PathType Leaf) {
+            try {
+                $properties = (Get-Content -LiteralPath $resultOutputPath -Raw | ConvertFrom-Json).Properties
+            }
+            catch {
+                $parseError = $_.Exception.ToString()
+            }
+        }
+        else {
+            $parseError = "MSBuild did not create '$resultOutputPath'."
+        }
+    }
+    $actualOutputType = if ($null -eq $properties) { $null } else { $properties.OutputType }
+    $record = [ordered]@{
+        Repository = $Repository.Name
+        ProjectPath = $projectPath
+        ExpectedOutputType = $Repository.ExpectedPreparationOutputType
+        BootstrapSourceRoot = $Bootstrap.Root
+        BootstrapStagingRoot = $Bootstrap.StagingRoot
+        DotNetPath = $Bootstrap.DotNetPath
+        MSBuildDllPath = $Bootstrap.MSBuildDllPath
+        Arguments = $arguments
+        ResultOutputPath = $resultOutputPath
+        ExitCode = $exitCode
+        Properties = $properties
+        ParseError = $parseError
+        Output = $output
+        Valid = $exitCode -eq 0 -and $null -eq $parseError -and $actualOutputType -eq $Repository.ExpectedPreparationOutputType
+    }
+    $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $RecordPath -Encoding UTF8
+    if (-not $record.Valid) {
+        throw "Preparation evaluation smoke failed for $($Repository.Name): expected OutputType '$($Repository.ExpectedPreparationOutputType)', actual '$actualOutputType', exit code $exitCode. See '$RecordPath'."
+    }
 }
 
 function Reset-CleanWorktrees {
@@ -932,6 +1114,10 @@ if ($baseBootstrap.ValidationStatus -eq 'Verified' -and
     $baseBootstrap.SdkVersion -ne $candidateBootstrap.SdkVersion) {
     throw "Base SDK '$($baseBootstrap.SdkVersion)' and candidate SDK '$($candidateBootstrap.SdkVersion)' differ."
 }
+if (-not $PlanOnly) {
+    Copy-BootstrapToStaging -Bootstrap $baseBootstrap -StagingRoot $BootstrapStagingRoot
+    Copy-BootstrapToStaging -Bootstrap $candidateBootstrap -StagingRoot $BootstrapStagingRoot
+}
 
 $repositoryDefinitions = @(
     [pscustomobject]@{
@@ -943,6 +1129,8 @@ $repositoryDefinitions = @(
         ProjectTouchPath = 'src\Compilers\CSharp\Portable\CSharpCompilationOptions.cs'
         SolutionBuildPath = 'Compilers.slnf'
         SolutionTouchPath = 'src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs'
+        PreparationSmokeProject = 'src\Compilers\CSharp\Portable\Microsoft.CodeAnalysis.CSharp.csproj'
+        ExpectedPreparationOutputType = 'Library'
         AdditionalBuildArguments = @()
     },
     [pscustomobject]@{
@@ -954,6 +1142,8 @@ $repositoryDefinitions = @(
         ProjectTouchPath = 'src\Aspire.Hosting\DistributedApplication.cs'
         SolutionBuildPath = 'Aspire-Core.slnf'
         SolutionTouchPath = 'src\Aspire.Hosting\DistributedApplication.cs'
+        PreparationSmokeProject = 'src\Aspire.Dashboard\Aspire.Dashboard.csproj'
+        ExpectedPreparationOutputType = 'Exe'
         AdditionalBuildArguments = @('/p:InstallBrowsersForPlaywright=false')
     }
 )
@@ -972,6 +1162,8 @@ foreach ($repositoryDefinition in $repositoryDefinitions) {
     $identity | Add-Member -NotePropertyName ProjectTouchPath -NotePropertyValue $repositoryDefinition.ProjectTouchPath
     $identity | Add-Member -NotePropertyName SolutionBuildPath -NotePropertyValue $repositoryDefinition.SolutionBuildPath
     $identity | Add-Member -NotePropertyName SolutionTouchPath -NotePropertyValue $repositoryDefinition.SolutionTouchPath
+    $identity | Add-Member -NotePropertyName PreparationSmokeProject -NotePropertyValue $repositoryDefinition.PreparationSmokeProject
+    $identity | Add-Member -NotePropertyName ExpectedPreparationOutputType -NotePropertyValue $repositoryDefinition.ExpectedPreparationOutputType
     $identity | Add-Member -NotePropertyName AdditionalBuildArguments -NotePropertyValue $repositoryDefinition.AdditionalBuildArguments
     $buildPath = if ($Workload -in @('project-incremental', 'project-clean')) {
         $identity.ProjectBuildPath
@@ -1066,6 +1258,7 @@ foreach ($repository in $repositories) {
 $runMetadata = [ordered]@{
     SchemaVersion = 1
     PlanOnly = [bool]$PlanOnly
+    PrepareOnly = [bool]$PrepareOnly
     CreatedUtc = [DateTime]::UtcNow.ToString('O')
     OutputRoot = $OutputRoot
     Workload = $Workload
@@ -1153,6 +1346,14 @@ if ($previousExecutionState -eq 0) {
 try {
     if (-not $SkipPrepare) {
         foreach ($repository in $repositories) {
+            foreach ($bootstrap in @($baseBootstrap, $candidateBootstrap)) {
+                Invoke-PreparationEvaluationSmoke `
+                    -Repository $repository `
+                    -Bootstrap $bootstrap `
+                    -RecordPath (Join-Path $OutputRoot "_setup\$($repository.Name)-$($bootstrap.Role)-preparation-smoke.json")
+            }
+        }
+        foreach ($repository in $repositories) {
             Invoke-PrepareRepository `
                 -Repository $repository `
                 -Bootstrap $candidateBootstrap `
@@ -1160,10 +1361,18 @@ try {
                 -SkipWarm ($Workload.EndsWith('-clean', [StringComparison]::Ordinal))
         }
     }
-    else {
-        foreach ($repository in $repositories) {
-            Assert-WorktreeCommits -Repository $repository
-        }
+    if ($PrepareOnly) {
+        [ordered]@{
+            CompletedUtc = [DateTime]::UtcNow.ToString('O')
+            RepositoryCount = $repositories.Count
+            Workload = $Workload
+            WarmSkipped = $Workload.EndsWith('-clean', [StringComparison]::Ordinal)
+        } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $OutputRoot 'preparation-completion.json') -Encoding UTF8
+        Write-Host "PREPARATION_ROOT=$OutputRoot"
+        return
+    }
+    foreach ($repository in $repositories) {
+        Assert-WorktreeCommits -Repository $repository
     }
 
     foreach ($repository in $repositories) {
