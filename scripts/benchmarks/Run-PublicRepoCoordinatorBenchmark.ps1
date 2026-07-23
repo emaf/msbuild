@@ -48,10 +48,12 @@ param(
     [int]$HighDelaySeconds = 10,
     [int]$Rounds = 1,
     [string]$TouchFileRelativePath,
+    [string[]]$AdditionalBuildArguments = @(),
     [string[]]$Scenarios = @('coordinator-priority', 'coordinator-all-normal', 'no-coordinator'),
     [switch]$Prepare,
     [switch]$IncludeRestore,
     [switch]$SkipWarm,
+    [switch]$SkipInternalProcessSampling,
     [switch]$ShowInstructions
 )
 
@@ -218,6 +220,9 @@ function New-BuildArguments {
     }
 
     foreach ($argument in @("/m:$NodeCount", '/v:q', '/nodeReuse:false', '/p:UseSharedCompilation=false')) {
+        [void]$arguments.Add($argument)
+    }
+    foreach ($argument in $AdditionalBuildArguments) {
         [void]$arguments.Add($argument)
     }
 
@@ -452,7 +457,7 @@ function New-BenchmarkProcess {
         stderrTask = $process.StandardError.ReadToEndAsync()
         stdout = $stdoutPath
         stderr = $stderrPath
-        startTime = Get-Date
+        startTime = $process.StartTime
         endTime = $null
         exitCode = $null
         completed = $false
@@ -467,7 +472,7 @@ function Complete-BenchmarkProcess {
     }
 
     $Run.process.WaitForExit()
-    $Run.endTime = Get-Date
+    $Run.endTime = $Run.process.ExitTime
     $Run.exitCode = $Run.process.ExitCode
     Set-Content -Path $Run.stdout -Value $Run.stdoutTask.GetAwaiter().GetResult() -Encoding UTF8
     Set-Content -Path $Run.stderr -Value $Run.stderrTask.GetAwaiter().GetResult() -Encoding UTF8
@@ -499,10 +504,19 @@ function Restore-And-Warm {
 
     foreach ($worktree in $Worktrees) {
         if ([string]::IsNullOrWhiteSpace($MSBuildDllPath)) {
-            Invoke-Checked -FileName $DotNetPath -Arguments @('restore', $BuildPath, '/v:q') -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
+            $restoreArguments = @('restore', $BuildPath, '/v:q') + $AdditionalBuildArguments
+            Invoke-Checked -FileName $DotNetPath -Arguments $restoreArguments -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
         }
         else {
-            Invoke-Checked -FileName $DotNetPath -Arguments @($MSBuildDllPath, $BuildPath, '/restore', '/v:q', '/nodeReuse:false', '/p:UseSharedCompilation=false') -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
+            $restoreArguments = @(
+                $MSBuildDllPath,
+                $BuildPath,
+                '/t:Restore',
+                '/v:q',
+                '/nodeReuse:false',
+                '/p:UseSharedCompilation=false'
+            ) + $AdditionalBuildArguments
+            Invoke-Checked -FileName $DotNetPath -Arguments $restoreArguments -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
         }
     }
 
@@ -582,7 +596,7 @@ function Invoke-Scenario {
         }
 
         $rootIds = @($activeRuns | ForEach-Object { $_.process.Id })
-        if ($rootIds.Count -gt 0) {
+        if (-not $SkipInternalProcessSampling -and $rootIds.Count -gt 0) {
             $processes = @(Get-TrackedBenchmarkProcesses -RootProcessIds $rootIds)
             $workingSetBytes = [int64](Get-PropertySum -Items $processes -PropertyName WorkingSetBytes)
             $cpuSeconds = Get-PropertySum -Items $processes -PropertyName CpuSeconds
@@ -638,6 +652,13 @@ function Invoke-Scenario {
     $highRows = @($resultRows | Where-Object { $_.kind -eq 'high' })
     $normalDurations = [double[]]@($normalRows | ForEach-Object { [double]$_.durationSec })
     $highDurations = [double[]]@($highRows | ForEach-Object { [double]$_.durationSec })
+    $totalWallSec = 0.0
+    foreach ($row in $resultRows) {
+        $endOffsetSec = [double]$row.startOffsetSec + [double]$row.durationSec
+        if ($endOffsetSec -gt $totalWallSec) {
+            $totalWallSec = $endOffsetSec
+        }
+    }
 
     [pscustomobject]@{
         scenario = $Name
@@ -650,7 +671,7 @@ function Invoke-Scenario {
         priorityAgingThreshold = $PriorityAgingThreshold
         normalBuildCount = $NormalBuildCount
         highBuildCount = $HighBuildCount
-        totalWallSec = [Math]::Round($timer.Elapsed.TotalSeconds, 2)
+        totalWallSec = [Math]::Round($totalWallSec, 2)
         avgNormalDurationSec = [Math]::Round((Get-Average -Values $normalDurations), 2)
         avgHighDurationSec = [Math]::Round((Get-Average -Values $highDurations), 2)
         peakProcessCount = $peakProcessCount
