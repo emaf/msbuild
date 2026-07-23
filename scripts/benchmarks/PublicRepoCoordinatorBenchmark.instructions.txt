@@ -1,96 +1,283 @@
-Public repository coordinator priority benchmark
+Public repository Coordinator benchmark
 
-Purpose
--------
-Exercise the coordinator against public repositories by running concurrent
-builds from isolated git worktrees. The benchmark includes examples for Roslyn
-and Aspire, both public repositories. It compares:
+Scope
+-----
+These scripts run and analyze public-repository builds without relying on
+machine-specific paths. The low-level harness is cross-platform; the system
+monitor and matrix orchestrator are Windows-only:
 
-1. coordinator-priority: normal builds use Normal priority and delayed
-   latency-sensitive builds use High priority.
-2. coordinator-all-normal: all builds use Normal priority.
-3. no-coordinator: coordinator disabled, all builds use full local node count.
+  Run-PublicRepoCoordinatorBenchmark.ps1
+    Low-level single-bootstrap harness. It creates isolated worktrees, launches
+    concurrent builds, and records root PIDs plus OS process start/exit times.
 
-The benchmark uses the real coordinator protocol through environment variables:
+  Monitor-PublicRepoCoordinatorBenchmark.ps1
+    Independent system/process monitor. It is not part of the harness polling
+    loop. It records Windows performance counters, responsiveness probes, full
+    PID/parent/start-time snapshots, and known Defender/search/update activity.
 
-  MSBUILDUSECOORDINATOR=1
-  MSBUILDCOORDINATORBUILDREQUESTPRIORITY=Normal|High
-  MSBUILDCOORDINATORNODEBUDGET
-  MSBUILDCOORDINATORHIGHPRIORITYRESERVEDNODES
-  MSBUILDCOORDINATORMAXNODESPERBUILD
-  MSBUILDCOORDINATORPRIORITYAGINGTHRESHOLD
+  Run-PublicRepoCoordinatorMatrix.ps1
+    Multi-bootstrap matrix orchestrator. It verifies tool/repository identity,
+    creates balanced condition orders, gates attempts on bounded machine-idle
+    checks, prevents sleep, and retries invalid conditions only as a whole block.
+
+  Analyze-PublicRepoCoordinatorBenchmark.ps1
+    Revalidates raw artifacts and produces per-repository paired analysis.
+
+Nothing under an existing result root is replaced. Always pass a new OutputRoot.
+Invalid attempts remain under that root with invalid-attempt.json; never promote
+or splice an individual scenario from an invalid block.
 
 Prerequisites
 -------------
-1. Build this MSBuild checkout first so the bootstrap MSBuild is available:
+1. Use PowerShell 7 (pwsh) and git. Matrix runs additionally require Windows
+   performance counters.
+2. Build base and candidate bootstraps from exact commits with the same pinned
+   SDK, build configuration, and source-build settings. Do not rebuild either
+   bootstrap after moving its checkout to a different commit.
+3. Clone Roslyn and Aspire and create normal1..normal4 and high1 detached
+   worktrees beneath separate work roots. The matrix runner verifies each used
+   worktree commit.
+4. Do not disable Defender or other security services. Their process activity is
+   captured so interference remains diagnosable.
+5. Do not run matrices concurrently: they share worktrees and machine capacity.
 
-     .\build.cmd -v quiet
-
-2. Have a local public repository checkout. The script tries ROSLYN_REPO,
-   ASPIRE_REPO, sibling "roslyn" and "aspire" checkouts, then C:\code\roslyn
-   and C:\code\aspire.
-
-3. Restore the benchmark repository before timing, or pass -Prepare to restore
-   and warm the generated worktrees.
-
-By default, the script uses this checkout's bootstrap `MSBuild.dll` through the
-bootstrap `dotnet.exe` when available. This lets the benchmark exercise the
-local coordinator implementation even when the benchmark repository's
-`global.json` asks for a different SDK feature band. Pass `-UseDotNetBuild` to
-force `dotnet build` instead.
-
-Recommended Roslyn quick smoke
-------------------------------
-From the MSBuild checkout:
-
-  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorBenchmark.ps1 `
-    -RoslynRoot C:\code\roslyn `
-    -BuildPath Compilers.slnf `
-    -TouchFileRelativePath src\Compilers\CSharp\Portable\CSharpCompilationOptions.cs `
-    -NormalBuildCount 2 `
-    -HighBuildCount 1 `
-    -Rounds 1 `
-    -Scenarios coordinator-priority
-
-Recommended Aspire quick smoke
-------------------------------
-
-  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorBenchmark.ps1 `
-    -AspireRoot C:\code\aspire `
-    -BuildPath Aspire-Core.slnf `
-    -TouchFileRelativePath src\Aspire.Hosting\DistributedApplication.cs `
-    -NormalBuildCount 2 `
-    -HighBuildCount 1 `
-    -Rounds 1 `
-    -Scenarios coordinator-priority
-
-Recommended comparison
+Predeclared identities
 ----------------------
+  Base MSBuild:
+    a6ed776c8af17d3ba790a30e2d171a7191abae55
+  Candidate MSBuild:
+    8fe6721c8d5899c330b247918c46fb7359193981
+  Roslyn:
+    bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b
+  Aspire:
+    110a63da8357af437a00d9efc5887ffdcbdfbb3c
 
-  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorBenchmark.ps1 `
-    -RoslynRoot C:\code\roslyn `
-    -BuildPath Compilers.slnf `
-    -NormalBuildCount 3 `
-    -HighBuildCount 1 `
-    -Rounds 3 `
-    -Prepare
+The bootstrap MSBuild.dll ProductVersion must identify its expected commit.
+run-metadata.json also records SDK version, dotnet --info, ProductVersion,
+FileVersion, and SHA-256 hashes. The analyzer rechecks these identities.
 
-Outputs
--------
-The script defaults output under the user's temp directory unless -OutputRoot is
-provided. Capture these files:
+Conditions
+----------
+  A-no-coordinator
+    Candidate binary, Coordinator disabled.
 
-  scenario-summary.csv
-  <scenario>-r<round>\runs.csv
-  <scenario>-r<round>\samples.csv
-  per-run *.out.log and *.err.log files
+  B-base-coordinator
+    Immediate pre-change base binary with Coordinator enabled.
 
-What to report back
--------------------
-1. Machine details: logical cores, memory, OS, dotnet --info.
-2. The configuration lines: NodeBudget, Slice, Reservation,
-   PriorityAgingThreshold, NormalBuildCount, HighBuildCount.
-3. scenario-summary.csv.
-4. Whether coordinator-priority improves delayed High build latency compared
-   with coordinator-all-normal.
-5. Whether no-coordinator creates higher process fan-out or working set.
+  C-candidate-compat
+    Candidate Coordinator with reservation=0 and cap=0; all builds Normal.
+
+  D-candidate-default-normal
+    Candidate Coordinator with reservation=4 and cap=4; delayed candidate Normal.
+
+  E-candidate-default-high
+    Same binary, budget, reservation, cap, build counts, and delay as D. Only the
+    delayed candidate priority is High.
+
+The paired-priority defaults are a global node budget of 16, four Normal builds
+at time zero, one delayed candidate at 15 seconds, and five total builds. The
+single-build compatibility design uses NormalBuildCount=1 and
+CandidateBuildCount=0. Each scenario uses a unique Coordinator pipe and shuts
+down build/compiler servers before and after. UseSharedCompilation=false. Aspire
+disables Playwright browser provisioning.
+
+The matrix order supersedes the low-level harness's fixed scenario order. Use the
+balanced matrix for comparisons; its discarded warm-up block is never analyzed.
+
+Cross-platform low-level harness
+--------------------------------
+Build the checkout with `.\build.cmd -v quiet` on Windows or
+`./build.sh -v quiet` on Unix. The harness resolves bootstrap `dotnet.exe` on
+Windows and bootstrap `dotnet` on Unix.
+
+  pwsh ./scripts/benchmarks/Run-PublicRepoCoordinatorBenchmark.ps1 `
+    -BenchmarkRoot '<repo>' `
+    -BuildPath '<project-or-solution>' `
+    -NormalBuildCount 1 `
+    -HighBuildCount 0 `
+    -Rounds 1 `
+    -Scenarios no-coordinator
+
+Plan-only validation
+--------------------
+PlanOnly writes run-metadata.json, matrix-plan.csv/json, and plan-validation.json
+without restoring or building. A complete five-condition, ten-block Williams
+design has zero position imbalance and zero first-order carryover imbalance.
+
+  $common = @{
+    BaseBootstrapRoot = '<base-bootstrap>\core'
+    BaseExpectedCommit = 'a6ed776c8af17d3ba790a30e2d171a7191abae55'
+    CandidateBootstrapRoot = '<candidate-bootstrap>\core'
+    CandidateExpectedCommit = '8fe6721c8d5899c330b247918c46fb7359193981'
+    RoslynRoot = '<repos>\roslyn'
+    RoslynExpectedCommit = 'bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b'
+    RoslynWorkRoot = '<worktrees>\roslyn'
+    AspireRoot = '<repos>\aspire'
+    AspireExpectedCommit = '110a63da8357af437a00d9efc5887ffdcbdfbb3c'
+    AspireWorkRoot = '<worktrees>\aspire'
+  }
+
+  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
+    -OutputRoot '<results>\plan-<timestamp>' `
+    -Workload solution-propagated `
+    -WarmupBlocks 1 `
+    -PrimaryBlocks 10 `
+    -PlanOnly
+
+  pwsh .\scripts\benchmarks\Analyze-PublicRepoCoordinatorBenchmark.ps1 `
+    -RunRoot '<results>\plan-<timestamp>'
+
+Predeclared execution
+---------------------
+Run these roots sequentially. Use a unique timestamp in every OutputRoot.
+
+Primary propagated solution, both repositories, all five conditions:
+
+  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
+    -OutputRoot '<results>\solution-propagated-<timestamp>' `
+    -Workload solution-propagated `
+    -WarmupBlocks 1 `
+    -PrimaryBlocks 10
+
+Descriptive clean project, both repositories, A/D/E:
+
+  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
+    -OutputRoot '<results>\project-clean-<timestamp>' `
+    -Workload project-clean `
+    -ConditionKeys A-no-coordinator,D-candidate-default-normal,E-candidate-default-high `
+    -WarmupBlocks 0 `
+    -PrimaryBlocks 5
+
+Descriptive clean solution/filter, both repositories, A/E:
+
+  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
+    -OutputRoot '<results>\solution-clean-<timestamp>' `
+    -Workload solution-clean `
+    -ConditionKeys A-no-coordinator,E-candidate-default-high `
+    -WarmupBlocks 0 `
+    -PrimaryBlocks 3
+
+Single-build compatibility, clean representative project, both repositories,
+A/B/C/D. A complete four-condition Williams design uses four primary blocks:
+
+  pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
+    -OutputRoot '<results>\single-build-project-clean-<timestamp>' `
+    -Workload project-clean `
+    -ConditionKeys A-no-coordinator,B-base-coordinator,C-candidate-compat,D-candidate-default-normal `
+    -NormalBuildCount 1 `
+    -CandidateBuildCount 0 `
+    -WarmupBlocks 1 `
+    -PrimaryBlocks 4
+
+Analyze each completed root:
+
+  pwsh .\scripts\benchmarks\Analyze-PublicRepoCoordinatorBenchmark.ps1 `
+    -RunRoot '<results>\<run-root>'
+
+Machine gate and validity
+-------------------------
+Before each block attempt, the runner records bounded idle-gate samples. Defaults
+require three consecutive acceptable samples and time out after five minutes.
+Thresholds are configurable and are recorded; the runner never waits forever.
+SetThreadExecutionState requests system-awake execution and is restored in
+finally. keep-awake.json must report Restored=true.
+
+Any of these invalidates the entire attempted block:
+
+  * a missing/failed build, wrong build count, or non-empty stderr;
+  * a missing/invalid root PID or OS process timestamp;
+  * in paired-priority designs, a delayed candidate start outside the configured
+    offset bounds;
+  * a bootstrap, repository, or worktree commit mismatch;
+  * a monitor startup/exit/error-log failure;
+  * missing system/process telemetry; or
+  * a system telemetry timestamp gap above MaxTelemetryGapSeconds (default 5),
+    including a sleep/resume gap.
+
+The next attempt reruns every condition in that block in the same order. Warm-up
+blocks are marked and excluded from analysis. The analyzer independently repeats
+the identity, count, exit, stderr, offset, telemetry, and keep-awake checks.
+
+Metrics and analysis
+--------------------
+All analysis is separated by repository and paired within AnalysisBlockNumber;
+Roslyn and Aspire are never pooled.
+
+  CandidateDurationSec
+    OS ExitTime minus StartTime for the delayed build.
+
+  SingleBuildDurationSec
+    OS ExitTime minus StartTime for the sole Normal build in a compatibility
+    matrix.
+
+  AverageNormalDurationSec
+    Arithmetic mean of the four Normal build durations in that scenario.
+
+  TotalWallSec
+    Latest OS process exit relative to scenario start.
+
+  PeakCommittedDeltaMB
+    Peak system committed bytes minus the median of the first three samples.
+
+  DescendantPeakWorkingSetMB / DescendantPeakProcessCount
+    Peak descendants reconstructed from runs.csv root PID/start identity and
+    processes.csv parent snapshots.
+
+  ProcessorQueueP95 / ProbeP95Ms
+    Nearest-rank 95th percentiles for processor queue and launch responsiveness.
+
+  ExternalNoisePeak*
+    Peak known Defender/search/update activity; diagnostic, not filtered out.
+
+Predeclared comparisons are:
+
+  D-vs-E
+    Priority effect. Report candidate latency gain, average Normal-build cost,
+    and total-wall cost together.
+
+  B-vs-C
+    Candidate-branch/compatibility overhead.
+
+  C-vs-D
+    Bundled default reservation/cap policy impact.
+
+Single-build compatibility additionally reports:
+
+  A-vs-C
+    Candidate compatibility Coordinator overhead relative to the same candidate
+    binary without Coordinator.
+
+  A-vs-B
+    Cross-binary pre-change reference; interpret cautiously because both binary
+    and Coordinator state differ.
+
+Effects are means of paired within-block log ratios (geometric paired effects),
+never ratios of independent medians. Descriptive 95% intervals use deterministic
+resampling of whole blocks. Exact two-sided sign-flip tests enumerate all signs
+when there are at most 20 blocks. Clean matrices are explicitly descriptive and are not powered as the primary
+priority inference.
+
+Each build writes a binlog listed in runs.csv. Existing
+CoordinatorNodeGrantReceived messages preserve the granted-node count. Binlogs
+do not currently identify whether effective policy values came from auto or
+manual configuration; this benchmark tooling intentionally does not expand the
+production protocol.
+
+Output artifacts
+----------------
+At the run root:
+  run-metadata.json
+  matrix-plan.csv / matrix-plan.json
+  plan-validation.json
+  completion.json
+  keep-awake.json
+  <repo>\block-NNN\attempt-NN\valid-attempt.json or invalid-attempt.json
+  per-condition scenario metadata, validation, logs, and monitor CSVs
+  per-build *.binlog files containing Coordinator grant-count messages
+
+Under analysis:
+  validation.json
+  scenario-metrics.csv
+  paired-block-log-ratios.csv
+  comparisons.csv
+  report.md

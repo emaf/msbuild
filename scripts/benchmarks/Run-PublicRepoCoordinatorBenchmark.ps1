@@ -40,6 +40,7 @@ param(
     [string]$MSBuildDllPath,
     [switch]$UseDotNetBuild,
     [int]$NodeBudget = [Environment]::ProcessorCount,
+    [int]$NoCoordinatorNodeCount = [Environment]::ProcessorCount,
     [int]$Slice = 4,
     [int]$Reservation = 4,
     [int]$PriorityAgingThreshold = 3,
@@ -64,6 +65,9 @@ $RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $IsWindowsPlatform = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
     [System.Runtime.InteropServices.OSPlatform]::Windows)
 $ProcessorCount = [Environment]::ProcessorCount
+if ($NormalBuildCount -le 0 -or $HighBuildCount -lt 0) {
+    throw 'NormalBuildCount must be positive and HighBuildCount must be non-negative.'
+}
 $CoordinatorEnvironmentVariables = @(
     'MSBUILDUSECOORDINATOR',
     'MSBUILDCOORDINATORPIPENAME',
@@ -196,7 +200,8 @@ function Invoke-Checked {
 function New-BuildArguments {
     param(
         [int]$NodeCount,
-        [bool]$Restore
+        [bool]$Restore,
+        [string]$BinaryLogPath
     )
 
     $arguments = [System.Collections.Generic.List[string]]::new()
@@ -221,6 +226,9 @@ function New-BuildArguments {
 
     foreach ($argument in @("/m:$NodeCount", '/v:q', '/nodeReuse:false', '/p:UseSharedCompilation=false')) {
         [void]$arguments.Add($argument)
+    }
+    if (-not [string]::IsNullOrWhiteSpace($BinaryLogPath)) {
+        [void]$arguments.Add("/bl:$BinaryLogPath;ProjectImports=None")
     }
     foreach ($argument in $AdditionalBuildArguments) {
         [void]$arguments.Add($argument)
@@ -416,8 +424,9 @@ function New-BenchmarkProcess {
     New-Item -ItemType Directory -Force -Path $runDir | Out-Null
     $stdoutPath = Join-Path $runDir "$Label.out.log"
     $stderrPath = Join-Path $runDir "$Label.err.log"
+    $binaryLogPath = Join-Path $runDir "$Label.binlog"
 
-    $arguments = New-BuildArguments -NodeCount $NodeCount -Restore $IncludeRestore
+    $arguments = New-BuildArguments -NodeCount $NodeCount -Restore $IncludeRestore -BinaryLogPath $binaryLogPath
 
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new($DotNetPath)
     foreach ($argument in $arguments) {
@@ -431,6 +440,13 @@ function New-BenchmarkProcess {
 
     foreach ($environmentVariable in $CoordinatorEnvironmentVariables) {
         [void]$startInfo.Environment.Remove($environmentVariable)
+    }
+    if (-not [string]::IsNullOrWhiteSpace($DotNetRoot)) {
+        $startInfo.Environment['DOTNET_ROOT'] = $DotNetRoot
+        if ($IsWindowsPlatform) {
+            $startInfo.Environment['DOTNET_ROOT_X64'] = $DotNetRoot
+        }
+        $startInfo.Environment['DOTNET_CLI_TELEMETRY_OPTOUT'] = '1'
     }
 
     if ($UseCoordinator) {
@@ -453,10 +469,12 @@ function New-BenchmarkProcess {
         priority = $Priority
         nodes = $NodeCount
         process = $process
+        rootProcessId = $process.Id
         stdoutTask = $process.StandardOutput.ReadToEndAsync()
         stderrTask = $process.StandardError.ReadToEndAsync()
         stdout = $stdoutPath
         stderr = $stderrPath
+        binlog = $binaryLogPath
         startTime = $process.StartTime
         endTime = $null
         exitCode = $null
@@ -555,7 +573,7 @@ function Invoke-Scenario {
 
     $useCoordinator = $Name -ne 'no-coordinator'
     $highPriority = if ($Name -eq 'coordinator-priority') { 'High' } else { 'Normal' }
-    $nodeCount = if ($useCoordinator) { $NodeBudget } else { $ProcessorCount }
+    $nodeCount = if ($useCoordinator) { $NodeBudget } else { $NoCoordinatorNodeCount }
     $scenarioLabel = "$Name-r$Round"
     $pipeName = "msbuild-coordinator-$RepositoryName-$PID-$scenarioLabel"
     $scenarioDir = Join-Path $OutputRoot $scenarioLabel
@@ -571,7 +589,7 @@ function Invoke-Scenario {
     $samples = [System.Collections.Generic.List[object]]::new()
     $scenarioStartTime = Get-Date
     $timer = [System.Diagnostics.Stopwatch]::StartNew()
-    $highStarted = $false
+    $highStarted = $HighBuildCount -eq 0
 
     foreach ($worktree in $normalWorktrees) {
         $runs.Add((New-BenchmarkProcess -Kind 'normal' -Label "normal$($worktree.index)" -WorkingDirectory $worktree.path -NodeCount $nodeCount -Priority 'Normal' -UseCoordinator $useCoordinator -PipeName $pipeName -ScenarioDir $scenarioDir))
@@ -628,11 +646,15 @@ function Invoke-Scenario {
             kind = $run.kind
             priority = $run.priority
             nodes = $run.nodes
+            rootProcessId = $run.rootProcessId
+            processStartUtc = $run.startTime.ToUniversalTime().ToString('O')
+            processExitUtc = $run.endTime.ToUniversalTime().ToString('O')
             exitCode = $run.exitCode
             startOffsetSec = [Math]::Round(($run.startTime - $scenarioStartTime).TotalSeconds, 2)
             durationSec = [Math]::Round($duration, 2)
             stdout = $run.stdout
             stderr = $run.stderr
+            binlog = $run.binlog
         }
     }
 
@@ -719,12 +741,19 @@ if ([string]::IsNullOrWhiteSpace($TouchFileRelativePath)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($DotNetPath)) {
-    $bootstrapDotNet = Join-Path $RepoRoot 'artifacts\bin\bootstrap\core\dotnet.exe'
+    $dotnetExecutable = if ($IsWindowsPlatform) { 'dotnet.exe' } else { 'dotnet' }
+    $bootstrapDotNet = [IO.Path]::Combine(
+        $RepoRoot,
+        'artifacts',
+        'bin',
+        'bootstrap',
+        'core',
+        $dotnetExecutable)
     $DotNetPath = if (Test-Path -LiteralPath $bootstrapDotNet) { (Resolve-Path -LiteralPath $bootstrapDotNet).Path } else { 'dotnet' }
 }
 
 if ([string]::IsNullOrWhiteSpace($MSBuildDllPath)) {
-    $bootstrapSdkRoot = Join-Path $RepoRoot 'artifacts\bin\bootstrap\core\sdk'
+    $bootstrapSdkRoot = [IO.Path]::Combine($RepoRoot, 'artifacts', 'bin', 'bootstrap', 'core', 'sdk')
     if (Test-Path -LiteralPath $bootstrapSdkRoot) {
         $bootstrapSdk = Get-ChildItem -LiteralPath $bootstrapSdkRoot -Directory | Sort-Object Name -Descending | Select-Object -First 1
         if ($null -ne $bootstrapSdk) {
@@ -733,6 +762,20 @@ if ([string]::IsNullOrWhiteSpace($MSBuildDllPath)) {
                 $MSBuildDllPath = (Resolve-Path -LiteralPath $bootstrapMSBuildDll).Path
             }
         }
+    }
+}
+
+$DotNetRoot = $null
+if (Test-Path -LiteralPath $DotNetPath -PathType Leaf) {
+    $DotNetPath = (Resolve-Path -LiteralPath $DotNetPath).Path
+    $DotNetRoot = Split-Path -Parent $DotNetPath
+    $env:DOTNET_ROOT = $DotNetRoot
+    if ($IsWindowsPlatform) {
+        $env:DOTNET_ROOT_X64 = $DotNetRoot
+    }
+    $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+    if (-not (($env:PATH -split [IO.Path]::PathSeparator) -contains $DotNetRoot)) {
+        $env:PATH = "$DotNetRoot$([IO.Path]::PathSeparator)$env:PATH"
     }
 }
 
