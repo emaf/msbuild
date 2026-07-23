@@ -4,9 +4,9 @@ Captures Windows system and process telemetry for Coordinator benchmarks.
 
 .DESCRIPTION
 This Windows-only monitor runs independently from the benchmark harness control
-loop. The main process samples system counters while a child monitor samples the
-complete process table, including process/parent identity and known background
-noise categories. A stop file ends both loops.
+loop. The main process samples system counters while separate child monitors
+sample the complete process table and launch responsiveness. A stop file ends
+all loops.
 #>
 [CmdletBinding()]
 param(
@@ -21,7 +21,9 @@ param(
 
     [int]$SampleIntervalSeconds = 1,
     [int]$ProcessIntervalSeconds = 5,
-    [switch]$ProcessWorker
+    [int]$ProbeIntervalSeconds = 5,
+    [switch]$ProcessWorker,
+    [switch]$ProbeWorker
 )
 
 Set-StrictMode -Version 3.0
@@ -31,7 +33,7 @@ if (-not [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
     [Runtime.InteropServices.OSPlatform]::Windows)) {
     throw 'Monitor-PublicRepoCoordinatorBenchmark.ps1 is Windows-only.'
 }
-if ($SampleIntervalSeconds -le 0 -or $ProcessIntervalSeconds -le 0) {
+if ($SampleIntervalSeconds -le 0 -or $ProcessIntervalSeconds -le 0 -or $ProbeIntervalSeconds -le 0) {
     throw 'Sample intervals must be positive.'
 }
 
@@ -39,9 +41,12 @@ New-Item -ItemType Directory -Force -Path $OutputRoot | Out-Null
 $culture = [Globalization.CultureInfo]::InvariantCulture
 $systemPath = Join-Path $OutputRoot 'system.csv'
 $processPath = Join-Path $OutputRoot 'processes.csv'
+$probePath = Join-Path $OutputRoot 'probes.csv'
 $errorPath = Join-Path $OutputRoot 'monitor-errors.log'
 $processErrorPath = Join-Path $OutputRoot 'process-monitor-errors.log'
+$probeErrorPath = Join-Path $OutputRoot 'probe-monitor-errors.log'
 $processReadyFile = Join-Path $OutputRoot 'process-monitor-ready'
+$probeReadyFile = Join-Path $OutputRoot 'probe-monitor-ready'
 
 $benchmarkProcessNames = [Collections.Generic.HashSet[string]]::new(
     [StringComparer]::OrdinalIgnoreCase)
@@ -193,8 +198,55 @@ function Invoke-ProcessWorker {
     }
 }
 
+function Invoke-ProbeWorker {
+    $writer = [IO.StreamWriter]::new($probePath, $false, [Text.UTF8Encoding]::new($false))
+    try {
+        $writer.WriteLine('timestampUtc,elapsedSec,probeLatencyMs,monitorIterationMs')
+        $writer.Flush()
+        $timer = [Diagnostics.Stopwatch]::StartNew()
+        $ready = $false
+
+        while (-not (Test-Path -LiteralPath $StopFile)) {
+            $iteration = [Diagnostics.Stopwatch]::StartNew()
+            $timestampUtc = [DateTime]::UtcNow.ToString('O', $culture)
+            try {
+                $probeLatency = Measure-LaunchLatencyMilliseconds
+                $fields = @(
+                    (ConvertTo-CsvField $timestampUtc),
+                    (ConvertTo-InvariantNumber $timer.Elapsed.TotalSeconds),
+                    (ConvertTo-InvariantNumber $probeLatency),
+                    (ConvertTo-InvariantNumber $iteration.Elapsed.TotalMilliseconds)
+                )
+                $writer.WriteLine($fields -join ',')
+                $writer.Flush()
+                if (-not $ready) {
+                    New-Item -ItemType File -Force -Path $probeReadyFile | Out-Null
+                    $ready = $true
+                }
+            }
+            catch {
+                Add-Content -Path $probeErrorPath -Value "$timestampUtc responsiveness probe failed: $($_.Exception.Message)"
+            }
+
+            $sleepMilliseconds = [Math]::Max(
+                0,
+                ($ProbeIntervalSeconds * 1000) - [int]$iteration.Elapsed.TotalMilliseconds)
+            if ($sleepMilliseconds -gt 0) {
+                Start-Sleep -Milliseconds $sleepMilliseconds
+            }
+        }
+    }
+    finally {
+        $writer.Dispose()
+    }
+}
+
 if ($ProcessWorker) {
     Invoke-ProcessWorker
+    return
+}
+if ($ProbeWorker) {
+    Invoke-ProbeWorker
     return
 }
 
@@ -223,48 +275,61 @@ $processor = Get-CimInstance Win32_Processor | Select-Object -First 1
     TotalPhysicalMemoryBytes = [int64]$machine.TotalPhysicalMemory
     SampleIntervalSeconds = $SampleIntervalSeconds
     ProcessIntervalSeconds = $ProcessIntervalSeconds
+    ProbeIntervalSeconds = $ProbeIntervalSeconds
     BenchmarkProcessNames = @($benchmarkProcessNames | Sort-Object)
     ExternalNoiseProcessNames = @($noiseProcessNames | Sort-Object)
 } | ConvertTo-Json -Depth 4 | Set-Content -Path (Join-Path $OutputRoot 'monitor-metadata.json') -Encoding UTF8
 
-$pwshPath = (Get-Command pwsh).Source
-$workerStartInfo = [Diagnostics.ProcessStartInfo]::new($pwshPath)
-foreach ($argument in @(
-    '-NoLogo',
-    '-NoProfile',
-    '-ExecutionPolicy', 'Bypass',
-    '-File', $PSCommandPath,
-    '-OutputRoot', $OutputRoot,
-    '-StopFile', $StopFile,
-    '-ReadyFile', $ReadyFile,
-    '-SampleIntervalSeconds', [string]$SampleIntervalSeconds,
-    '-ProcessIntervalSeconds', [string]$ProcessIntervalSeconds,
-    '-ProcessWorker'
-)) {
-    $workerStartInfo.ArgumentList.Add($argument)
-}
-$workerStartInfo.UseShellExecute = $false
-$workerStartInfo.CreateNoWindow = $true
-$processWorkerProcess = [Diagnostics.Process]::Start($workerStartInfo)
+function Start-MonitorWorker {
+    param([string]$Mode)
 
-$systemWriter = [IO.StreamWriter]::new($systemPath, $false, [Text.UTF8Encoding]::new($false))
+    $startInfo = [Diagnostics.ProcessStartInfo]::new((Get-Command pwsh).Source)
+    foreach ($argument in @(
+        '-NoLogo',
+        '-NoProfile',
+        '-ExecutionPolicy', 'Bypass',
+        '-File', $PSCommandPath,
+        '-OutputRoot', $OutputRoot,
+        '-StopFile', $StopFile,
+        '-ReadyFile', $ReadyFile,
+        '-SampleIntervalSeconds', [string]$SampleIntervalSeconds,
+        '-ProcessIntervalSeconds', [string]$ProcessIntervalSeconds,
+        '-ProbeIntervalSeconds', [string]$ProbeIntervalSeconds,
+        "-$Mode"
+    )) {
+        $startInfo.ArgumentList.Add($argument)
+    }
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+    return [Diagnostics.Process]::Start($startInfo)
+}
+
+$processWorkerProcess = $null
+$probeWorkerProcess = $null
+$systemWriter = $null
 try {
-    $systemWriter.WriteLine('timestampUtc,elapsedSec,cpuPercent,committedBytes,commitLimitBytes,availableMB,processorQueueLength,contextSwitchesPerSec,diskBytesPerSec,diskReadBytesPerSec,diskWriteBytesPerSec,diskQueueLength,probeLatencyMs,monitorIterationMs')
+    $processWorkerProcess = Start-MonitorWorker -Mode 'ProcessWorker'
+    $probeWorkerProcess = Start-MonitorWorker -Mode 'ProbeWorker'
+    $systemWriter = [IO.StreamWriter]::new($systemPath, $false, [Text.UTF8Encoding]::new($false))
+    $systemWriter.WriteLine('timestampUtc,elapsedSec,cpuPercent,committedBytes,commitLimitBytes,availableMB,processorQueueLength,contextSwitchesPerSec,diskBytesPerSec,diskReadBytesPerSec,diskWriteBytesPerSec,diskQueueLength,monitorIterationMs')
     $systemWriter.Flush()
 
     $readyTimer = [Diagnostics.Stopwatch]::StartNew()
-    while (-not (Test-Path -LiteralPath $processReadyFile)) {
+    while (-not (Test-Path -LiteralPath $processReadyFile) -or
+        -not (Test-Path -LiteralPath $probeReadyFile)) {
         if ($processWorkerProcess.HasExited) {
             throw "Process monitor exited before readiness with code $($processWorkerProcess.ExitCode)."
         }
+        if ($probeWorkerProcess.HasExited) {
+            throw "Probe monitor exited before readiness with code $($probeWorkerProcess.ExitCode)."
+        }
         if ($readyTimer.Elapsed.TotalSeconds -gt 30) {
-            throw 'Process monitor did not become ready within 30 seconds.'
+            throw 'Process/probe monitors did not become ready within 30 seconds.'
         }
         Start-Sleep -Milliseconds 100
     }
 
     $overallTimer = [Diagnostics.Stopwatch]::StartNew()
-    $sampleNumber = 0
     New-Item -ItemType File -Force -Path $ReadyFile | Out-Null
 
     while (-not (Test-Path -LiteralPath $StopFile)) {
@@ -312,16 +377,6 @@ try {
             Add-Content -Path $errorPath -Value "$timestampUtc counter sample failed: $($_.Exception.Message)"
         }
 
-        $probeLatency = $null
-        if (($sampleNumber % $ProcessIntervalSeconds) -eq 0) {
-            try {
-                $probeLatency = Measure-LaunchLatencyMilliseconds
-            }
-            catch {
-                Add-Content -Path $errorPath -Value "$timestampUtc responsiveness probe failed: $($_.Exception.Message)"
-            }
-        }
-
         $fields = @(
             (ConvertTo-CsvField $timestampUtc),
             (ConvertTo-InvariantNumber $overallTimer.Elapsed.TotalSeconds),
@@ -335,13 +390,11 @@ try {
             (ConvertTo-InvariantNumber $values.diskReadBytesPerSec),
             (ConvertTo-InvariantNumber $values.diskWriteBytesPerSec),
             (ConvertTo-InvariantNumber $values.diskQueueLength),
-            (ConvertTo-InvariantNumber $probeLatency),
             (ConvertTo-InvariantNumber $iterationTimer.Elapsed.TotalMilliseconds)
         )
         $systemWriter.WriteLine($fields -join ',')
         $systemWriter.Flush()
 
-        $sampleNumber++
         $sleepMilliseconds = [Math]::Max(
             0,
             ($SampleIntervalSeconds * 1000) - [int]$iterationTimer.Elapsed.TotalMilliseconds)
@@ -351,17 +404,32 @@ try {
     }
 }
 finally {
-    $systemWriter.Dispose()
-    $workerTimedOut = -not $processWorkerProcess.WaitForExit(30000)
-    if ($workerTimedOut) {
-        Stop-Process -Id $processWorkerProcess.Id
-        [void]$processWorkerProcess.WaitForExit(5000)
+    if ($null -ne $systemWriter) {
+        $systemWriter.Dispose()
     }
-    $workerExitCode = $processWorkerProcess.ExitCode
-    $processWorkerProcess.Dispose()
-    if ($workerTimedOut -or $workerExitCode -ne 0) {
-        $message = "Process monitor failed (timedOut=$workerTimedOut, exitCode=$workerExitCode)."
-        Add-Content -Path $processErrorPath -Value "$([DateTime]::UtcNow.ToString('O')) $message"
-        throw $message
+    New-Item -ItemType File -Force -Path $StopFile | Out-Null
+    $workerFailures = [Collections.Generic.List[string]]::new()
+    foreach ($worker in @(
+        [pscustomobject]@{ Name = 'Process'; Process = $processWorkerProcess; ErrorPath = $processErrorPath },
+        [pscustomobject]@{ Name = 'Probe'; Process = $probeWorkerProcess; ErrorPath = $probeErrorPath }
+    )) {
+        if ($null -eq $worker.Process) {
+            continue
+        }
+        $workerTimedOut = -not $worker.Process.WaitForExit(30000)
+        if ($workerTimedOut) {
+            Stop-Process -Id $worker.Process.Id
+            [void]$worker.Process.WaitForExit(5000)
+        }
+        $workerExitCode = $worker.Process.ExitCode
+        $worker.Process.Dispose()
+        if ($workerTimedOut -or $workerExitCode -ne 0) {
+            $message = "$($worker.Name) monitor failed (timedOut=$workerTimedOut, exitCode=$workerExitCode)."
+            Add-Content -Path $worker.ErrorPath -Value "$([DateTime]::UtcNow.ToString('O')) $message"
+            $workerFailures.Add($message)
+        }
+    }
+    if ($workerFailures.Count -gt 0) {
+        throw ($workerFailures -join ' ')
     }
 }

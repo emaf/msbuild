@@ -305,6 +305,18 @@ elseif ([int]$metadata.CandidateBuildCount -eq 1) {
 else {
     'single-build-compatibility'
 }
+$maxProcessSnapshotGapSeconds = if ($null -ne $metadata.PSObject.Properties['MaxProcessSnapshotGapSeconds']) {
+    [double]$metadata.MaxProcessSnapshotGapSeconds
+}
+else {
+    15.0
+}
+$maxProbeGapSeconds = if ($null -ne $metadata.PSObject.Properties['MaxProbeGapSeconds']) {
+    [double]$metadata.MaxProbeGapSeconds
+}
+else {
+    15.0
+}
 $validationErrors = [Collections.Generic.List[string]]::new()
 $validationWarnings = [Collections.Generic.List[string]]::new()
 if (-not $metadata.PlanOnly) {
@@ -525,26 +537,46 @@ foreach ($repository in $metadata.Repositories) {
             $monitorRoot = Join-Path $scenarioRoot 'monitor'
             $systemPath = Join-Path $monitorRoot 'system.csv'
             $processPath = Join-Path $monitorRoot 'processes.csv'
-            if (-not (Test-Path -LiteralPath $systemPath) -or -not (Test-Path -LiteralPath $processPath)) {
+            $probePath = Join-Path $monitorRoot 'probes.csv'
+            if (-not (Test-Path -LiteralPath $systemPath) -or
+                -not (Test-Path -LiteralPath $processPath) -or
+                -not (Test-Path -LiteralPath $probePath)) {
                 Add-ValidationError $validationErrors "Telemetry files are missing in '$scenarioRoot'."
                 $blockIsValid = $false
                 continue
             }
             $systemRows = @(Import-Csv -LiteralPath $systemPath)
             $processRows = @(Import-Csv -LiteralPath $processPath)
-            if ($systemRows.Count -lt 2 -or $processRows.Count -eq 0) {
+            $probeRows = @(Import-Csv -LiteralPath $probePath)
+            $processSnapshots = @(
+                $processRows |
+                    Group-Object timestampUtc |
+                    ForEach-Object { $_.Group[0] }
+            )
+            if ($systemRows.Count -lt 2 -or $processSnapshots.Count -lt 2 -or $probeRows.Count -lt 2) {
                 Add-ValidationError $validationErrors "Telemetry files are empty in '$scenarioRoot'."
                 $blockIsValid = $false
                 continue
             }
-            $maxGap = Get-MaxTimestampGapSeconds -Rows $systemRows
-            if ($maxGap -gt [double]$metadata.MaxTelemetryGapSeconds) {
-                Add-ValidationError $validationErrors "Telemetry gap $maxGap exceeds limit in '$scenarioRoot'."
+            $maxSystemGap = Get-MaxTimestampGapSeconds -Rows $systemRows
+            $maxProcessGap = Get-MaxTimestampGapSeconds -Rows $processSnapshots
+            $maxProbeGap = Get-MaxTimestampGapSeconds -Rows $probeRows
+            if ($maxSystemGap -gt [double]$metadata.MaxTelemetryGapSeconds) {
+                Add-ValidationError $validationErrors "System-counter gap $maxSystemGap exceeds limit in '$scenarioRoot'."
+                $blockIsValid = $false
+            }
+            if ($maxProcessGap -gt $maxProcessSnapshotGapSeconds) {
+                Add-ValidationError $validationErrors "Process-snapshot gap $maxProcessGap exceeds limit in '$scenarioRoot'."
+                $blockIsValid = $false
+            }
+            if ($maxProbeGap -gt $maxProbeGapSeconds) {
+                Add-ValidationError $validationErrors "Probe gap $maxProbeGap exceeds limit in '$scenarioRoot'."
                 $blockIsValid = $false
             }
             foreach ($monitorErrorPath in @(
                 (Join-Path $monitorRoot 'monitor-errors.log'),
-                (Join-Path $monitorRoot 'process-monitor-errors.log')
+                (Join-Path $monitorRoot 'process-monitor-errors.log'),
+                (Join-Path $monitorRoot 'probe-monitor-errors.log')
             )) {
                 if ((Test-Path -LiteralPath $monitorErrorPath) -and
                     -not [string]::IsNullOrWhiteSpace((Get-Content -LiteralPath $monitorErrorPath -Raw))) {
@@ -563,7 +595,7 @@ foreach ($repository in $metadata.Repositories) {
                     ForEach-Object { [double]$_.processorQueueLength }
             )
             $probe = [double[]]@(
-                $systemRows |
+                $probeRows |
                     Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.probeLatencyMs) } |
                     ForEach-Object { [double]$_.probeLatencyMs }
             )
@@ -594,7 +626,10 @@ foreach ($repository in $metadata.Repositories) {
                 AverageNormalDurationSec = [double]$summary.avgNormalDurationSec
                 TotalWallSec = [double]$summary.totalWallSec
                 CandidateOffsetSec = $candidateOffset
-                MaximumTelemetryGapSec = $maxGap
+                MaximumTelemetryGapSec = $maxSystemGap
+                MaximumSystemCounterGapSec = $maxSystemGap
+                MaximumProcessSnapshotGapSec = $maxProcessGap
+                MaximumProbeGapSec = $maxProbeGap
                 PeakCommittedDeltaMB = ($peakCommitted - $baselineCommitted) / 1MB
                 ProcessorQueueP95 = Get-Percentile -Values $queue -Percentile 0.95
                 ProbeP95Ms = Get-Percentile -Values $probe -Percentile 0.95
@@ -607,6 +642,7 @@ foreach ($repository in $metadata.Repositories) {
                 RunsCsv = $summary.runs
                 SystemCsv = $systemPath
                 ProcessesCsv = $processPath
+                ProbesCsv = $probePath
             })
         }
 
@@ -910,6 +946,7 @@ $lines.Add('')
 $lines.Add('## Validity and diagnostics')
 $lines.Add('')
 $lines.Add("- Maximum allowed system-telemetry timestamp gap: $($metadata.MaxTelemetryGapSeconds) seconds; larger gaps, including sleep, invalidate the whole block.")
+$lines.Add("- Process-snapshot and probe timestamp-gap limits are $maxProcessSnapshotGapSeconds and $maxProbeGapSeconds seconds respectively; they are validated independently from system-counter continuity.")
 $lines.Add('- Every accepted build recorded a root PID; descendant process peaks were reconstructed from full process/parent snapshots.')
 $lines.Add('- `scenario-metrics.csv` reports known Defender/search/update process peaks so external interference remains diagnosable.')
 $lines.Add('')

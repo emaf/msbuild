@@ -11,9 +11,10 @@ monitor and matrix orchestrator are Windows-only:
     concurrent builds, and records root PIDs plus OS process start/exit times.
 
   Monitor-PublicRepoCoordinatorBenchmark.ps1
-    Independent system/process monitor. It is not part of the harness polling
-    loop. It records Windows performance counters, responsiveness probes, full
-    PID/parent/start-time snapshots, and known Defender/search/update activity.
+    Independent monitor. It is not part of the harness polling loop. Separate
+    processes write high-frequency Windows counters to system.csv, full
+    PID/parent/start-time snapshots to processes.csv, and launch responsiveness
+    to probes.csv. Slow snapshots/probes cannot stall strict system continuity.
 
   Run-PublicRepoCoordinatorMatrix.ps1
     Multi-bootstrap matrix orchestrator. It verifies tool/repository identity,
@@ -190,9 +191,11 @@ Any of these invalidates the entire attempted block:
     offset bounds;
   * a bootstrap, repository, or worktree commit mismatch;
   * a monitor startup/exit/error-log failure;
-  * missing system/process telemetry; or
+  * missing system/process/probe telemetry;
   * a system telemetry timestamp gap above MaxTelemetryGapSeconds (default 5),
-    including a sleep/resume gap.
+    including a sleep/resume gap; or
+  * a process-snapshot or probe gap above its independent, slower-cadence bound
+    (defaults 15 seconds).
 
 The next attempt reruns every condition in that block in the same order. Warm-up
 blocks are marked and excluded from analysis. The analyzer independently repeats
@@ -224,7 +227,8 @@ Roslyn and Aspire are never pooled.
     processes.csv parent snapshots.
 
   ProcessorQueueP95 / ProbeP95Ms
-    Nearest-rank 95th percentiles for processor queue and launch responsiveness.
+    Nearest-rank 95th percentiles from system.csv and probes.csv. Probe stalls do
+    not delay system.csv sampling.
 
   ExternalNoisePeak*
     Peak known Defender/search/update activity; diagnostic, not filtered out.

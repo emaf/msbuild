@@ -62,6 +62,8 @@ param(
     [double]$CandidateOffsetMinimumSeconds = 14,
     [double]$CandidateOffsetMaximumSeconds = 18,
     [double]$MaxTelemetryGapSeconds = 5,
+    [double]$MaxProcessSnapshotGapSeconds = 15,
+    [double]$MaxProbeGapSeconds = 15,
     [int]$MaximumBlockAttempts = 3,
     [int]$MonitorReadyTimeoutSeconds = 30,
     [int]$IdleTimeoutSeconds = 300,
@@ -98,8 +100,9 @@ if ($CandidateBuildCount -eq 0 -and $ConditionKeys -contains 'E-candidate-defaul
 if ($CandidateOffsetMinimumSeconds -ge $CandidateOffsetMaximumSeconds) {
     throw 'Candidate offset bounds are invalid.'
 }
-if ($MaximumBlockAttempts -le 0 -or $MaxTelemetryGapSeconds -le 0) {
-    throw 'MaximumBlockAttempts and MaxTelemetryGapSeconds must be positive.'
+if ($MaximumBlockAttempts -le 0 -or $MaxTelemetryGapSeconds -le 0 -or
+    $MaxProcessSnapshotGapSeconds -le 0 -or $MaxProbeGapSeconds -le 0) {
+    throw 'MaximumBlockAttempts and all telemetry gap thresholds must be positive.'
 }
 
 $benchmarkScript = Join-Path $PSScriptRoot 'Run-PublicRepoCoordinatorBenchmark.ps1'
@@ -639,7 +642,10 @@ function Test-ScenarioResult {
     $monitorRoot = Join-Path $ScenarioRoot 'monitor'
     $systemPath = Join-Path $monitorRoot 'system.csv'
     $processPath = Join-Path $monitorRoot 'processes.csv'
-    $maxGap = $null
+    $probePath = Join-Path $monitorRoot 'probes.csv'
+    $maxSystemGap = $null
+    $maxProcessGap = $null
+    $maxProbeGap = $null
     if (-not (Test-Path -LiteralPath $systemPath)) {
         $errors.Add('system.csv is missing.')
     }
@@ -649,18 +655,51 @@ function Test-ScenarioResult {
             $errors.Add('system.csv has fewer than two samples.')
         }
         else {
-            $maxGap = Get-MaxTimestampGapSeconds -Rows $systemRows
-            if ($maxGap -gt $MaxTelemetryGapSeconds) {
-                $errors.Add("Maximum telemetry timestamp gap $([Math]::Round($maxGap, 3)) seconds exceeds $MaxTelemetryGapSeconds seconds.")
+            $maxSystemGap = Get-MaxTimestampGapSeconds -Rows $systemRows
+            if ($maxSystemGap -gt $MaxTelemetryGapSeconds) {
+                $errors.Add("Maximum system-counter timestamp gap $([Math]::Round($maxSystemGap, 3)) seconds exceeds $MaxTelemetryGapSeconds seconds.")
             }
         }
     }
     if (-not (Test-Path -LiteralPath $processPath) -or (Get-Item -LiteralPath $processPath).Length -eq 0) {
         $errors.Add('processes.csv is missing or empty.')
     }
+    else {
+        $processRows = @(Import-Csv -LiteralPath $processPath)
+        $processSnapshots = @(
+            $processRows |
+                Group-Object timestampUtc |
+                ForEach-Object { $_.Group[0] }
+        )
+        if ($processSnapshots.Count -lt 2) {
+            $errors.Add('processes.csv has fewer than two snapshots.')
+        }
+        else {
+            $maxProcessGap = Get-MaxTimestampGapSeconds -Rows $processSnapshots
+            if ($maxProcessGap -gt $MaxProcessSnapshotGapSeconds) {
+                $errors.Add("Maximum process-snapshot timestamp gap $([Math]::Round($maxProcessGap, 3)) seconds exceeds $MaxProcessSnapshotGapSeconds seconds.")
+            }
+        }
+    }
+    if (-not (Test-Path -LiteralPath $probePath) -or (Get-Item -LiteralPath $probePath).Length -eq 0) {
+        $errors.Add('probes.csv is missing or empty.')
+    }
+    else {
+        $probeRows = @(Import-Csv -LiteralPath $probePath)
+        if ($probeRows.Count -lt 2) {
+            $errors.Add('probes.csv has fewer than two samples.')
+        }
+        else {
+            $maxProbeGap = Get-MaxTimestampGapSeconds -Rows $probeRows
+            if ($maxProbeGap -gt $MaxProbeGapSeconds) {
+                $errors.Add("Maximum probe timestamp gap $([Math]::Round($maxProbeGap, 3)) seconds exceeds $MaxProbeGapSeconds seconds.")
+            }
+        }
+    }
     foreach ($monitorErrorPath in @(
         (Join-Path $monitorRoot 'monitor-errors.log'),
-        (Join-Path $monitorRoot 'process-monitor-errors.log')
+        (Join-Path $monitorRoot 'process-monitor-errors.log'),
+        (Join-Path $monitorRoot 'probe-monitor-errors.log')
     )) {
         if ((Test-Path -LiteralPath $monitorErrorPath) -and
             -not [string]::IsNullOrWhiteSpace((Get-Content -LiteralPath $monitorErrorPath -Raw))) {
@@ -672,7 +711,10 @@ function Test-ScenarioResult {
         Valid = $errors.Count -eq 0
         ConditionKey = $Definition.Key
         CandidateOffsetSeconds = $candidateOffset
-        MaximumTelemetryGapSeconds = $maxGap
+        MaximumTelemetryGapSeconds = $maxSystemGap
+        MaximumSystemCounterGapSeconds = $maxSystemGap
+        MaximumProcessSnapshotGapSeconds = $maxProcessGap
+        MaximumProbeGapSeconds = $maxProbeGap
         BuildCount = $runs.Count
         RootProcessIds = @($runs | ForEach-Object { [int]$_.rootProcessId })
         Errors = $errors
@@ -1038,6 +1080,8 @@ $runMetadata = [ordered]@{
     CandidateOffsetMinimumSeconds = $CandidateOffsetMinimumSeconds
     CandidateOffsetMaximumSeconds = $CandidateOffsetMaximumSeconds
     MaxTelemetryGapSeconds = $MaxTelemetryGapSeconds
+    MaxProcessSnapshotGapSeconds = $MaxProcessSnapshotGapSeconds
+    MaxProbeGapSeconds = $MaxProbeGapSeconds
     MaximumBlockAttempts = $MaximumBlockAttempts
     Diagnostics = [ordered]@{
         GrantCountLogging = [ordered]@{
