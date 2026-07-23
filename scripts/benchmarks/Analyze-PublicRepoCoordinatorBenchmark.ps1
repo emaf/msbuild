@@ -83,17 +83,90 @@ function Get-Average {
     return $sum / $Values.Count
 }
 
-function Get-MaxTimestampGapSeconds {
+function Get-TimestampGaps {
     param([object[]]$Rows)
 
-    $maximum = 0.0
+    $gaps = [Collections.Generic.List[object]]::new()
     for ($index = 1; $index -lt $Rows.Count; $index++) {
-        $gap = ([DateTime]$Rows[$index].timestampUtc - [DateTime]$Rows[$index - 1].timestampUtc).TotalSeconds
-        if ($gap -gt $maximum) {
-            $maximum = $gap
-        }
+        $start = [DateTime]$Rows[$index - 1].timestampUtc
+        $end = [DateTime]$Rows[$index].timestampUtc
+        $gaps.Add([pscustomobject]@{
+            GapIndex = $index
+            StartUtc = $start.ToUniversalTime().ToString('O')
+            EndUtc = $end.ToUniversalTime().ToString('O')
+            GapSeconds = ($end - $start).TotalSeconds
+        })
     }
-    return $maximum
+    return $gaps
+}
+
+function Get-MaxTimestampGapSeconds {
+    param([object[]]$Gaps)
+
+    if ($Gaps.Count -eq 0) {
+        return 0.0
+    }
+    return ($Gaps.GapSeconds | Measure-Object -Maximum).Maximum
+}
+
+function New-SystemGapDistributionRow {
+    param(
+        [string]$Scope,
+        [string]$BlockKind,
+        [string]$Repository,
+        [string]$ConditionKey,
+        [object[]]$Rows
+    )
+
+    $values = [double[]]@($Rows | ForEach-Object { [double]$_.GapSeconds })
+    return [pscustomobject][ordered]@{
+        Scope = $Scope
+        BlockKind = $BlockKind
+        Repository = $Repository
+        ConditionKey = $ConditionKey
+        WarningGapCount = $values.Count
+        MinimumGapSeconds = if ($values.Count -gt 0) { ($values | Measure-Object -Minimum).Minimum } else { $null }
+        MedianGapSeconds = if ($values.Count -gt 0) { Get-Median $values } else { $null }
+        P95GapSeconds = if ($values.Count -gt 0) { Get-Percentile -Values $values -Percentile 0.95 } else { $null }
+        P99GapSeconds = if ($values.Count -gt 0) { Get-Percentile -Values $values -Percentile 0.99 } else { $null }
+        MaximumGapSeconds = if ($values.Count -gt 0) { ($values | Measure-Object -Maximum).Maximum } else { $null }
+    }
+}
+
+function New-SystemGapWarningRow {
+    param(
+        [string]$Repository = '',
+        [int]$BlockNumber = 0,
+        [int]$AnalysisBlockNumber = 0,
+        [bool]$IsWarmup = $false,
+        [int]$AttemptNumber = 0,
+        [int]$OrderIndex = 0,
+        [string]$ConditionKey = '',
+        [int]$GapIndex = 0,
+        [string]$StartUtc = '',
+        [string]$EndUtc = '',
+        [double]$GapSeconds = 0,
+        [double]$WarningThresholdSeconds = 0,
+        [double]$HardThresholdSeconds = 0,
+        [string]$SystemCsv = ''
+    )
+
+    return [pscustomobject][ordered]@{
+        Repository = $Repository
+        BlockNumber = $BlockNumber
+        AnalysisBlockNumber = $AnalysisBlockNumber
+        IsWarmup = $IsWarmup
+        AttemptNumber = $AttemptNumber
+        OrderIndex = $OrderIndex
+        ConditionKey = $ConditionKey
+        GapIndex = $GapIndex
+        StartUtc = $StartUtc
+        EndUtc = $EndUtc
+        GapSeconds = $GapSeconds
+        WarningThresholdSeconds = $WarningThresholdSeconds
+        HardThresholdSeconds = $HardThresholdSeconds
+        SystemCsv = $SystemCsv
+    }
 }
 
 function Get-StableHash {
@@ -332,8 +405,28 @@ $maxProbeGapSeconds = if ($null -ne $metadata.PSObject.Properties['MaxProbeGapSe
 else {
     15.0
 }
+$hasSeparateSystemGapThresholds = $null -ne $metadata.PSObject.Properties['MaxSystemCounterGapSeconds']
+$systemGapWarningThresholdSeconds = if ($null -ne $metadata.PSObject.Properties['SystemGapWarningThresholdSeconds']) {
+    [double]$metadata.SystemGapWarningThresholdSeconds
+}
+else {
+    [double]$metadata.MaxTelemetryGapSeconds
+}
+$maxSystemCounterGapSeconds = if ($hasSeparateSystemGapThresholds) {
+    [double]$metadata.MaxSystemCounterGapSeconds
+}
+else {
+    [double]$metadata.MaxTelemetryGapSeconds
+}
 $validationErrors = [Collections.Generic.List[string]]::new()
 $validationWarnings = [Collections.Generic.List[string]]::new()
+if ($systemGapWarningThresholdSeconds -le 0 -or $maxSystemCounterGapSeconds -le 0) {
+    Add-ValidationError $validationErrors 'System-counter gap thresholds must be positive.'
+}
+elseif ($hasSeparateSystemGapThresholds -and
+    $systemGapWarningThresholdSeconds -gt $maxSystemCounterGapSeconds) {
+    Add-ValidationError $validationErrors 'The system-counter warning threshold must not exceed the hard threshold.'
+}
 if (-not $metadata.PlanOnly) {
     Test-RecordedBootstrap -Bootstrap $metadata.BaseBootstrap -Errors $validationErrors -Warnings $validationWarnings
     Test-RecordedBootstrap -Bootstrap $metadata.CandidateBootstrap -Errors $validationErrors -Warnings $validationWarnings
@@ -479,6 +572,7 @@ else {
 }
 
 $scenarioMetrics = [Collections.Generic.List[object]]::new()
+$systemGapWarnings = [Collections.Generic.List[object]]::new()
 $validPrimaryBlocks = 0
 $validWarmupBlocks = 0
 foreach ($repository in $metadata.Repositories) {
@@ -503,6 +597,7 @@ foreach ($repository in $metadata.Repositories) {
         }
 
         $blockIsValid = $true
+        $blockSystemGapWarnings = [Collections.Generic.List[object]]::new()
         foreach ($blockRow in $blockRows) {
             $condition = $conditionByKey[$blockRow.ConditionKey]
             $scenarioRoot = Join-Path $attemptRoot $blockRow.ConditionKey
@@ -627,11 +722,35 @@ foreach ($repository in $metadata.Repositories) {
                 $blockIsValid = $false
                 continue
             }
-            $maxSystemGap = Get-MaxTimestampGapSeconds -Rows $systemRows
-            $maxProcessGap = Get-MaxTimestampGapSeconds -Rows $processSnapshots
-            $maxProbeGap = Get-MaxTimestampGapSeconds -Rows $probeRows
-            if ($maxSystemGap -gt [double]$metadata.MaxTelemetryGapSeconds) {
-                Add-ValidationError $validationErrors "System-counter gap $maxSystemGap exceeds limit in '$scenarioRoot'."
+            $systemGaps = @(Get-TimestampGaps -Rows $systemRows)
+            $processGaps = @(Get-TimestampGaps -Rows $processSnapshots)
+            $probeGaps = @(Get-TimestampGaps -Rows $probeRows)
+            $maxSystemGap = Get-MaxTimestampGapSeconds -Gaps $systemGaps
+            $maxProcessGap = Get-MaxTimestampGapSeconds -Gaps $processGaps
+            $maxProbeGap = Get-MaxTimestampGapSeconds -Gaps $probeGaps
+            $scenarioSystemGapWarnings = @(
+                $systemGaps |
+                    Where-Object GapSeconds -gt $systemGapWarningThresholdSeconds
+            )
+            foreach ($gap in $scenarioSystemGapWarnings) {
+                $blockSystemGapWarnings.Add((New-SystemGapWarningRow `
+                    -Repository $repository.Name `
+                    -BlockNumber ([int]$blockRow.BlockNumber) `
+                    -AnalysisBlockNumber ([int]$blockRow.AnalysisBlockNumber) `
+                    -IsWarmup ([bool]::Parse([string]$blockRow.IsWarmup)) `
+                    -AttemptNumber ([int]$blockCompletion.AttemptNumber) `
+                    -OrderIndex ([int]$blockRow.OrderIndex) `
+                    -ConditionKey $blockRow.ConditionKey `
+                    -GapIndex $gap.GapIndex `
+                    -StartUtc $gap.StartUtc `
+                    -EndUtc $gap.EndUtc `
+                    -GapSeconds $gap.GapSeconds `
+                    -WarningThresholdSeconds $systemGapWarningThresholdSeconds `
+                    -HardThresholdSeconds $maxSystemCounterGapSeconds `
+                    -SystemCsv $systemPath))
+            }
+            if ($maxSystemGap -gt $maxSystemCounterGapSeconds) {
+                Add-ValidationError $validationErrors "System-counter gap $maxSystemGap exceeds the $maxSystemCounterGapSeconds second hard limit in '$scenarioRoot'."
                 $blockIsValid = $false
             }
             if ($maxProcessGap -gt $maxProcessSnapshotGapSeconds) {
@@ -697,6 +816,15 @@ foreach ($repository in $metadata.Repositories) {
                 CandidateOffsetSec = $candidateOffset
                 MaximumTelemetryGapSec = $maxSystemGap
                 MaximumSystemCounterGapSec = $maxSystemGap
+                SystemGapWarningThresholdSec = $systemGapWarningThresholdSeconds
+                SystemGapHardThresholdSec = $maxSystemCounterGapSeconds
+                SystemGapWarningCount = $scenarioSystemGapWarnings.Count
+                SystemGapWarningMaximumSec = if ($scenarioSystemGapWarnings.Count -gt 0) {
+                    ($scenarioSystemGapWarnings.GapSeconds | Measure-Object -Maximum).Maximum
+                }
+                else {
+                    $null
+                }
                 MaximumProcessSnapshotGapSec = $maxProcessGap
                 MaximumProbeGapSec = $maxProbeGap
                 PeakCommittedDeltaMB = ($peakCommitted - $baselineCommitted) / 1MB
@@ -716,6 +844,9 @@ foreach ($repository in $metadata.Repositories) {
         }
 
         if ($blockIsValid) {
+            foreach ($gapWarning in $blockSystemGapWarnings) {
+                $systemGapWarnings.Add($gapWarning)
+            }
             if ([bool]::Parse([string]$blockRows[0].IsWarmup)) {
                 $validWarmupBlocks++
             }
@@ -726,6 +857,63 @@ foreach ($repository in $metadata.Repositories) {
     }
 }
 
+$systemGapWarningMaximum = if ($systemGapWarnings.Count -gt 0) {
+    ($systemGapWarnings.GapSeconds | Measure-Object -Maximum).Maximum
+}
+else {
+    $null
+}
+if ($systemGapWarnings.Count -gt 0) {
+    $validationWarnings.Add("$($systemGapWarnings.Count) accepted system-counter gap(s) exceeded the $systemGapWarningThresholdSeconds second warning threshold; maximum $([Math]::Round($systemGapWarningMaximum, 3)) seconds.")
+}
+
+$systemGapWarningPath = Join-Path $OutputRoot 'system-gap-warnings.csv'
+if ($systemGapWarnings.Count -gt 0) {
+    $systemGapWarnings | Export-Csv -NoTypeInformation -LiteralPath $systemGapWarningPath
+}
+else {
+    $warningHeader = (New-SystemGapWarningRow | ConvertTo-Csv -NoTypeInformation)[0]
+    $warningHeader | Set-Content -LiteralPath $systemGapWarningPath -Encoding UTF8
+}
+
+$systemGapDistributionRows = [Collections.Generic.List[object]]::new()
+foreach ($blockKind in @('primary', 'warmup')) {
+    $isWarmup = $blockKind -eq 'warmup'
+    $blockKindWarnings = @($systemGapWarnings | Where-Object IsWarmup -eq $isWarmup)
+    $systemGapDistributionRows.Add((New-SystemGapDistributionRow `
+        -Scope 'all' `
+        -BlockKind $blockKind `
+        -Repository 'all' `
+        -ConditionKey 'all' `
+        -Rows $blockKindWarnings))
+    foreach ($repository in $metadata.Repositories) {
+        $repositoryWarnings = @($blockKindWarnings | Where-Object Repository -eq $repository.Name)
+        $systemGapDistributionRows.Add((New-SystemGapDistributionRow `
+            -Scope 'repository' `
+            -BlockKind $blockKind `
+            -Repository $repository.Name `
+            -ConditionKey 'all' `
+            -Rows $repositoryWarnings))
+        foreach ($conditionKey in @(
+            $scenarioMetrics |
+                Where-Object {
+                    $_.Repository -eq $repository.Name -and
+                        $_.IsWarmup -eq $isWarmup
+                } |
+                Select-Object -ExpandProperty ConditionKey -Unique
+        )) {
+            $systemGapDistributionRows.Add((New-SystemGapDistributionRow `
+                -Scope 'condition' `
+                -BlockKind $blockKind `
+                -Repository $repository.Name `
+                -ConditionKey $conditionKey `
+                -Rows @($repositoryWarnings | Where-Object ConditionKey -eq $conditionKey)))
+        }
+    }
+}
+$systemGapDistributionPath = Join-Path $OutputRoot 'system-gap-warning-summary.csv'
+$systemGapDistributionRows | Export-Csv -NoTypeInformation -LiteralPath $systemGapDistributionPath
+
 $validation = [ordered]@{
     RunRoot = $RunRoot
     ValidatedUtc = [DateTime]::UtcNow.ToString('O')
@@ -734,6 +922,10 @@ $validation = [ordered]@{
     ValidWarmupBlocks = $validWarmupBlocks
     ValidPrimaryBlocks = $validPrimaryBlocks
     ScenarioCount = $scenarioMetrics.Count
+    SystemGapWarningThresholdSeconds = $systemGapWarningThresholdSeconds
+    SystemGapHardThresholdSeconds = $maxSystemCounterGapSeconds
+    SystemGapWarningCount = $systemGapWarnings.Count
+    SystemGapWarningMaximumSeconds = $systemGapWarningMaximum
     Errors = $validationErrors
     Warnings = $validationWarnings
 }
@@ -1014,14 +1206,31 @@ if ($reportedComparisons -contains 'A-vs-B') {
 $lines.Add('')
 $lines.Add('## Validity and diagnostics')
 $lines.Add('')
-$lines.Add("- Maximum allowed system-telemetry timestamp gap: $($metadata.MaxTelemetryGapSeconds) seconds; larger gaps, including sleep, invalidate the whole block.")
+$lines.Add("- System-counter timestamp gaps above $systemGapWarningThresholdSeconds seconds are responsiveness warnings and remain visible without invalidating a scenario. Gaps above the $maxSystemCounterGapSeconds second hard limit invalidate the whole block.")
 $lines.Add("- Process-snapshot and probe timestamp-gap limits are $maxProcessSnapshotGapSeconds and $maxProbeGapSeconds seconds respectively; they are validated independently from system-counter continuity.")
+$lines.Add("- This protocol was declared after a zero-measured-block pilot produced 5.8-8.25 second system-loop delays under realistic overload with 45/45 successful builds and binlogs and no monitor errors. The 30 second hard limit remains far below previously observed sleep contamination of about 882 seconds and multiple hours.")
+$lines.Add('- Earlier invalid roots remain invalid and are never retroactively accepted under a later protocol.')
 $lines.Add('- Every accepted build recorded a root PID; descendant process peaks were reconstructed from full process/parent snapshots.')
 $lines.Add('- `scenario-metrics.csv` reports known Defender/search/update process peaks so external interference remains diagnosable.')
+$lines.Add('')
+$lines.Add('### System-gap warning distribution')
+$lines.Add('')
+$lines.Add('| Scope | Block kind | Repository | Condition | Warning gaps | Minimum (s) | Median (s) | P95 (s) | P99 (s) | Maximum (s) |')
+$lines.Add('|---|---|---|---|---:|---:|---:|---:|---:|---:|')
+foreach ($row in $systemGapDistributionRows) {
+    $minimum = if ($row.WarningGapCount -gt 0) { '{0:F3}' -f $row.MinimumGapSeconds } else { 'n/a' }
+    $median = if ($row.WarningGapCount -gt 0) { '{0:F3}' -f $row.MedianGapSeconds } else { 'n/a' }
+    $p95 = if ($row.WarningGapCount -gt 0) { '{0:F3}' -f $row.P95GapSeconds } else { 'n/a' }
+    $p99 = if ($row.WarningGapCount -gt 0) { '{0:F3}' -f $row.P99GapSeconds } else { 'n/a' }
+    $maximum = if ($row.WarningGapCount -gt 0) { '{0:F3}' -f $row.MaximumGapSeconds } else { 'n/a' }
+    $lines.Add("| $($row.Scope) | $($row.BlockKind) | $($row.Repository) | ``$($row.ConditionKey)`` | $($row.WarningGapCount) | $minimum | $median | $p95 | $p99 | $maximum |")
+}
 $lines.Add('')
 $lines.Add('## Artifacts')
 $lines.Add('')
 $lines.Add("- Scenario metrics: ``$scenarioMetricsPath``")
+$lines.Add("- System-gap warning events: ``$systemGapWarningPath``")
+$lines.Add("- System-gap warning distribution: ``$systemGapDistributionPath``")
 $lines.Add("- Paired block log ratios: ``$pairedRowsPath``")
 $lines.Add("- Comparison summary: ``$comparisonPath``")
 $lines.Add("- Validation: ``$(Join-Path $OutputRoot 'validation.json')``")

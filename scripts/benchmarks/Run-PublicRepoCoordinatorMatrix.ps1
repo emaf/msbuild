@@ -63,7 +63,9 @@ param(
     [int]$CandidateDelaySeconds = 15,
     [double]$CandidateOffsetMinimumSeconds = 14,
     [double]$CandidateOffsetMaximumSeconds = 18,
-    [double]$MaxTelemetryGapSeconds = 5,
+    [double]$SystemGapWarningThresholdSeconds = 5,
+    [Alias('MaxTelemetryGapSeconds')]
+    [double]$MaxSystemCounterGapSeconds = 30,
     [double]$MaxProcessSnapshotGapSeconds = 15,
     [double]$MaxProbeGapSeconds = 15,
     [int]$MaximumBlockAttempts = 3,
@@ -103,9 +105,13 @@ if ($CandidateBuildCount -eq 0 -and $ConditionKeys -contains 'E-candidate-defaul
 if ($CandidateOffsetMinimumSeconds -ge $CandidateOffsetMaximumSeconds) {
     throw 'Candidate offset bounds are invalid.'
 }
-if ($MaximumBlockAttempts -le 0 -or $MaxTelemetryGapSeconds -le 0 -or
+if ($MaximumBlockAttempts -le 0 -or $SystemGapWarningThresholdSeconds -le 0 -or
+    $MaxSystemCounterGapSeconds -le 0 -or
     $MaxProcessSnapshotGapSeconds -le 0 -or $MaxProbeGapSeconds -le 0) {
     throw 'MaximumBlockAttempts and all telemetry gap thresholds must be positive.'
+}
+if ($SystemGapWarningThresholdSeconds -gt $MaxSystemCounterGapSeconds) {
+    throw 'SystemGapWarningThresholdSeconds must not exceed MaxSystemCounterGapSeconds.'
 }
 if ($PrepareOnly -and $SkipPrepare) {
     throw 'PrepareOnly cannot be combined with SkipPrepare.'
@@ -465,6 +471,34 @@ function Get-MaxTimestampGapSeconds {
     return $maximum
 }
 
+function Get-TimestampGapStatistics {
+    param(
+        [object[]]$Rows,
+        [double]$WarningThresholdSeconds
+    )
+
+    $maximum = 0.0
+    $warningMaximum = $null
+    $warningCount = 0
+    for ($index = 1; $index -lt $Rows.Count; $index++) {
+        $gap = ([DateTime]$Rows[$index].timestampUtc - [DateTime]$Rows[$index - 1].timestampUtc).TotalSeconds
+        if ($gap -gt $maximum) {
+            $maximum = $gap
+        }
+        if ($gap -gt $WarningThresholdSeconds) {
+            $warningCount++
+            if ($null -eq $warningMaximum -or $gap -gt $warningMaximum) {
+                $warningMaximum = $gap
+            }
+        }
+    }
+    return [pscustomobject]@{
+        MaximumSeconds = $maximum
+        WarningCount = $warningCount
+        WarningMaximumSeconds = $warningMaximum
+    }
+}
+
 function Wait-ForMachineIdle {
     param([string]$RecordPath)
 
@@ -769,6 +803,7 @@ function Test-ScenarioResult {
     )
 
     $errors = [Collections.Generic.List[string]]::new()
+    $warnings = [Collections.Generic.List[string]]::new()
     $summaryFiles = @(Get-ChildItem (Join-Path $ScenarioRoot 'benchmark') -Filter scenario-summary.csv -ErrorAction SilentlyContinue)
     $runs = @()
     $candidateOffset = $null
@@ -826,6 +861,8 @@ function Test-ScenarioResult {
     $processPath = Join-Path $monitorRoot 'processes.csv'
     $probePath = Join-Path $monitorRoot 'probes.csv'
     $maxSystemGap = $null
+    $systemGapWarningCount = 0
+    $systemGapWarningMaximum = $null
     $maxProcessGap = $null
     $maxProbeGap = $null
     if (-not (Test-Path -LiteralPath $systemPath)) {
@@ -837,9 +874,17 @@ function Test-ScenarioResult {
             $errors.Add('system.csv has fewer than two samples.')
         }
         else {
-            $maxSystemGap = Get-MaxTimestampGapSeconds -Rows $systemRows
-            if ($maxSystemGap -gt $MaxTelemetryGapSeconds) {
-                $errors.Add("Maximum system-counter timestamp gap $([Math]::Round($maxSystemGap, 3)) seconds exceeds $MaxTelemetryGapSeconds seconds.")
+            $systemGapStatistics = Get-TimestampGapStatistics `
+                -Rows $systemRows `
+                -WarningThresholdSeconds $SystemGapWarningThresholdSeconds
+            $maxSystemGap = $systemGapStatistics.MaximumSeconds
+            $systemGapWarningCount = $systemGapStatistics.WarningCount
+            $systemGapWarningMaximum = $systemGapStatistics.WarningMaximumSeconds
+            if ($systemGapWarningCount -gt 0) {
+                $warnings.Add("$systemGapWarningCount system-counter timestamp gap(s) exceeded the $SystemGapWarningThresholdSeconds second warning threshold; maximum $([Math]::Round($systemGapWarningMaximum, 3)) seconds.")
+            }
+            if ($maxSystemGap -gt $MaxSystemCounterGapSeconds) {
+                $errors.Add("Maximum system-counter timestamp gap $([Math]::Round($maxSystemGap, 3)) seconds exceeds the $MaxSystemCounterGapSeconds second hard limit.")
             }
         }
     }
@@ -895,10 +940,15 @@ function Test-ScenarioResult {
         CandidateOffsetSeconds = $candidateOffset
         MaximumTelemetryGapSeconds = $maxSystemGap
         MaximumSystemCounterGapSeconds = $maxSystemGap
+        SystemGapWarningThresholdSeconds = $SystemGapWarningThresholdSeconds
+        SystemGapHardThresholdSeconds = $MaxSystemCounterGapSeconds
+        SystemGapWarningCount = $systemGapWarningCount
+        SystemGapWarningMaximumSeconds = $systemGapWarningMaximum
         MaximumProcessSnapshotGapSeconds = $maxProcessGap
         MaximumProbeGapSeconds = $maxProbeGap
         BuildCount = $runs.Count
         RootProcessIds = @($runs | ForEach-Object { [int]$_.rootProcessId })
+        Warnings = $warnings
         Errors = $errors
     }
     $result | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $ScenarioRoot 'scenario-validation.json') -Encoding UTF8
@@ -1256,7 +1306,7 @@ foreach ($repository in $repositories) {
 }
 
 $runMetadata = [ordered]@{
-    SchemaVersion = 1
+    SchemaVersion = 2
     PlanOnly = [bool]$PlanOnly
     PrepareOnly = [bool]$PrepareOnly
     CreatedUtc = [DateTime]::UtcNow.ToString('O')
@@ -1272,7 +1322,9 @@ $runMetadata = [ordered]@{
     CandidateDelaySeconds = $CandidateDelaySeconds
     CandidateOffsetMinimumSeconds = $CandidateOffsetMinimumSeconds
     CandidateOffsetMaximumSeconds = $CandidateOffsetMaximumSeconds
-    MaxTelemetryGapSeconds = $MaxTelemetryGapSeconds
+    SystemGapWarningThresholdSeconds = $SystemGapWarningThresholdSeconds
+    MaxSystemCounterGapSeconds = $MaxSystemCounterGapSeconds
+    MaxTelemetryGapSeconds = $MaxSystemCounterGapSeconds
     MaxProcessSnapshotGapSeconds = $MaxProcessSnapshotGapSeconds
     MaxProbeGapSeconds = $MaxProbeGapSeconds
     MaximumBlockAttempts = $MaximumBlockAttempts
@@ -1405,6 +1457,9 @@ try {
                             -AttemptNumber $attempt `
                             -OrderIndex $blockRow.OrderIndex `
                             -AttemptRoot $attemptRoot
+                        foreach ($warningMessage in $result.Warnings) {
+                            Write-Warning "$($definition.Key): $warningMessage"
+                        }
                         if (-not $result.Valid) {
                             foreach ($errorMessage in $result.Errors) {
                                 $attemptErrors.Add("$($definition.Key): $errorMessage")

@@ -14,7 +14,7 @@ monitor and matrix orchestrator are Windows-only:
     Independent monitor. It is not part of the harness polling loop. Separate
     processes write high-frequency Windows counters to system.csv, full
     PID/parent/start-time snapshots to processes.csv, and launch responsiveness
-    to probes.csv. Slow snapshots/probes cannot stall strict system continuity.
+    to probes.csv. Slow snapshots/probes cannot stall the system-counter loop.
 
   Run-PublicRepoCoordinatorMatrix.ps1
     Multi-bootstrap matrix orchestrator. It verifies tool/repository identity,
@@ -225,10 +225,29 @@ Any of these invalidates the entire attempted block:
   * a bootstrap, repository, or worktree commit mismatch;
   * a monitor startup/exit/error-log failure;
   * missing system/process/probe telemetry;
-  * a system telemetry timestamp gap above MaxTelemetryGapSeconds (default 5),
-    including a sleep/resume gap; or
+  * a system telemetry timestamp gap above MaxSystemCounterGapSeconds (default
+    30), including a sleep/resume gap; or
   * a process-snapshot or probe gap above its independent, slower-cadence bound
     (defaults 15 seconds).
+
+SystemGapWarningThresholdSeconds defaults to 5 seconds. Each larger system gap
+is responsiveness evidence, not a hard failure: scenario-validation.json and
+scenario-metrics.csv record the per-scenario count and maximum, while the
+analyzer writes every warning event and aggregate minimum/median/p95/p99/maximum
+distributions, separated into discarded warm-up and measured primary blocks.
+Both the warning and hard thresholds are pinned in
+run-metadata.json. MaxTelemetryGapSeconds remains an accepted parameter alias
+for the hard system limit.
+
+This protocol was declared after the zero-measured-block pilot
+priority-pr-primary-final-20260723-153704 repeatedly observed independent
+system-counter delays of 5.8-8.25 seconds under realistic overload while all
+45/45 builds and binlogs succeeded and monitor error logs remained empty. Prior
+known Windows sleep contamination produced about 882-second and multi-hour
+gaps. The 30-second hard limit distinguishes expected scheduler delay, which
+must remain visible, from unusable telemetry interruption or sleep. No measured
+block existed when this protocol changed. Previously invalid roots remain
+invalid and must never be retroactively accepted or reused.
 
 The next attempt reruns every condition in that block in the same order. Warm-up
 blocks are marked and excluded from analysis. The analyzer independently repeats
@@ -315,6 +334,8 @@ At the run root:
 Under analysis:
   validation.json
   scenario-metrics.csv
+  system-gap-warnings.csv
+  system-gap-warning-summary.csv
   paired-block-log-ratios.csv
   comparisons.csv
   report.md
