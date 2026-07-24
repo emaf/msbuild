@@ -4,9 +4,9 @@ Validates and analyzes a Run-PublicRepoCoordinatorMatrix.ps1 run root.
 
 .DESCRIPTION
 Validation is repeated from raw artifacts. Analysis stays within repository and
-block, uses paired log ratios, deterministic block resampling for descriptive
-95% confidence intervals, and exact two-sided sign-flip tests when the number of
-blocks is small enough to enumerate.
+block, uses paired log ratios, deterministic block resampling for 95% confidence
+intervals, and exact two-sided sign-flip tests when the number of blocks is small
+enough to enumerate.
 #>
 [CmdletBinding()]
 param(
@@ -21,6 +21,8 @@ param(
 Set-StrictMode -Version 3.0
 $ErrorActionPreference = 'Stop'
 $culture = [Globalization.CultureInfo]::InvariantCulture
+$minimumInferentialPairedBlocks = 10
+$maximumExactSignFlipBlocks = 20
 
 if (-not (Test-Path -LiteralPath $RunRoot)) {
     throw "RunRoot '$RunRoot' does not exist."
@@ -206,7 +208,7 @@ function Get-ResampledMeanInterval {
 function Get-ExactSignFlipPValue {
     param([double[]]$Values)
 
-    if ($Values.Count -eq 0 -or $Values.Count -gt 20) {
+    if ($Values.Count -eq 0 -or $Values.Count -gt $maximumExactSignFlipBlocks) {
         return $null
     }
     $observed = [Math]::Abs((Get-Average -Values $Values))
@@ -967,6 +969,13 @@ $comparisonDefinitions = @(
         DesignKinds = @('single-build-compatibility')
     },
     [pscustomobject]@{
+        Key = 'A-vs-D'
+        Denominator = 'A-no-coordinator'
+        Numerator = 'D-candidate-default-normal'
+        Description = 'Candidate default-policy Coordinator impact: D divided by A.'
+        DesignKinds = @('paired-priority', 'single-build-compatibility')
+    },
+    [pscustomobject]@{
         Key = 'A-vs-B'
         Denominator = 'A-no-coordinator'
         Numerator = 'B-base-coordinator'
@@ -1057,6 +1066,8 @@ foreach ($group in ($pairedRows | Group-Object Repository,Comparison)) {
     $candidateInterval = Get-ResampledMeanInterval -Values $candidateValues -Seed $stableSeed
     $normalInterval = Get-ResampledMeanInterval -Values $normalValues -Seed ($stableSeed + 1)
     $wallInterval = Get-ResampledMeanInterval -Values $wallValues -Seed ($stableSeed + 2)
+    $hasInferentialEvidence = $rows.Count -ge $minimumInferentialPairedBlocks -and
+        $rows.Count -le $maximumExactSignFlipBlocks
     $comparisonRows.Add([pscustomobject][ordered]@{
         Repository = $rows[0].Repository
         Workload = $metadata.Workload
@@ -1101,14 +1112,11 @@ foreach ($group in ($pairedRows | Group-Object Repository,Comparison)) {
         TotalWallCostCiLowerPercent = Convert-LogEffectToPercent $wallInterval.Lower
         TotalWallCostCiUpperPercent = Convert-LogEffectToPercent $wallInterval.Upper
         TotalWallExactSignFlipP = Get-ExactSignFlipPValue $wallValues
-        AnalysisLabel = if ($metadata.Workload -in @('project-clean', 'solution-clean')) {
-            'Descriptive clean-matrix analysis'
-        }
-        elseif ([int]$metadata.CandidateBuildCount -eq 0) {
-            'Predeclared single-build compatibility analysis'
+        AnalysisLabel = if ($hasInferentialEvidence) {
+            'Inferential paired analysis'
         }
         else {
-            'Predeclared paired analysis'
+            'Descriptive directional paired analysis'
         }
     })
 }
@@ -1124,13 +1132,19 @@ $lines.Add("- Run root: ``$RunRoot``")
 $lines.Add("- Workload: ``$($metadata.Workload)``; repositories analyzed separately.")
 $lines.Add("- Valid blocks: $validPrimaryBlocks primary and $validWarmupBlocks discarded warm-up blocks across $($metadata.Repositories.Count) repositories.")
 $lines.Add("- Effects are geometric paired effects from within-block log ratios. No ratio of independent medians is used.")
-$lines.Add("- Confidence intervals are deterministic descriptive 95% block-resampling intervals ($ResampleIterations iterations; seed $RandomSeed).")
-$lines.Add('- Exact p-values enumerate all sign flips when there are at most 20 paired blocks.')
+$lines.Add("- Confidence intervals are deterministic 95% block-resampling intervals ($ResampleIterations iterations; seed $RandomSeed).")
+$lines.Add("- Exact p-values enumerate all sign flips when there are at most $maximumExactSignFlipBlocks paired blocks.")
 $lines.Add('- Coordinator grant counts remain available through `CoordinatorNodeGrantReceived` messages in each runs.csv binlog.')
 $lines.Add('- Effective auto/manual policy origin is not currently captured in binlogs; this tooling does not change the production protocol.')
-if ($metadata.Workload -in @('project-clean', 'solution-clean')) {
+$inferentialResultCount = @($comparisonRows | Where-Object AnalysisLabel -eq 'Inferential paired analysis').Count
+$descriptiveResultCount = $comparisonRows.Count - $inferentialResultCount
+if ($inferentialResultCount -gt 0) {
     $lines.Add('')
-    $lines.Add('> **Descriptive only:** clean matrices are not powered as the primary priority inference.')
+    $lines.Add("> **Inferential paired evidence:** $inferentialResultCount repository-comparison result(s) have at least $minimumInferentialPairedBlocks valid measured paired blocks and an exact sign-flip test.")
+}
+if ($descriptiveResultCount -gt 0) {
+    $lines.Add('')
+    $lines.Add("> **Descriptive/directional evidence:** $descriptiveResultCount repository-comparison result(s) have fewer than $minimumInferentialPairedBlocks valid measured paired blocks or no exact sign-flip test.")
 }
 $lines.Add('')
 $lines.Add('## Predeclared comparisons')
@@ -1199,6 +1213,9 @@ if ($reportedComparisons -contains 'C-vs-D') {
 }
 if ($reportedComparisons -contains 'A-vs-C') {
     $lines.Add('- `A-vs-C`: candidate compatibility Coordinator overhead relative to the same candidate binary without Coordinator.')
+}
+if ($reportedComparisons -contains 'A-vs-D') {
+    $lines.Add('- `A-vs-D`: candidate default-policy Coordinator impact relative to the same candidate binary without Coordinator.')
 }
 if ($reportedComparisons -contains 'A-vs-B') {
     $lines.Add('- `A-vs-B`: cross-binary reference only; it combines binary and Coordinator differences.')

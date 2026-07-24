@@ -186,7 +186,8 @@ Descriptive clean solution/filter, both repositories, A/E:
     -PrimaryBlocks 3
 
 Single-build compatibility, clean representative project, both repositories,
-A/B/C/D. A complete four-condition Williams design uses four primary blocks:
+A/B/C/D. Four blocks complete one Williams cycle; use ten measured blocks when
+the result is intended as inferential paired evidence:
 
   pwsh .\scripts\benchmarks\Run-PublicRepoCoordinatorMatrix.ps1 @common `
     -OutputRoot '<results>\single-build-project-clean-<timestamp>' `
@@ -195,7 +196,7 @@ A/B/C/D. A complete four-condition Williams design uses four primary blocks:
     -NormalBuildCount 1 `
     -CandidateBuildCount 0 `
     -WarmupBlocks 1 `
-    -PrimaryBlocks 4
+    -PrimaryBlocks 10
 
 Analyze each completed root:
 
@@ -297,6 +298,10 @@ Predeclared comparisons are:
   C-vs-D
     Bundled default reservation/cap policy impact.
 
+  A-vs-D
+    Candidate default-policy Coordinator impact relative to the same candidate
+    binary without Coordinator. Reported whenever A and D are both present.
+
 Single-build compatibility additionally reports:
 
   A-vs-C
@@ -308,10 +313,12 @@ Single-build compatibility additionally reports:
     and Coordinator state differ.
 
 Effects are means of paired within-block log ratios (geometric paired effects),
-never ratios of independent medians. Descriptive 95% intervals use deterministic
-resampling of whole blocks. Exact two-sided sign-flip tests enumerate all signs
-when there are at most 20 blocks. Clean matrices are explicitly descriptive and are not powered as the primary
-priority inference.
+never ratios of independent medians. Deterministic 95% intervals resample whole
+blocks. Exact two-sided sign-flip tests enumerate all signs when there are at
+most 20 blocks. Comparisons with at least ten valid measured paired blocks and
+an available exact sign-flip test are labeled inferential paired evidence.
+Comparisons with fewer than ten paired blocks, including the three-block clean
+solution matrix, remain explicitly descriptive/directional.
 
 Each build writes a binlog listed in runs.csv. Existing
 CoordinatorNodeGrantReceived messages preserve the granted-node count. Binlogs
