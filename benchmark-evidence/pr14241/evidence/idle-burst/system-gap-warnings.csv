@@ -1,0 +1,4 @@
+"Repository","BlockNumber","AnalysisBlockNumber","IsWarmup","AttemptNumber","OrderIndex","ConditionKey","GapIndex","StartUtc","EndUtc","GapSeconds","WarningThresholdSeconds","HardThresholdSeconds","SystemCsv"
+"roslyn","3","2","False","1","1","AUTO-N","102","2026-08-07T23:49:43.6443713Z","2026-08-07T23:49:50.8138812Z","7.1695099","5","30","C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\AUTO-N\monitor\system.csv"
+"roslyn","3","2","False","1","1","AUTO-N","103","2026-08-07T23:49:50.8138812Z","2026-08-07T23:49:56.0752555Z","5.2613743","5","30","C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\AUTO-N\monitor\system.csv"
+"aspire","1","0","True","1","3","F4-H","22","2026-08-08T00:49:44.0475575Z","2026-08-08T00:49:49.5315134Z","5.4839559","5","30","C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\F4-H\monitor\system.csv"

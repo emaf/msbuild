@@ -1,0 +1,11 @@
+{
+  "Valid": true,
+  "Errors": [],
+  "BinlogsReplayed": 200,
+  "GrantEvents": 200,
+  "Scenarios": 40,
+  "MeasuredScenarios": 32,
+  "WarmupScenarios": 8,
+  "MaximumAutoHighGrantDelaySec": 8.8746778,
+  "MinimumAutoHighGrantDelaySec": 0.9694067
+}

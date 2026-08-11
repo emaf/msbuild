@@ -1,0 +1,43 @@
+{
+  "Status": "Running",
+  "ProcessId": 32756,
+  "StartedUtc": "2026-08-07T22:20:11.8607844Z",
+  "OutputRoot": "C:\\perf\\results\\idle-node-burst-matrix-20260807-181942",
+  "MatrixScript": "C:\\Users\\emafern\\.copilot\\repos\\copilot-worktrees\\msbuild\\emaf-fictional-garbanzo\\scripts\\benchmarks\\Run-PublicRepoCoordinatorMatrix.ps1",
+  "ToolingCommit": "068fcdd37763c595b38898533d31f2ff8329e2b2",
+  "Parameters": {
+    "MaxProbeGapSeconds": 15,
+    "CandidateOffsetMinimumSeconds": 14,
+    "WarmupBlocks": 1,
+    "CandidateBootstrapRoot": "C:\\perf\\coordinator-bootstrap-staging\\dcf76ee0204f-F8B91508ED12\\core",
+    "MaxSystemCounterGapSeconds": 30,
+    "MaxProcessSnapshotGapSeconds": 15,
+    "NormalBuildCount": 4,
+    "Workload": "solution-propagated",
+    "RoslynWorkRoot": "C:\\w\\rf",
+    "SystemGapWarningThresholdSeconds": 5,
+    "AspireWorkRoot": "C:\\w\\af",
+    "RoslynExpectedCommit": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+    "ConditionKeys": [
+      "F4-N",
+      "AUTO-N",
+      "F4-H",
+      "AUTO-H"
+    ],
+    "RoslynRoot": "C:\\perf\\repos\\roslyn",
+    "CooldownSeconds": 30,
+    "CandidateDelaySeconds": 15,
+    "PrimaryBlocks": 4,
+    "NodeBudget": 16,
+    "CandidateOffsetMaximumSeconds": 18,
+    "BootstrapStagingRoot": "C:\\perf\\coordinator-bootstrap-staging",
+    "MaximumBlockAttempts": 3,
+    "AspireExpectedCommit": "110a63da8357af437a00d9efc5887ffdcbdfbb3c",
+    "BaseExpectedCommit": "dcf76ee0204f7d94776079b4293c043ccec0ad0c",
+    "AspireRoot": "C:\\perf\\repos\\aspire",
+    "CandidateBuildCount": 1,
+    "CandidateExpectedCommit": "dcf76ee0204f7d94776079b4293c043ccec0ad0c",
+    "OutputRoot": "C:\\perf\\results\\idle-node-burst-matrix-20260807-181942",
+    "BaseBootstrapRoot": "C:\\perf\\coordinator-bootstrap-staging\\dcf76ee0204f-F8B91508ED12\\core"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "PriorityRun": {
+    "BaseCommit": "a6ed776c8af17d3ba790a30e2d171a7191abae55",
+    "BaseMSBuildSha256": "447628A8D2F0186DA89C073BAD32ED80CA30171289E6A0781ED1F7112A220ED5",
+    "CandidateCommit": "8fe6721c8d5899c330b247918c46fb7359193981",
+    "CandidateMSBuildSha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409",
+    "DotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18"
+  },
+  "IdleBurstRun": {
+    "Commit": "dcf76ee0204f7d94776079b4293c043ccec0ad0c",
+    "MSBuildSha256": "F8B91508ED12DA6C4BFE0CF0125AB9705410D32F93CCCB165B4A95FA5F37166B",
+    "DotNetSha256": "CBB1746F9B08DD9825129D451D99869E84E9024E62C804DEDE22C9FB61E0291D"
+  },
+  "Repositories": [
+    {
+      "Name": "Roslyn",
+      "Url": "https://github.com/dotnet/roslyn",
+      "Commit": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+      "Workload": "Compilers.slnf",
+      "TouchedFile": "src\\Compilers\\Core\\Portable\\Diagnostic\\Diagnostic.cs"
+    },
+    {
+      "Name": "Aspire",
+      "Url": "https://github.com/dotnet/aspire",
+      "Commit": "110a63da8357af437a00d9efc5887ffdcbdfbb3c",
+      "Workload": "Aspire-Core.slnf",
+      "TouchedFile": "src\\Aspire.Hosting\\DistributedApplication.cs",
+      "AdditionalArgument": "/p:InstallBrowsersForPlaywright=false"
+    },
+    {
+      "Name": "vs-green",
+      "Url": "https://devdiv.visualstudio.com/DevDiv/_git/vs-green",
+      "Commit": "7eaba546bcd220e97afc66159a63c4051a44d4e6",
+      "Workload": "server\\dirs.proj"
+    }
+  ]
+}

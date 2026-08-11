@@ -1,0 +1,263 @@
+diff --git "a/C:\\Users\\emafern\\.copilot\\session-state\\35130362-3e1d-48c0-ad5a-1ee378155651\\files\\pr14241-benchmark-evidence\\scripts\\product-branch\\Run-PublicRepoCoordinatorBenchmark.ps1" "b/C:\\Users\\emafern\\.copilot\\session-state\\35130362-3e1d-48c0-ad5a-1ee378155651\\files\\pr14241-benchmark-evidence\\scripts\\idle-tooling\\Run-PublicRepoCoordinatorBenchmark.ps1"
+index 74504c289..27c2f576d 100644
+--- "a/C:\\Users\\emafern\\.copilot\\session-state\\35130362-3e1d-48c0-ad5a-1ee378155651\\files\\pr14241-benchmark-evidence\\scripts\\product-branch\\Run-PublicRepoCoordinatorBenchmark.ps1"
++++ "b/C:\\Users\\emafern\\.copilot\\session-state\\35130362-3e1d-48c0-ad5a-1ee378155651\\files\\pr14241-benchmark-evidence\\scripts\\idle-tooling\\Run-PublicRepoCoordinatorBenchmark.ps1"
+@@ -40,18 +40,22 @@ param(
+     [string]$MSBuildDllPath,
+     [switch]$UseDotNetBuild,
+     [int]$NodeBudget = [Environment]::ProcessorCount,
++    [int]$NoCoordinatorNodeCount = [Environment]::ProcessorCount,
+     [int]$Slice = 4,
+     [int]$Reservation = 4,
++    [switch]$AutomaticPolicy,
+     [int]$PriorityAgingThreshold = 3,
+     [int]$NormalBuildCount = 2,
+     [int]$HighBuildCount = 1,
+     [int]$HighDelaySeconds = 10,
+     [int]$Rounds = 1,
+     [string]$TouchFileRelativePath,
++    [string[]]$AdditionalBuildArguments = @(),
+     [string[]]$Scenarios = @('coordinator-priority', 'coordinator-all-normal', 'no-coordinator'),
+     [switch]$Prepare,
+     [switch]$IncludeRestore,
+     [switch]$SkipWarm,
++    [switch]$SkipInternalProcessSampling,
+     [switch]$ShowInstructions
+ )
+ 
+@@ -62,6 +66,9 @@ $RepoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+ $IsWindowsPlatform = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
+     [System.Runtime.InteropServices.OSPlatform]::Windows)
+ $ProcessorCount = [Environment]::ProcessorCount
++if ($NormalBuildCount -le 0 -or $HighBuildCount -lt 0) {
++    throw 'NormalBuildCount must be positive and HighBuildCount must be non-negative.'
++}
+ $CoordinatorEnvironmentVariables = @(
+     'MSBUILDUSECOORDINATOR',
+     'MSBUILDCOORDINATORPIPENAME',
+@@ -194,7 +201,8 @@ function Invoke-Checked {
+ function New-BuildArguments {
+     param(
+         [int]$NodeCount,
+-        [bool]$Restore
++        [bool]$Restore,
++        [string]$BinaryLogPath
+     )
+ 
+     $arguments = [System.Collections.Generic.List[string]]::new()
+@@ -220,6 +228,12 @@ function New-BuildArguments {
+     foreach ($argument in @("/m:$NodeCount", '/v:q', '/nodeReuse:false', '/p:UseSharedCompilation=false')) {
+         [void]$arguments.Add($argument)
+     }
++    if (-not [string]::IsNullOrWhiteSpace($BinaryLogPath)) {
++        [void]$arguments.Add("/bl:$BinaryLogPath;ProjectImports=None")
++    }
++    foreach ($argument in $AdditionalBuildArguments) {
++        [void]$arguments.Add($argument)
++    }
+ 
+     return $arguments
+ }
+@@ -411,8 +425,9 @@ function New-BenchmarkProcess {
+     New-Item -ItemType Directory -Force -Path $runDir | Out-Null
+     $stdoutPath = Join-Path $runDir "$Label.out.log"
+     $stderrPath = Join-Path $runDir "$Label.err.log"
++    $binaryLogPath = Join-Path $runDir "$Label.binlog"
+ 
+-    $arguments = New-BuildArguments -NodeCount $NodeCount -Restore $IncludeRestore
++    $arguments = New-BuildArguments -NodeCount $NodeCount -Restore $IncludeRestore -BinaryLogPath $binaryLogPath
+ 
+     $startInfo = [System.Diagnostics.ProcessStartInfo]::new($DotNetPath)
+     foreach ($argument in $arguments) {
+@@ -427,13 +442,22 @@ function New-BenchmarkProcess {
+     foreach ($environmentVariable in $CoordinatorEnvironmentVariables) {
+         [void]$startInfo.Environment.Remove($environmentVariable)
+     }
++    if (-not [string]::IsNullOrWhiteSpace($DotNetRoot)) {
++        $startInfo.Environment['DOTNET_ROOT'] = $DotNetRoot
++        if ($IsWindowsPlatform) {
++            $startInfo.Environment['DOTNET_ROOT_X64'] = $DotNetRoot
++        }
++        $startInfo.Environment['DOTNET_CLI_TELEMETRY_OPTOUT'] = '1'
++    }
+ 
+     if ($UseCoordinator) {
+         $startInfo.Environment['MSBUILDUSECOORDINATOR'] = '1'
+         $startInfo.Environment['MSBUILDCOORDINATORPIPENAME'] = $PipeName
+         $startInfo.Environment['MSBUILDCOORDINATORNODEBUDGET'] = [string]$NodeBudget
+-        $startInfo.Environment['MSBUILDCOORDINATORHIGHPRIORITYRESERVEDNODES'] = [string]$Reservation
+-        $startInfo.Environment['MSBUILDCOORDINATORMAXNODESPERBUILD'] = [string]$Slice
++        if (-not $AutomaticPolicy) {
++            $startInfo.Environment['MSBUILDCOORDINATORHIGHPRIORITYRESERVEDNODES'] = [string]$Reservation
++            $startInfo.Environment['MSBUILDCOORDINATORMAXNODESPERBUILD'] = [string]$Slice
++        }
+         $startInfo.Environment['MSBUILDCOORDINATORPRIORITYAGINGTHRESHOLD'] = [string]$PriorityAgingThreshold
+         $startInfo.Environment['MSBUILDCOORDINATORBUILDREQUESTPRIORITY'] = $Priority
+     }
+@@ -448,11 +472,13 @@ function New-BenchmarkProcess {
+         priority = $Priority
+         nodes = $NodeCount
+         process = $process
++        rootProcessId = $process.Id
+         stdoutTask = $process.StandardOutput.ReadToEndAsync()
+         stderrTask = $process.StandardError.ReadToEndAsync()
+         stdout = $stdoutPath
+         stderr = $stderrPath
+-        startTime = Get-Date
++        binlog = $binaryLogPath
++        startTime = $process.StartTime
+         endTime = $null
+         exitCode = $null
+         completed = $false
+@@ -467,7 +493,7 @@ function Complete-BenchmarkProcess {
+     }
+ 
+     $Run.process.WaitForExit()
+-    $Run.endTime = Get-Date
++    $Run.endTime = $Run.process.ExitTime
+     $Run.exitCode = $Run.process.ExitCode
+     Set-Content -Path $Run.stdout -Value $Run.stdoutTask.GetAwaiter().GetResult() -Encoding UTF8
+     Set-Content -Path $Run.stderr -Value $Run.stderrTask.GetAwaiter().GetResult() -Encoding UTF8
+@@ -499,10 +525,19 @@ function Restore-And-Warm {
+ 
+     foreach ($worktree in $Worktrees) {
+         if ([string]::IsNullOrWhiteSpace($MSBuildDllPath)) {
+-            Invoke-Checked -FileName $DotNetPath -Arguments @('restore', $BuildPath, '/v:q') -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
++            $restoreArguments = @('restore', $BuildPath, '/v:q') + $AdditionalBuildArguments
++            Invoke-Checked -FileName $DotNetPath -Arguments $restoreArguments -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
+         }
+         else {
+-            Invoke-Checked -FileName $DotNetPath -Arguments @($MSBuildDllPath, $BuildPath, '/restore', '/v:q', '/nodeReuse:false', '/p:UseSharedCompilation=false') -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
++            $restoreArguments = @(
++                $MSBuildDllPath,
++                $BuildPath,
++                '/t:Restore',
++                '/v:q',
++                '/nodeReuse:false',
++                '/p:UseSharedCompilation=false'
++            ) + $AdditionalBuildArguments
++            Invoke-Checked -FileName $DotNetPath -Arguments $restoreArguments -WorkingDirectory $worktree.path -Label "restore-$($worktree.kind)$($worktree.index)"
+         }
+     }
+ 
+@@ -541,7 +576,7 @@ function Invoke-Scenario {
+ 
+     $useCoordinator = $Name -ne 'no-coordinator'
+     $highPriority = if ($Name -eq 'coordinator-priority') { 'High' } else { 'Normal' }
+-    $nodeCount = if ($useCoordinator) { $NodeBudget } else { $ProcessorCount }
++    $nodeCount = if ($useCoordinator) { $NodeBudget } else { $NoCoordinatorNodeCount }
+     $scenarioLabel = "$Name-r$Round"
+     $pipeName = "msbuild-coordinator-$RepositoryName-$PID-$scenarioLabel"
+     $scenarioDir = Join-Path $OutputRoot $scenarioLabel
+@@ -557,7 +592,7 @@ function Invoke-Scenario {
+     $samples = [System.Collections.Generic.List[object]]::new()
+     $scenarioStartTime = Get-Date
+     $timer = [System.Diagnostics.Stopwatch]::StartNew()
+-    $highStarted = $false
++    $highStarted = $HighBuildCount -eq 0
+ 
+     foreach ($worktree in $normalWorktrees) {
+         $runs.Add((New-BenchmarkProcess -Kind 'normal' -Label "normal$($worktree.index)" -WorkingDirectory $worktree.path -NodeCount $nodeCount -Priority 'Normal' -UseCoordinator $useCoordinator -PipeName $pipeName -ScenarioDir $scenarioDir))
+@@ -582,7 +617,7 @@ function Invoke-Scenario {
+         }
+ 
+         $rootIds = @($activeRuns | ForEach-Object { $_.process.Id })
+-        if ($rootIds.Count -gt 0) {
++        if (-not $SkipInternalProcessSampling -and $rootIds.Count -gt 0) {
+             $processes = @(Get-TrackedBenchmarkProcesses -RootProcessIds $rootIds)
+             $workingSetBytes = [int64](Get-PropertySum -Items $processes -PropertyName WorkingSetBytes)
+             $cpuSeconds = Get-PropertySum -Items $processes -PropertyName CpuSeconds
+@@ -614,11 +649,15 @@ function Invoke-Scenario {
+             kind = $run.kind
+             priority = $run.priority
+             nodes = $run.nodes
++            rootProcessId = $run.rootProcessId
++            processStartUtc = $run.startTime.ToUniversalTime().ToString('O')
++            processExitUtc = $run.endTime.ToUniversalTime().ToString('O')
+             exitCode = $run.exitCode
+             startOffsetSec = [Math]::Round(($run.startTime - $scenarioStartTime).TotalSeconds, 2)
+             durationSec = [Math]::Round($duration, 2)
+             stdout = $run.stdout
+             stderr = $run.stderr
++            binlog = $run.binlog
+         }
+     }
+ 
+@@ -638,6 +677,13 @@ function Invoke-Scenario {
+     $highRows = @($resultRows | Where-Object { $_.kind -eq 'high' })
+     $normalDurations = [double[]]@($normalRows | ForEach-Object { [double]$_.durationSec })
+     $highDurations = [double[]]@($highRows | ForEach-Object { [double]$_.durationSec })
++    $totalWallSec = 0.0
++    foreach ($row in $resultRows) {
++        $endOffsetSec = [double]$row.startOffsetSec + [double]$row.durationSec
++        if ($endOffsetSec -gt $totalWallSec) {
++            $totalWallSec = $endOffsetSec
++        }
++    }
+ 
+     [pscustomobject]@{
+         scenario = $Name
+@@ -647,10 +693,11 @@ function Invoke-Scenario {
+         nodeBudget = $NodeBudget
+         slice = $Slice
+         reservation = $Reservation
++        automaticPolicy = [bool]$AutomaticPolicy
+         priorityAgingThreshold = $PriorityAgingThreshold
+         normalBuildCount = $NormalBuildCount
+         highBuildCount = $HighBuildCount
+-        totalWallSec = [Math]::Round($timer.Elapsed.TotalSeconds, 2)
++        totalWallSec = [Math]::Round($totalWallSec, 2)
+         avgNormalDurationSec = [Math]::Round((Get-Average -Values $normalDurations), 2)
+         avgHighDurationSec = [Math]::Round((Get-Average -Values $highDurations), 2)
+         peakProcessCount = $peakProcessCount
+@@ -698,12 +745,19 @@ if ([string]::IsNullOrWhiteSpace($TouchFileRelativePath)) {
+ }
+ 
+ if ([string]::IsNullOrWhiteSpace($DotNetPath)) {
+-    $bootstrapDotNet = Join-Path $RepoRoot 'artifacts\bin\bootstrap\core\dotnet.exe'
++    $dotnetExecutable = if ($IsWindowsPlatform) { 'dotnet.exe' } else { 'dotnet' }
++    $bootstrapDotNet = [IO.Path]::Combine(
++        $RepoRoot,
++        'artifacts',
++        'bin',
++        'bootstrap',
++        'core',
++        $dotnetExecutable)
+     $DotNetPath = if (Test-Path -LiteralPath $bootstrapDotNet) { (Resolve-Path -LiteralPath $bootstrapDotNet).Path } else { 'dotnet' }
+ }
+ 
+ if ([string]::IsNullOrWhiteSpace($MSBuildDllPath)) {
+-    $bootstrapSdkRoot = Join-Path $RepoRoot 'artifacts\bin\bootstrap\core\sdk'
++    $bootstrapSdkRoot = [IO.Path]::Combine($RepoRoot, 'artifacts', 'bin', 'bootstrap', 'core', 'sdk')
+     if (Test-Path -LiteralPath $bootstrapSdkRoot) {
+         $bootstrapSdk = Get-ChildItem -LiteralPath $bootstrapSdkRoot -Directory | Sort-Object Name -Descending | Select-Object -First 1
+         if ($null -ne $bootstrapSdk) {
+@@ -715,6 +769,20 @@ if ([string]::IsNullOrWhiteSpace($MSBuildDllPath)) {
+     }
+ }
+ 
++$DotNetRoot = $null
++if (Test-Path -LiteralPath $DotNetPath -PathType Leaf) {
++    $DotNetPath = (Resolve-Path -LiteralPath $DotNetPath).Path
++    $DotNetRoot = Split-Path -Parent $DotNetPath
++    $env:DOTNET_ROOT = $DotNetRoot
++    if ($IsWindowsPlatform) {
++        $env:DOTNET_ROOT_X64 = $DotNetRoot
++    }
++    $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
++    if (-not (($env:PATH -split [IO.Path]::PathSeparator) -contains $DotNetRoot)) {
++        $env:PATH = "$DotNetRoot$([IO.Path]::PathSeparator)$env:PATH"
++    }
++}
++
+ if ([string]::IsNullOrWhiteSpace($WorkRoot)) {
+     $WorkRoot = Join-Path ([System.IO.Path]::GetTempPath()) "$RepositoryName-coordinator-worktrees-$ProcessorCount"
+ }
+@@ -737,6 +805,7 @@ Write-Host "Logical processors: $ProcessorCount"
+ Write-Host "NodeBudget: $NodeBudget"
+ Write-Host "Slice: $Slice"
+ Write-Host "Reservation: $Reservation"
++Write-Host "AutomaticPolicy: $([bool]$AutomaticPolicy)"
+ Write-Host "PriorityAgingThreshold: $PriorityAgingThreshold"
+ Write-Host "NormalBuildCount: $NormalBuildCount"
+ Write-Host "HighBuildCount: $HighBuildCount"

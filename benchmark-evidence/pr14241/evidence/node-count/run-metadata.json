@@ -1,0 +1,492 @@
+{
+  "SchemaVersion": 2,
+  "PlanOnly": false,
+  "PrepareOnly": false,
+  "CreatedUtc": "2026-08-04T21:56:44.0758690Z",
+  "OutputRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600",
+  "Workload": "solution-clean",
+  "BuildConfiguration": "Release",
+  "WarmupBlocks": 1,
+  "PrimaryBlocks": 6,
+  "NodeBudget": 16,
+  "NormalBuildCount": 1,
+  "CandidateBuildCount": 0,
+  "DesignKind": "single-build-node-count",
+  "CandidateDelaySeconds": 15,
+  "CandidateOffsetMinimumSeconds": 14.0,
+  "CandidateOffsetMaximumSeconds": 18.0,
+  "SystemGapWarningThresholdSeconds": 5.0,
+  "MaxSystemCounterGapSeconds": 30.0,
+  "MaxTelemetryGapSeconds": 30.0,
+  "MaxProcessSnapshotGapSeconds": 15.0,
+  "MaxProbeGapSeconds": 15.0,
+  "MaximumBlockAttempts": 3,
+  "Diagnostics": {
+    "GrantCountLogging": {
+      "ResourceName": "CoordinatorNodeGrantReceived",
+      "Storage": "Per-build binlogs listed in runs.csv",
+      "ExpectedCount": 0
+    },
+    "EffectivePolicyOrigin": {
+      "CapturedInBinlog": false,
+      "Note": "Binlogs record granted node counts but do not currently identify whether effective policy values came from auto or manual configuration."
+    }
+  },
+  "Conditions": [
+    {
+      "Key": "N4",
+      "BootstrapRole": "candidate",
+      "UseCoordinator": false,
+      "ScriptScenario": "no-coordinator",
+      "NodeBudget": 4,
+      "Slice": 0,
+      "Reservation": 0,
+      "CandidatePriority": "Normal",
+      "Description": "Candidate binary without Coordinator at /m:4."
+    },
+    {
+      "Key": "N8",
+      "BootstrapRole": "candidate",
+      "UseCoordinator": false,
+      "ScriptScenario": "no-coordinator",
+      "NodeBudget": 8,
+      "Slice": 0,
+      "Reservation": 0,
+      "CandidatePriority": "Normal",
+      "Description": "Candidate binary without Coordinator at /m:8."
+    },
+    {
+      "Key": "N16",
+      "BootstrapRole": "candidate",
+      "UseCoordinator": false,
+      "ScriptScenario": "no-coordinator",
+      "NodeBudget": 16,
+      "Slice": 0,
+      "Reservation": 0,
+      "CandidatePriority": "Normal",
+      "Description": "Candidate binary without Coordinator at /m:16."
+    }
+  ],
+  "BaseBootstrap": {
+    "Role": "base",
+    "Root": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core",
+    "StagingRoot": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core",
+    "StagingMetadataPath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\staging-metadata.json",
+    "ExpectedCommit": "8fe6721c8d5899c330b247918c46fb7359193981",
+    "ValidationStatus": "Verified",
+    "DotNetPath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+    "SdkVersion": "11.0.100-preview.7.26360.111",
+    "MSBuildDllPath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+    "ProductVersion": "18.10.0-dev.26373.1+8fe6721c8d5899c330b247918c46fb7359193981",
+    "FileVersion": "18.10.0.37301",
+    "DotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18",
+    "MSBuildDllSha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409",
+    "TrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+        "Sha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+        "Sha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.dll",
+        "Sha256": "16A62C48EABBDCAF6D733796926F1082C00D3F7EA0163D8F705F55A33AAF3E23"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.Framework.dll",
+        "Sha256": "04BC2AE7AEFA954064EE11D89290FBF16A6A1BC4AECE528230F070B7177A810E"
+      },
+      {
+        "Name": "MSBuild.Coordinator.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.Coordinator.dll",
+        "Sha256": "AD3F2360F1B243FF7165434D34E9B41B60380244BF6D2D139FFB8AABC7F93C30"
+      }
+    ],
+    "StagedTrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+        "Sha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+        "Sha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.dll",
+        "Sha256": "16A62C48EABBDCAF6D733796926F1082C00D3F7EA0163D8F705F55A33AAF3E23"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.Framework.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.Framework.dll",
+        "Sha256": "04BC2AE7AEFA954064EE11D89290FBF16A6A1BC4AECE528230F070B7177A810E"
+      },
+      {
+        "Name": "MSBuild.Coordinator.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.Coordinator.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.Coordinator.dll",
+        "Sha256": "AD3F2360F1B243FF7165434D34E9B41B60380244BF6D2D139FFB8AABC7F93C30"
+      }
+    ],
+    "DotNetInfo": [
+      ".NET SDK:",
+      " Version:           11.0.100-preview.7.26360.111",
+      " Commit:            50dbab4de2",
+      " Workload version:  11.0.100-manifests.9a1cad8c",
+      " MSBuild version:   18.10.0-dev.26373.1+8fe6721c8",
+      "",
+      "Runtime Environment:",
+      " OS Name:     Windows",
+      " OS Version:  10.0.26200",
+      " OS Platform: Windows",
+      " RID:         win-x64",
+      " Base Path:   C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\",
+      "",
+      ".NET workloads installed:",
+      "There are no installed workloads to display.",
+      "Configured to use workload sets when installing new manifests.",
+      "No workload sets are installed. Run \"dotnet workload restore\" to install a workload set.",
+      "",
+      "Host:",
+      "  Version:      11.0.0-preview.7.26360.111",
+      "  Architecture: x64",
+      "  Commit:       50dbab4de2",
+      "",
+      ".NET SDKs installed:",
+      "  11.0.100-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk]",
+      "",
+      ".NET runtimes installed:",
+      "  Microsoft.AspNetCore.App 11.0.0-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\shared\\Microsoft.AspNetCore.App]",
+      "  Microsoft.NETCore.App 11.0.0-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\shared\\Microsoft.NETCore.App]",
+      "  Microsoft.WindowsDesktop.App 11.0.0-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\shared\\Microsoft.WindowsDesktop.App]",
+      "",
+      "Other architectures found:",
+      "  None",
+      "",
+      "Environment variables:",
+      "  Not set",
+      "",
+      "global.json file:",
+      "  C:\\Users\\emafern\\.copilot\\repos\\copilot-worktrees\\msbuild\\emaf-urban-parakeet\\global.json",
+      "",
+      "Learn more:",
+      "  https://aka.ms/dotnet/info",
+      "",
+      "Download .NET:",
+      "  https://aka.ms/dotnet/download"
+    ]
+  },
+  "CandidateBootstrap": {
+    "Role": "candidate",
+    "Root": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core",
+    "StagingRoot": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core",
+    "StagingMetadataPath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\staging-metadata.json",
+    "ExpectedCommit": "8fe6721c8d5899c330b247918c46fb7359193981",
+    "ValidationStatus": "Verified",
+    "DotNetPath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+    "SdkVersion": "11.0.100-preview.7.26360.111",
+    "MSBuildDllPath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+    "ProductVersion": "18.10.0-dev.26373.1+8fe6721c8d5899c330b247918c46fb7359193981",
+    "FileVersion": "18.10.0.37301",
+    "DotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18",
+    "MSBuildDllSha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409",
+    "TrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+        "Sha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+        "Sha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.dll",
+        "Sha256": "16A62C48EABBDCAF6D733796926F1082C00D3F7EA0163D8F705F55A33AAF3E23"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.Framework.dll",
+        "Sha256": "04BC2AE7AEFA954064EE11D89290FBF16A6A1BC4AECE528230F070B7177A810E"
+      },
+      {
+        "Name": "MSBuild.Coordinator.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.Coordinator.dll",
+        "Sha256": "AD3F2360F1B243FF7165434D34E9B41B60380244BF6D2D139FFB8AABC7F93C30"
+      }
+    ],
+    "StagedTrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+        "Sha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.dll",
+        "Sha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.dll",
+        "Sha256": "16A62C48EABBDCAF6D733796926F1082C00D3F7EA0163D8F705F55A33AAF3E23"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.Framework.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\Microsoft.Build.Framework.dll",
+        "Sha256": "04BC2AE7AEFA954064EE11D89290FBF16A6A1BC4AECE528230F070B7177A810E"
+      },
+      {
+        "Name": "MSBuild.Coordinator.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.Coordinator.dll",
+        "SourcePath": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\MSBuild.Coordinator.dll",
+        "Sha256": "AD3F2360F1B243FF7165434D34E9B41B60380244BF6D2D139FFB8AABC7F93C30"
+      }
+    ],
+    "DotNetInfo": [
+      ".NET SDK:",
+      " Version:           11.0.100-preview.7.26360.111",
+      " Commit:            50dbab4de2",
+      " Workload version:  11.0.100-manifests.9a1cad8c",
+      " MSBuild version:   18.10.0-dev.26373.1+8fe6721c8",
+      "",
+      "Runtime Environment:",
+      " OS Name:     Windows",
+      " OS Version:  10.0.26200",
+      " OS Platform: Windows",
+      " RID:         win-x64",
+      " Base Path:   C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk\\11.0.100-preview.7.26360.111\\",
+      "",
+      ".NET workloads installed:",
+      "There are no installed workloads to display.",
+      "Configured to use workload sets when installing new manifests.",
+      "No workload sets are installed. Run \"dotnet workload restore\" to install a workload set.",
+      "",
+      "Host:",
+      "  Version:      11.0.0-preview.7.26360.111",
+      "  Architecture: x64",
+      "  Commit:       50dbab4de2",
+      "",
+      ".NET SDKs installed:",
+      "  11.0.100-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\sdk]",
+      "",
+      ".NET runtimes installed:",
+      "  Microsoft.AspNetCore.App 11.0.0-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\shared\\Microsoft.AspNetCore.App]",
+      "  Microsoft.NETCore.App 11.0.0-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\shared\\Microsoft.NETCore.App]",
+      "  Microsoft.WindowsDesktop.App 11.0.0-preview.7.26360.111 [C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\shared\\Microsoft.WindowsDesktop.App]",
+      "",
+      "Other architectures found:",
+      "  None",
+      "",
+      "Environment variables:",
+      "  Not set",
+      "",
+      "global.json file:",
+      "  C:\\Users\\emafern\\.copilot\\repos\\copilot-worktrees\\msbuild\\emaf-urban-parakeet\\global.json",
+      "",
+      "Learn more:",
+      "  https://aka.ms/dotnet/info",
+      "",
+      "Download .NET:",
+      "  https://aka.ms/dotnet/download"
+    ]
+  },
+  "Repositories": [
+    {
+      "Name": "roslyn",
+      "Root": "C:\\perf\\repos\\roslyn",
+      "WorkRoot": "C:\\w\\rf",
+      "ExpectedCommit": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+      "ActualCommit": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+      "ValidationStatus": "Verified",
+      "ProjectBuildPath": "src\\Compilers\\CSharp\\Portable\\Microsoft.CodeAnalysis.CSharp.csproj",
+      "ProjectTouchPath": "src\\Compilers\\CSharp\\Portable\\CSharpCompilationOptions.cs",
+      "SolutionBuildPath": "Compilers.slnf",
+      "SolutionTouchPath": "src\\Compilers\\Core\\Portable\\Diagnostic\\Diagnostic.cs",
+      "PreparationSmokeProject": "src\\Compilers\\CSharp\\Portable\\Microsoft.CodeAnalysis.CSharp.csproj",
+      "ExpectedPreparationOutputType": "Library",
+      "AdditionalBuildArguments": [],
+      "BuildPath": "Compilers.slnf",
+      "TouchPath": "src\\Compilers\\Core\\Portable\\Diagnostic\\Diagnostic.cs"
+    },
+    {
+      "Name": "aspire",
+      "Root": "C:\\perf\\repos\\aspire",
+      "WorkRoot": "C:\\w\\af",
+      "ExpectedCommit": "110a63da8357af437a00d9efc5887ffdcbdfbb3c",
+      "ActualCommit": "110a63da8357af437a00d9efc5887ffdcbdfbb3c",
+      "ValidationStatus": "Verified",
+      "ProjectBuildPath": "src\\Aspire.Hosting\\Aspire.Hosting.csproj",
+      "ProjectTouchPath": "src\\Aspire.Hosting\\DistributedApplication.cs",
+      "SolutionBuildPath": "Aspire-Core.slnf",
+      "SolutionTouchPath": "src\\Aspire.Hosting\\DistributedApplication.cs",
+      "PreparationSmokeProject": "src\\Aspire.Dashboard\\Aspire.Dashboard.csproj",
+      "ExpectedPreparationOutputType": "Exe",
+      "AdditionalBuildArguments": [
+        "/p:InstallBrowsersForPlaywright=false"
+      ],
+      "BuildPath": "Aspire-Core.slnf",
+      "TouchPath": "src\\Aspire.Hosting\\DistributedApplication.cs"
+    }
+  ],
+  "OrderDesign": {
+    "Name": "Williams balanced design",
+    "DesignRows": [
+      {
+        "DesignRow": 0,
+        "Items": [
+          "N4",
+          "N8",
+          "N16"
+        ]
+      },
+      {
+        "DesignRow": 1,
+        "Items": [
+          "N8",
+          "N16",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 2,
+        "Items": [
+          "N16",
+          "N4",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 3,
+        "Items": [
+          "N16",
+          "N8",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 4,
+        "Items": [
+          "N4",
+          "N16",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 5,
+        "Items": [
+          "N8",
+          "N4",
+          "N16"
+        ]
+      }
+    ],
+    "PrimaryOrders": [
+      {
+        "DesignRow": 0,
+        "Items": [
+          "N4",
+          "N8",
+          "N16"
+        ]
+      },
+      {
+        "DesignRow": 1,
+        "Items": [
+          "N8",
+          "N16",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 2,
+        "Items": [
+          "N16",
+          "N4",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 3,
+        "Items": [
+          "N16",
+          "N8",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 4,
+        "Items": [
+          "N4",
+          "N16",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 5,
+        "Items": [
+          "N8",
+          "N4",
+          "N16"
+        ]
+      }
+    ],
+    "WarmupOrders": [
+      {
+        "DesignRow": 5,
+        "Items": [
+          "N8",
+          "N4",
+          "N16"
+        ]
+      }
+    ],
+    "Diagnostics": {
+      "PositionCounts": {
+        "N4": [
+          2,
+          2,
+          2
+        ],
+        "N16": [
+          2,
+          2,
+          2
+        ],
+        "N8": [
+          2,
+          2,
+          2
+        ]
+      },
+      "CarryoverCounts": {
+        "N16->N4": 2,
+        "N8->N16": 2,
+        "N16->N8": 2,
+        "N4->N8": 2,
+        "N4->N16": 2,
+        "N8->N4": 2
+      },
+      "PositionImbalance": 0.0,
+      "CarryoverImbalance": 0.0
+    }
+  }
+}

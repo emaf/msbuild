@@ -1,0 +1,17 @@
+{
+  "RunRoot": "C:\\perf\\results\\priority-pr-primary-authoritative-20260723-173319",
+  "ValidatedUtc": "2026-07-24T12:53:40.1062366Z",
+  "Valid": true,
+  "RepositoryCount": 2,
+  "ValidWarmupBlocks": 2,
+  "ValidPrimaryBlocks": 20,
+  "ScenarioCount": 110,
+  "SystemGapWarningThresholdSeconds": 5.0,
+  "SystemGapHardThresholdSeconds": 30.0,
+  "SystemGapWarningCount": 88,
+  "SystemGapWarningMaximumSeconds": 21.2344097,
+  "Errors": [],
+  "Warnings": [
+    "88 accepted system-counter gap(s) exceeded the 5 second warning threshold; maximum 21.234 seconds."
+  ]
+}

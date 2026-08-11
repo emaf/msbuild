@@ -1,0 +1,62 @@
+{
+  "SchemaVersion": 1,
+  "GeneratedUtc": "2026-08-06T17:27:06.7127642Z",
+  "RunRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702",
+  "AcceptedWholeBlockAttemptsOnly": true,
+  "ResampleIterations": 10000,
+  "RandomSeed": 20260806,
+  "AnalysisLabel": "Descriptive directional paired analysis",
+  "Source": {
+    "RepositorySdkCommit": "f7b4c5716faaee8fb8a289aed29118cad955c45f",
+    "RepositorySdkProductVersion": "18.8.0-preview-26302-115+f7b4c5716faaee8fb8a289aed29118cad955c45f",
+    "RepositorySdkDotNetSha256": "D4C9086DCE1DC81BBE7F0DCCB0B96BB3E980CC375E059A731B7F7962220AA19E",
+    "RepositorySdkMSBuildSha256": "EF3F5C82A9269A479AAB3A394CC23849B324B408867270FA2408FF9AD59450D1",
+    "RepositoryName": "vs-green",
+    "RepositoryCommit": "7eaba546bcd220e97afc66159a63c4051a44d4e6",
+    "ContinuityThresholdsSeconds": {
+      "SystemWarning": 5.0,
+      "SystemHard": 30.0,
+      "ProcessHard": 15.0,
+      "ProbeHard": 15.0
+    }
+  },
+  "Analyzer": {
+    "Path": "C:\\Users\\emafern\\.copilot\\session-state\\35130362-3e1d-48c0-ad5a-1ee378155651\\files\\vs-green-node-count-runner\\Analyze-VsGreenNodeCount.ps1",
+    "Sha256": "8A221BE984370E599C0AF9619C11054710AB67DBF3A36CDE1FC7EBDC4DCE6915",
+    "BinlogReplayHelper": "C:\\Users\\emafern\\.copilot\\session-state\\cc809b6e-d056-4c9b-8420-862a317016f3\\files\\node-count-binlog-scan\\bin\\Release\\net11.0\\NodeCountBinlogScan.dll",
+    "BinlogReplayHelperSha256": "501612302685A2FBA61E48B857873B3F1E45ACC325F323FC27A2CAD44514E607",
+    "BinlogReplayDotNet": "C:\\perf\\coordinator-bootstrap-staging\\8fe6721c8d58-1F456A53A870\\core\\dotnet.exe",
+    "BinlogReplayDotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18"
+  },
+  "Counts": {
+    "AcceptedScenarios": 39,
+    "AcceptedWarmupScenarios": 3,
+    "AcceptedMeasuredScenarios": 36,
+    "AcceptedBlocks": 13,
+    "AcceptedWarmupBlocks": 1,
+    "AcceptedMeasuredBlocks": 12,
+    "PreservedInvalidAttempts": 0,
+    "TotalBinlogs": 39,
+    "AcceptedBinlogs": 39,
+    "ReplayedAcceptedBinlogs": 39,
+    "PreparationSmokes": 2,
+    "AcceptedSetupSummaryPlaceholders": 39,
+    "EmptyRestoreOnlySetupSummaryPlaceholders": 39,
+    "ValidatedSuccessfulBuildExits": 39,
+    "ValidatedRootProcessIdsAndTimestamps": 39,
+    "ValidatedNonemptyAcceptedBinlogs": 39,
+    "ValidatedWhitespaceOnlyStderrFiles": 39,
+    "ValidatedCleanPostRestoreStatuses": 39
+  },
+  "InvalidAttempts": [],
+  "OutputFiles": [
+    "report.md",
+    "scenario-metrics.csv",
+    "paired-block-log-ratios.csv",
+    "comparisons.csv",
+    "pressure-summary.csv",
+    "validation.json",
+    "manifest.json",
+    "SHA256SUMS.csv"
+  ]
+}

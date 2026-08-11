@@ -1,0 +1,75 @@
+{
+  "SchemaVersion": 1,
+  "GeneratedUtc": "2026-08-05T12:45:39.7910466Z",
+  "RunRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600",
+  "AcceptedWholeBlockAttemptsOnly": true,
+  "ResampleIterations": 10000,
+  "RandomSeed": 20260805,
+  "AnalysisLabel": "Descriptive directional paired analysis",
+  "Source": {
+    "ToolingCommit": "3029d6fe65db84b4c31064c7f69f2f1a5acd7814",
+    "CandidateCommit": "8fe6721c8d5899c330b247918c46fb7359193981",
+    "CandidateProductVersion": "18.10.0-dev.26373.1+8fe6721c8d5899c330b247918c46fb7359193981",
+    "CandidateDotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18",
+    "CandidateMSBuildSha256": "1F456A53A870607963D61FBA9B80709B34EDF82EA60DB093DF8AF7C6C76A9409",
+    "RoslynCommit": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+    "AspireCommit": "110a63da8357af437a00d9efc5887ffdcbdfbb3c",
+    "ContinuityThresholdsSeconds": {
+      "SystemWarning": 5.0,
+      "SystemHard": 30.0,
+      "ProcessHard": 15.0,
+      "ProbeHard": 15.0
+    }
+  },
+  "Analyzer": {
+    "Path": "C:\\Users\\emafern\\.copilot\\session-state\\cc809b6e-d056-4c9b-8420-862a317016f3\\files\\node-count-clean-solution-analyzer\\Analyze-NodeCountCleanSolution.ps1",
+    "Sha256": "F9D8380E1DC3561B79FD82AD818BCDC7E808EA80EAA34EA6F6D89BFEFDDC7620",
+    "BinlogReplayHelper": "C:\\Users\\emafern\\.copilot\\session-state\\cc809b6e-d056-4c9b-8420-862a317016f3\\files\\node-count-binlog-scan\\bin\\Release\\net11.0\\NodeCountBinlogScan.dll",
+    "BinlogReplayHelperSha256": "501612302685A2FBA61E48B857873B3F1E45ACC325F323FC27A2CAD44514E607"
+  },
+  "Counts": {
+    "AcceptedScenarios": 42,
+    "AcceptedWarmupScenarios": 6,
+    "AcceptedMeasuredScenarios": 36,
+    "AcceptedBlocks": 14,
+    "AcceptedWarmupBlocks": 2,
+    "AcceptedMeasuredBlocks": 12,
+    "PreservedInvalidAttempts": 1,
+    "TotalBinlogs": 43,
+    "AcceptedBinlogs": 42,
+    "ReplayedAcceptedBinlogs": 42,
+    "PreparationSmokes": 4,
+    "AcceptedSetupSummaryPlaceholders": 42,
+    "EmptyRestoreOnlySetupSummaryPlaceholders": 42,
+    "ValidatedSuccessfulBuildExits": 42,
+    "ValidatedRootProcessIdsAndTimestamps": 42,
+    "ValidatedNonemptyAcceptedBinlogs": 42,
+    "ValidatedWhitespaceOnlyStderrFiles": 42,
+    "ValidatedCleanPostRestoreStatuses": 42
+  },
+  "InvalidAttempts": [
+    {
+      "Repository": "aspire",
+      "BlockNumber": 3,
+      "AnalysisBlockNumber": 2,
+      "AttemptNumber": 1,
+      "CompletedUtc": "2026-08-05T10:53:05.2564666Z",
+      "Errors": [
+        "N8: Maximum system-counter timestamp gap 31519.038 seconds exceeds the 30 second hard limit.",
+        "N8: Maximum process-snapshot timestamp gap 31523.759 seconds exceeds 15 seconds.",
+        "N8: Maximum probe timestamp gap 31523.797 seconds exceeds 15 seconds."
+      ],
+      "Marker": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-003\\attempt-01\\invalid-attempt.json"
+    }
+  ],
+  "OutputFiles": [
+    "report.md",
+    "scenario-metrics.csv",
+    "paired-block-log-ratios.csv",
+    "comparisons.csv",
+    "pressure-summary.csv",
+    "validation.json",
+    "manifest.json",
+    "SHA256SUMS.csv"
+  ]
+}

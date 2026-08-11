@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <HoldSeconds Condition="'$(HoldSeconds)' == ''">1</HoldSeconds>
+  </PropertyGroup>
+  <Target Name="Build">
+    <Message Text="Holding grant for $(HoldSeconds) second(s)." Importance="High" />
+    <Exec Command="ping.exe -n $([MSBuild]::Add($(HoldSeconds), 1)) 127.0.0.1 &gt;nul" />
+  </Target>
+</Project>

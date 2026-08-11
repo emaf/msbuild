@@ -1,0 +1,37 @@
+{
+  "CapturedUtc": "2026-08-10T21:52:02.7421960Z",
+  "CPU": {
+    "Name": "AMD EPYC 7763 64-Core Processor                ",
+    "NumberOfCores": 8,
+    "NumberOfLogicalProcessors": 16,
+    "SocketDesignation": "None",
+    "Manufacturer": "AuthenticAMD",
+    "VirtualizationFirmwareEnabled": true,
+    "VMMonitorModeExtensions": false
+  },
+  "System": {
+    "Manufacturer": "Microsoft Corporation",
+    "Model": "Virtual Machine",
+    "TotalPhysicalMemory": 68665831424,
+    "NumberOfProcessors": 1,
+    "NumberOfLogicalProcessors": 16,
+    "HypervisorPresent": true,
+    "SystemType": "x64-based PC"
+  },
+  "OS": {
+    "Caption": "Microsoft Windows 11 Enterprise",
+    "Version": "10.0.26200",
+    "BuildNumber": "26200",
+    "OSArchitecture": "64-bit",
+    "CSName": "CPC-emafe-FYD8H"
+  },
+  "PowerPlan": "Power Scheme GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c  (High performance)",
+  "Storage": {
+    "FriendlyName": "Msft Virtual Disk",
+    "MediaType": "Unspecified",
+    "BusType": "SAS",
+    "Size": 2199023255552,
+    "HealthStatus": "Healthy"
+  },
+  "PowerShell": "7.6.4"
+}

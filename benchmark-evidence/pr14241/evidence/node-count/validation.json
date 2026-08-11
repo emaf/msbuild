@@ -1,0 +1,234 @@
+{
+  "SchemaVersion": 1,
+  "GeneratedUtc": "2026-08-05T12:45:39.6651692Z",
+  "Valid": true,
+  "Errors": [],
+  "Warnings": [
+    "5 accepted system-counter gap(s) exceeded the 5-second warning threshold; maximum 8.7479318 seconds. All remained below the 30-second hard limit."
+  ],
+  "Counts": {
+    "AcceptedScenarios": 42,
+    "AcceptedWarmupScenarios": 6,
+    "AcceptedMeasuredScenarios": 36,
+    "AcceptedBlocks": 14,
+    "AcceptedWarmupBlocks": 2,
+    "AcceptedMeasuredBlocks": 12,
+    "PreservedInvalidAttempts": 1,
+    "TotalBinlogs": 43,
+    "AcceptedBinlogs": 42,
+    "ReplayedAcceptedBinlogs": 42,
+    "PreparationSmokes": 4,
+    "AcceptedSetupSummaryPlaceholders": 42,
+    "EmptyRestoreOnlySetupSummaryPlaceholders": 42,
+    "ValidatedSuccessfulBuildExits": 42,
+    "ValidatedRootProcessIdsAndTimestamps": 42,
+    "ValidatedNonemptyAcceptedBinlogs": 42,
+    "ValidatedWhitespaceOnlyStderrFiles": 42,
+    "ValidatedCleanPostRestoreStatuses": 42
+  },
+  "Continuity": {
+    "SystemWarningThresholdSeconds": 5.0,
+    "SystemHardThresholdSeconds": 30.0,
+    "ProcessHardThresholdSeconds": 15.0,
+    "ProbeHardThresholdSeconds": 15.0,
+    "AcceptedSystemWarningCount": 5,
+    "AcceptedSystemWarningMaximumSeconds": 8.7479318,
+    "AcceptedMaximumSystemGapSeconds": 8.7479318,
+    "AcceptedMaximumProcessGapSeconds": 5.1823078,
+    "AcceptedMaximumProbeGapSeconds": 5.6388709
+  },
+  "Coordinator": {
+    "ProcessSamples": 0,
+    "StdoutGrantMessages": 0,
+    "BinlogGrantEvents": 0,
+    "BinlogEventsReplayed": 16357347
+  },
+  "Order": {
+    "RecordedPositionImbalance": 0.0,
+    "RecordedCarryoverImbalance": 0.0,
+    "AcceptedPositionImbalance": 0.0,
+    "AcceptedCarryoverImbalance": 0.0,
+    "PositionCounts": {
+      "N16": [
+        4,
+        4,
+        4
+      ],
+      "N8": [
+        4,
+        4,
+        4
+      ],
+      "N4": [
+        4,
+        4,
+        4
+      ]
+    },
+    "CarryoverCounts": {
+      "N16->N4": 4,
+      "N4->N8": 4,
+      "N4->N16": 4,
+      "N16->N8": 4,
+      "N8->N16": 4,
+      "N8->N4": 4
+    }
+  },
+  "KeepAwake": {
+    "RequestedUtc": "2026-08-04T21:56:44.7137103Z",
+    "PreviousExecutionState": 2147483648,
+    "RestoredUtc": "2026-08-05T12:24:36.7137159Z",
+    "RestoreResult": 2147483649,
+    "Restored": true
+  },
+  "GitSnapshots": [
+    {
+      "Path": "C:\\w\\rf\\normal1",
+      "Head": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+      "Clean": true,
+      "Status": []
+    },
+    {
+      "Path": "C:\\w\\af\\normal1",
+      "Head": "110a63da8357af437a00d9efc5887ffdcbdfbb3c",
+      "Clean": true,
+      "Status": []
+    },
+    {
+      "Path": "C:\\Users\\emafern\\.copilot\\repos\\copilot-worktrees\\msbuild\\emaf-crispy-waddle",
+      "Head": "3029d6fe65db84b4c31064c7f69f2f1a5acd7814",
+      "Clean": true,
+      "Status": []
+    }
+  ],
+  "ConflictingProcesses": [],
+  "InvalidAttempts": [
+    {
+      "Repository": "aspire",
+      "BlockNumber": 3,
+      "AnalysisBlockNumber": 2,
+      "AttemptNumber": 1,
+      "CompletedUtc": "2026-08-05T10:53:05.2564666Z",
+      "Errors": [
+        "N8: Maximum system-counter timestamp gap 31519.038 seconds exceeds the 30 second hard limit.",
+        "N8: Maximum process-snapshot timestamp gap 31523.759 seconds exceeds 15 seconds.",
+        "N8: Maximum probe timestamp gap 31523.797 seconds exceeds 15 seconds."
+      ],
+      "Marker": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-003\\attempt-01\\invalid-attempt.json"
+    }
+  ],
+  "AcceptedAttempts": [
+    {
+      "Repository": "roslyn",
+      "BlockNumber": 1,
+      "AnalysisBlockNumber": 0,
+      "IsWarmup": true,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\roslyn\\block-001\\attempt-01"
+    },
+    {
+      "Repository": "roslyn",
+      "BlockNumber": 2,
+      "AnalysisBlockNumber": 1,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\roslyn\\block-002\\attempt-01"
+    },
+    {
+      "Repository": "roslyn",
+      "BlockNumber": 3,
+      "AnalysisBlockNumber": 2,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\roslyn\\block-003\\attempt-01"
+    },
+    {
+      "Repository": "roslyn",
+      "BlockNumber": 4,
+      "AnalysisBlockNumber": 3,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\roslyn\\block-004\\attempt-01"
+    },
+    {
+      "Repository": "roslyn",
+      "BlockNumber": 5,
+      "AnalysisBlockNumber": 4,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\roslyn\\block-005\\attempt-01"
+    },
+    {
+      "Repository": "roslyn",
+      "BlockNumber": 6,
+      "AnalysisBlockNumber": 5,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\roslyn\\block-006\\attempt-01"
+    },
+    {
+      "Repository": "roslyn",
+      "BlockNumber": 7,
+      "AnalysisBlockNumber": 6,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\roslyn\\block-007\\attempt-01"
+    },
+    {
+      "Repository": "aspire",
+      "BlockNumber": 1,
+      "AnalysisBlockNumber": 0,
+      "IsWarmup": true,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-001\\attempt-01"
+    },
+    {
+      "Repository": "aspire",
+      "BlockNumber": 2,
+      "AnalysisBlockNumber": 1,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-002\\attempt-01"
+    },
+    {
+      "Repository": "aspire",
+      "BlockNumber": 3,
+      "AnalysisBlockNumber": 2,
+      "IsWarmup": false,
+      "AttemptNumber": 2,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-003\\attempt-02"
+    },
+    {
+      "Repository": "aspire",
+      "BlockNumber": 4,
+      "AnalysisBlockNumber": 3,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-004\\attempt-01"
+    },
+    {
+      "Repository": "aspire",
+      "BlockNumber": 5,
+      "AnalysisBlockNumber": 4,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-005\\attempt-01"
+    },
+    {
+      "Repository": "aspire",
+      "BlockNumber": 6,
+      "AnalysisBlockNumber": 5,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-006\\attempt-01"
+    },
+    {
+      "Repository": "aspire",
+      "BlockNumber": 7,
+      "AnalysisBlockNumber": 6,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\node-count-clean-solution-20260804-175600\\aspire\\block-007\\attempt-01"
+    }
+  ]
+}

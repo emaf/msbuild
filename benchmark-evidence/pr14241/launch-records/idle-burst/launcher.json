@@ -1,0 +1,8 @@
+{
+  "ProcessId": 32756,
+  "LaunchedUtc": "2026-08-07T22:20:10.8256792Z",
+  "OutputRoot": "C:\\perf\\results\\idle-node-burst-matrix-20260807-181942",
+  "Stdout": "C:\\perf\\benchmark-launches\\idle-node-burst-matrix-20260807-181942\\stdout.log",
+  "Stderr": "C:\\perf\\benchmark-launches\\idle-node-burst-matrix-20260807-181942\\stderr.log",
+  "Launcher": "C:\\Users\\emafern\\.copilot\\session-state\\2596e309-a02c-4ec8-9f25-4d465602f463\\files\\idle-node-burst-validation\\Launch-AuthoritativeMatrix.ps1"
+}

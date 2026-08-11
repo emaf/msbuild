@@ -1,0 +1,198 @@
+{
+  "SchemaVersion": 1,
+  "GeneratedUtc": "2026-08-06T17:27:06.5755599Z",
+  "Valid": true,
+  "Errors": [],
+  "Warnings": [],
+  "Counts": {
+    "AcceptedScenarios": 39,
+    "AcceptedWarmupScenarios": 3,
+    "AcceptedMeasuredScenarios": 36,
+    "AcceptedBlocks": 13,
+    "AcceptedWarmupBlocks": 1,
+    "AcceptedMeasuredBlocks": 12,
+    "PreservedInvalidAttempts": 0,
+    "TotalBinlogs": 39,
+    "AcceptedBinlogs": 39,
+    "ReplayedAcceptedBinlogs": 39,
+    "PreparationSmokes": 2,
+    "AcceptedSetupSummaryPlaceholders": 39,
+    "EmptyRestoreOnlySetupSummaryPlaceholders": 39,
+    "ValidatedSuccessfulBuildExits": 39,
+    "ValidatedRootProcessIdsAndTimestamps": 39,
+    "ValidatedNonemptyAcceptedBinlogs": 39,
+    "ValidatedWhitespaceOnlyStderrFiles": 39,
+    "ValidatedCleanPostRestoreStatuses": 39
+  },
+  "Continuity": {
+    "SystemWarningThresholdSeconds": 5.0,
+    "SystemHardThresholdSeconds": 30.0,
+    "ProcessHardThresholdSeconds": 15.0,
+    "ProbeHardThresholdSeconds": 15.0,
+    "AcceptedSystemWarningCount": 0,
+    "AcceptedSystemWarningMaximumSeconds": null,
+    "AcceptedMaximumSystemGapSeconds": 2.0158078,
+    "AcceptedMaximumProcessGapSeconds": 5.0498929,
+    "AcceptedMaximumProbeGapSeconds": 5.0626686
+  },
+  "Coordinator": {
+    "ProcessSamples": 0,
+    "StdoutGrantMessages": 0,
+    "BinlogGrantEvents": 0,
+    "BinlogEventsReplayed": 3969656
+  },
+  "Order": {
+    "RecordedPositionImbalance": 0.0,
+    "RecordedCarryoverImbalance": 0.0,
+    "AcceptedPositionImbalance": 0.0,
+    "AcceptedCarryoverImbalance": 0.0,
+    "PositionCounts": {
+      "N16": [
+        4,
+        4,
+        4
+      ],
+      "N4": [
+        4,
+        4,
+        4
+      ],
+      "N8": [
+        4,
+        4,
+        4
+      ]
+    },
+    "CarryoverCounts": {
+      "N16->N8": 4,
+      "N4->N8": 4,
+      "N16->N4": 4,
+      "N8->N4": 4,
+      "N8->N16": 4,
+      "N4->N16": 4
+    }
+  },
+  "KeepAwake": {
+    "RequestedUtc": "2026-08-06T15:17:05.8996388Z",
+    "PreviousExecutionState": 2147483648,
+    "RestoredUtc": "2026-08-06T17:21:07.5393333Z",
+    "RestoreResult": 2147483649,
+    "Restored": true
+  },
+  "GitSnapshots": [
+    {
+      "Path": "C:\\w\\vf\\normal1",
+      "Head": "7eaba546bcd220e97afc66159a63c4051a44d4e6",
+      "Clean": true,
+      "Status": []
+    }
+  ],
+  "ConflictingProcesses": [],
+  "InvalidAttempts": [],
+  "AcceptedAttempts": [
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 1,
+      "AnalysisBlockNumber": 0,
+      "IsWarmup": true,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-001\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 2,
+      "AnalysisBlockNumber": 1,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-002\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 3,
+      "AnalysisBlockNumber": 2,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-003\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 4,
+      "AnalysisBlockNumber": 3,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-004\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 5,
+      "AnalysisBlockNumber": 4,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-005\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 6,
+      "AnalysisBlockNumber": 5,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-006\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 7,
+      "AnalysisBlockNumber": 6,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-007\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 8,
+      "AnalysisBlockNumber": 7,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-008\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 9,
+      "AnalysisBlockNumber": 8,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-009\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 10,
+      "AnalysisBlockNumber": 9,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-010\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 11,
+      "AnalysisBlockNumber": 10,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-011\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 12,
+      "AnalysisBlockNumber": 11,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-012\\attempt-01"
+    },
+    {
+      "Repository": "vs-green",
+      "BlockNumber": 13,
+      "AnalysisBlockNumber": 12,
+      "IsWarmup": false,
+      "AttemptNumber": 1,
+      "AttemptRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702\\vs-green\\block-013\\attempt-01"
+    }
+  ]
+}

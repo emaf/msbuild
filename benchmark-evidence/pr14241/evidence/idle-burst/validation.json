@@ -1,0 +1,17 @@
+{
+  "RunRoot": "C:\\perf\\results\\idle-node-burst-matrix-20260807-181942",
+  "ValidatedUtc": "2026-08-08T02:01:21.5984189Z",
+  "Valid": true,
+  "RepositoryCount": 2,
+  "ValidWarmupBlocks": 2,
+  "ValidPrimaryBlocks": 8,
+  "ScenarioCount": 40,
+  "SystemGapWarningThresholdSeconds": 5.0,
+  "SystemGapHardThresholdSeconds": 30.0,
+  "SystemGapWarningCount": 3,
+  "SystemGapWarningMaximumSeconds": 7.1695099,
+  "Errors": [],
+  "Warnings": [
+    "3 accepted system-counter gap(s) exceeded the 5 second warning threshold; maximum 7.17 seconds."
+  ]
+}

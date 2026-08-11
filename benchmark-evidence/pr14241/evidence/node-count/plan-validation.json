@@ -1,0 +1,33 @@
+{
+  "Valid": true,
+  "Errors": [],
+  "PrimaryOrderDiagnostics": {
+    "PositionCounts": {
+      "N4": [
+        2,
+        2,
+        2
+      ],
+      "N16": [
+        2,
+        2,
+        2
+      ],
+      "N8": [
+        2,
+        2,
+        2
+      ]
+    },
+    "CarryoverCounts": {
+      "N16->N4": 2,
+      "N8->N16": 2,
+      "N16->N8": 2,
+      "N4->N8": 2,
+      "N4->N16": 2,
+      "N8->N4": 2
+    },
+    "PositionImbalance": 0.0,
+    "CarryoverImbalance": 0.0
+  }
+}

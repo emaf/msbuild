@@ -1,0 +1,45 @@
+.NET SDK:
+ Version:           11.0.100-preview.7.26360.111
+ Commit:            50dbab4de2
+ Workload version:  11.0.100-manifests.9a1cad8c
+ MSBuild version:   18.10.0-dev.26373.1+8fe6721c8
+
+Runtime Environment:
+ OS Name:     Windows
+ OS Version:  10.0.26200
+ OS Platform: Windows
+ RID:         win-x64
+ Base Path:   C:\perf\coordinator-bootstrap-staging\8fe6721c8d58-1F456A53A870\core\sdk\11.0.100-preview.7.26360.111\
+
+.NET workloads installed:
+There are no installed workloads to display.
+Configured to use workload sets when installing new manifests.
+No workload sets are installed. Run "dotnet workload restore" to install a workload set.
+
+Host:
+  Version:      11.0.0-preview.7.26360.111
+  Architecture: x64
+  Commit:       50dbab4de2
+
+.NET SDKs installed:
+  11.0.100-preview.7.26360.111 [C:\perf\coordinator-bootstrap-staging\8fe6721c8d58-1F456A53A870\core\sdk]
+
+.NET runtimes installed:
+  Microsoft.AspNetCore.App 11.0.0-preview.7.26360.111 [C:\perf\coordinator-bootstrap-staging\8fe6721c8d58-1F456A53A870\core\shared\Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 11.0.0-preview.7.26360.111 [C:\perf\coordinator-bootstrap-staging\8fe6721c8d58-1F456A53A870\core\shared\Microsoft.NETCore.App]
+  Microsoft.WindowsDesktop.App 11.0.0-preview.7.26360.111 [C:\perf\coordinator-bootstrap-staging\8fe6721c8d58-1F456A53A870\core\shared\Microsoft.WindowsDesktop.App]
+
+Other architectures found:
+  None
+
+Environment variables:
+  Not set
+
+global.json file:
+  C:\Users\emafern\.copilot\repos\copilot-worktrees\msbuild\emaf-urban-parakeet\global.json
+
+Learn more:
+  https://aka.ms/dotnet/info
+
+Download .NET:
+  https://aka.ms/dotnet/download

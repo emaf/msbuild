@@ -1,0 +1,502 @@
+{
+  "SchemaVersion": 2,
+  "PlanOnly": false,
+  "PrepareOnly": false,
+  "CreatedUtc": "2026-08-06T15:17:05.2884018Z",
+  "OutputRoot": "C:\\perf\\results\\vs-green-node-count-clean-server-20260806-111702",
+  "Workload": "solution-clean",
+  "BuildConfiguration": "Debug",
+  "NodeRoot": "C:\\perf\\tools\\node-v22.23.2-win-x64",
+  "WarmupBlocks": 1,
+  "PrimaryBlocks": 12,
+  "NodeBudget": 16,
+  "NormalBuildCount": 1,
+  "CandidateBuildCount": 0,
+  "DesignKind": "single-build-node-count",
+  "CandidateDelaySeconds": 15,
+  "CandidateOffsetMinimumSeconds": 14.0,
+  "CandidateOffsetMaximumSeconds": 18.0,
+  "SystemGapWarningThresholdSeconds": 5.0,
+  "MaxSystemCounterGapSeconds": 30.0,
+  "MaxTelemetryGapSeconds": 30.0,
+  "MaxProcessSnapshotGapSeconds": 15.0,
+  "MaxProbeGapSeconds": 15.0,
+  "MaximumBlockAttempts": 3,
+  "Diagnostics": {
+    "GrantCountLogging": {
+      "ResourceName": "CoordinatorNodeGrantReceived",
+      "Storage": "Per-build binlogs listed in runs.csv",
+      "ExpectedCount": 0
+    },
+    "EffectivePolicyOrigin": {
+      "CapturedInBinlog": false,
+      "Note": "Binlogs record granted node counts but do not currently identify whether effective policy values came from auto or manual configuration."
+    }
+  },
+  "Conditions": [
+    {
+      "Key": "N4",
+      "BootstrapRole": "candidate",
+      "UseCoordinator": false,
+      "ScriptScenario": "no-coordinator",
+      "NodeBudget": 4,
+      "Slice": 0,
+      "Reservation": 0,
+      "CandidatePriority": "Normal",
+      "Description": "Candidate binary without Coordinator at /m:4."
+    },
+    {
+      "Key": "N8",
+      "BootstrapRole": "candidate",
+      "UseCoordinator": false,
+      "ScriptScenario": "no-coordinator",
+      "NodeBudget": 8,
+      "Slice": 0,
+      "Reservation": 0,
+      "CandidatePriority": "Normal",
+      "Description": "Candidate binary without Coordinator at /m:8."
+    },
+    {
+      "Key": "N16",
+      "BootstrapRole": "candidate",
+      "UseCoordinator": false,
+      "ScriptScenario": "no-coordinator",
+      "NodeBudget": 16,
+      "Slice": 0,
+      "Reservation": 0,
+      "CandidatePriority": "Normal",
+      "Description": "Candidate binary without Coordinator at /m:16."
+    }
+  ],
+  "BaseBootstrap": {
+    "Role": "base",
+    "Root": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115",
+    "StagingRoot": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core",
+    "StagingMetadataPath": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\staging-metadata.json",
+    "ExpectedCommit": "f7b4c5716faaee8fb8a289aed29118cad955c45f",
+    "ValidationStatus": "Verified",
+    "DotNetPath": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\dotnet.exe",
+    "SdkVersion": "11.0.100-preview.5.26302.115",
+    "MSBuildDllPath": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+    "ProductVersion": "18.8.0-preview-26302-115+f7b4c5716faaee8fb8a289aed29118cad955c45f",
+    "FileVersion": "18.8.0.30315",
+    "DotNetSha256": "D4C9086DCE1DC81BBE7F0DCCB0B96BB3E980CC375E059A731B7F7962220AA19E",
+    "MSBuildDllSha256": "EF3F5C82A9269A479AAB3A394CC23849B324B408867270FA2408FF9AD59450D1",
+    "TrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\dotnet.exe",
+        "Sha256": "D4C9086DCE1DC81BBE7F0DCCB0B96BB3E980CC375E059A731B7F7962220AA19E"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+        "Sha256": "EF3F5C82A9269A479AAB3A394CC23849B324B408867270FA2408FF9AD59450D1"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.dll",
+        "Sha256": "73DB56E38B0809AA091CB56ACB2B6DDD8BA24A8E49A5742F3318CF4E2814AC83"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.Framework.dll",
+        "Sha256": "FB94416EBE0CBE0541BFD3E9756B7A7E192AAD4BB54B1490DF658DA9B1DF394C"
+      }
+    ],
+    "StagedTrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\dotnet.exe",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\dotnet.exe",
+        "Sha256": "D4C9086DCE1DC81BBE7F0DCCB0B96BB3E980CC375E059A731B7F7962220AA19E"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+        "Sha256": "EF3F5C82A9269A479AAB3A394CC23849B324B408867270FA2408FF9AD59450D1"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.dll",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.dll",
+        "Sha256": "73DB56E38B0809AA091CB56ACB2B6DDD8BA24A8E49A5742F3318CF4E2814AC83"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.Framework.dll",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.Framework.dll",
+        "Sha256": "FB94416EBE0CBE0541BFD3E9756B7A7E192AAD4BB54B1490DF658DA9B1DF394C"
+      }
+    ],
+    "DotNetInfo": [
+      ".NET SDK:",
+      " Version:           11.0.100-preview.5.26302.115",
+      " Commit:            f7b4c5716f",
+      " Workload version:  11.0.100-manifests.079a891b",
+      " MSBuild version:   18.8.0-preview-26302-115+f7b4c5716",
+      "",
+      "Runtime Environment:",
+      " OS Name:     Windows",
+      " OS Version:  10.0.26200",
+      " OS Platform: Windows",
+      " RID:         win-x64",
+      " Base Path:   C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\",
+      "",
+      ".NET workloads installed:",
+      "There are no installed workloads to display.",
+      "Configured to use workload sets when installing new manifests.",
+      "No workload sets are installed. Run \"dotnet workload restore\" to install a workload set.",
+      "",
+      "Host:",
+      "  Version:      11.0.0-preview.5.26302.115",
+      "  Architecture: x64",
+      "  Commit:       f7b4c5716f",
+      "",
+      ".NET SDKs installed:",
+      "  11.0.100-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk]",
+      "",
+      ".NET runtimes installed:",
+      "  Microsoft.AspNetCore.App 11.0.0-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\shared\\Microsoft.AspNetCore.App]",
+      "  Microsoft.NETCore.App 11.0.0-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\shared\\Microsoft.NETCore.App]",
+      "  Microsoft.WindowsDesktop.App 11.0.0-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\shared\\Microsoft.WindowsDesktop.App]",
+      "",
+      "Other architectures found:",
+      "  None",
+      "",
+      "Environment variables:",
+      "  Not set",
+      "",
+      "global.json file:",
+      "  C:\\Users\\emafern\\.copilot\\repos\\copilot-worktrees\\msbuild\\emaf-urban-parakeet\\global.json",
+      "",
+      "Learn more:",
+      "  https://aka.ms/dotnet/info",
+      "",
+      "Download .NET:",
+      "  https://aka.ms/dotnet/download"
+    ]
+  },
+  "CandidateBootstrap": {
+    "Role": "candidate",
+    "Root": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115",
+    "StagingRoot": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core",
+    "StagingMetadataPath": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\staging-metadata.json",
+    "ExpectedCommit": "f7b4c5716faaee8fb8a289aed29118cad955c45f",
+    "ValidationStatus": "Verified",
+    "DotNetPath": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\dotnet.exe",
+    "SdkVersion": "11.0.100-preview.5.26302.115",
+    "MSBuildDllPath": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+    "ProductVersion": "18.8.0-preview-26302-115+f7b4c5716faaee8fb8a289aed29118cad955c45f",
+    "FileVersion": "18.8.0.30315",
+    "DotNetSha256": "D4C9086DCE1DC81BBE7F0DCCB0B96BB3E980CC375E059A731B7F7962220AA19E",
+    "MSBuildDllSha256": "EF3F5C82A9269A479AAB3A394CC23849B324B408867270FA2408FF9AD59450D1",
+    "TrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\dotnet.exe",
+        "Sha256": "D4C9086DCE1DC81BBE7F0DCCB0B96BB3E980CC375E059A731B7F7962220AA19E"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+        "Sha256": "EF3F5C82A9269A479AAB3A394CC23849B324B408867270FA2408FF9AD59450D1"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.dll",
+        "Sha256": "73DB56E38B0809AA091CB56ACB2B6DDD8BA24A8E49A5742F3318CF4E2814AC83"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.Framework.dll",
+        "Sha256": "FB94416EBE0CBE0541BFD3E9756B7A7E192AAD4BB54B1490DF658DA9B1DF394C"
+      }
+    ],
+    "StagedTrackedFiles": [
+      {
+        "Name": "dotnet.exe",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\dotnet.exe",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\dotnet.exe",
+        "Sha256": "D4C9086DCE1DC81BBE7F0DCCB0B96BB3E980CC375E059A731B7F7962220AA19E"
+      },
+      {
+        "Name": "MSBuild.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\MSBuild.dll",
+        "Sha256": "EF3F5C82A9269A479AAB3A394CC23849B324B408867270FA2408FF9AD59450D1"
+      },
+      {
+        "Name": "Microsoft.Build.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.dll",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.dll",
+        "Sha256": "73DB56E38B0809AA091CB56ACB2B6DDD8BA24A8E49A5742F3318CF4E2814AC83"
+      },
+      {
+        "Name": "Microsoft.Build.Framework.dll",
+        "Path": "C:\\perf\\coordinator-bootstrap-staging\\f7b4c5716faa-EF3F5C82A926\\core\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.Framework.dll",
+        "SourcePath": "C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\Microsoft.Build.Framework.dll",
+        "Sha256": "FB94416EBE0CBE0541BFD3E9756B7A7E192AAD4BB54B1490DF658DA9B1DF394C"
+      }
+    ],
+    "DotNetInfo": [
+      ".NET SDK:",
+      " Version:           11.0.100-preview.5.26302.115",
+      " Commit:            f7b4c5716f",
+      " Workload version:  11.0.100-manifests.079a891b",
+      " MSBuild version:   18.8.0-preview-26302-115+f7b4c5716",
+      "",
+      "Runtime Environment:",
+      " OS Name:     Windows",
+      " OS Version:  10.0.26200",
+      " OS Platform: Windows",
+      " RID:         win-x64",
+      " Base Path:   C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk\\11.0.100-preview.5.26302.115\\",
+      "",
+      ".NET workloads installed:",
+      "There are no installed workloads to display.",
+      "Configured to use workload sets when installing new manifests.",
+      "No workload sets are installed. Run \"dotnet workload restore\" to install a workload set.",
+      "",
+      "Host:",
+      "  Version:      11.0.0-preview.5.26302.115",
+      "  Architecture: x64",
+      "  Commit:       f7b4c5716f",
+      "",
+      ".NET SDKs installed:",
+      "  11.0.100-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\sdk]",
+      "",
+      ".NET runtimes installed:",
+      "  Microsoft.AspNetCore.App 11.0.0-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\shared\\Microsoft.AspNetCore.App]",
+      "  Microsoft.NETCore.App 11.0.0-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\shared\\Microsoft.NETCore.App]",
+      "  Microsoft.WindowsDesktop.App 11.0.0-preview.5.26302.115 [C:\\perf\\tools\\dotnet-11.0.100-preview.5.26302.115\\shared\\Microsoft.WindowsDesktop.App]",
+      "",
+      "Other architectures found:",
+      "  None",
+      "",
+      "Environment variables:",
+      "  Not set",
+      "",
+      "global.json file:",
+      "  C:\\Users\\emafern\\.copilot\\repos\\copilot-worktrees\\msbuild\\emaf-urban-parakeet\\global.json",
+      "",
+      "Learn more:",
+      "  https://aka.ms/dotnet/info",
+      "",
+      "Download .NET:",
+      "  https://aka.ms/dotnet/download"
+    ]
+  },
+  "Repositories": [
+    {
+      "Name": "vs-green",
+      "Root": "C:\\perf\\repos\\vs-green",
+      "WorkRoot": "C:\\w\\vf",
+      "ExpectedCommit": "7eaba546bcd220e97afc66159a63c4051a44d4e6",
+      "ActualCommit": "7eaba546bcd220e97afc66159a63c4051a44d4e6",
+      "ValidationStatus": "Verified",
+      "ProjectBuildPath": "server\\src\\CSDevKit.ReliabilityMonitor\\CSDevKit.ReliabilityMonitor.csproj",
+      "ProjectTouchPath": "server\\src\\CSDevKit.ReliabilityMonitor\\Program.cs",
+      "SolutionBuildPath": "server\\dirs.proj",
+      "SolutionTouchPath": "server\\src\\CSDevKit.ReliabilityMonitor\\Program.cs",
+      "PreparationSmokeProject": "server\\src\\CSDevKit.ReliabilityMonitor\\CSDevKit.ReliabilityMonitor.csproj",
+      "ExpectedPreparationOutputType": "Exe",
+      "AdditionalBuildArguments": [
+        "/p:Configuration=Debug"
+      ],
+      "BuildPath": "server\\dirs.proj",
+      "TouchPath": "server\\src\\CSDevKit.ReliabilityMonitor\\Program.cs"
+    }
+  ],
+  "OrderDesign": {
+    "Name": "Williams balanced design",
+    "DesignRows": [
+      {
+        "DesignRow": 0,
+        "Items": [
+          "N4",
+          "N8",
+          "N16"
+        ]
+      },
+      {
+        "DesignRow": 1,
+        "Items": [
+          "N8",
+          "N16",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 2,
+        "Items": [
+          "N16",
+          "N4",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 3,
+        "Items": [
+          "N16",
+          "N8",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 4,
+        "Items": [
+          "N4",
+          "N16",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 5,
+        "Items": [
+          "N8",
+          "N4",
+          "N16"
+        ]
+      }
+    ],
+    "PrimaryOrders": [
+      {
+        "DesignRow": 0,
+        "Items": [
+          "N4",
+          "N8",
+          "N16"
+        ]
+      },
+      {
+        "DesignRow": 1,
+        "Items": [
+          "N8",
+          "N16",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 2,
+        "Items": [
+          "N16",
+          "N4",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 3,
+        "Items": [
+          "N16",
+          "N8",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 4,
+        "Items": [
+          "N4",
+          "N16",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 5,
+        "Items": [
+          "N8",
+          "N4",
+          "N16"
+        ]
+      },
+      {
+        "DesignRow": 0,
+        "Items": [
+          "N4",
+          "N8",
+          "N16"
+        ]
+      },
+      {
+        "DesignRow": 1,
+        "Items": [
+          "N8",
+          "N16",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 2,
+        "Items": [
+          "N16",
+          "N4",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 3,
+        "Items": [
+          "N16",
+          "N8",
+          "N4"
+        ]
+      },
+      {
+        "DesignRow": 4,
+        "Items": [
+          "N4",
+          "N16",
+          "N8"
+        ]
+      },
+      {
+        "DesignRow": 5,
+        "Items": [
+          "N8",
+          "N4",
+          "N16"
+        ]
+      }
+    ],
+    "WarmupOrders": [
+      {
+        "DesignRow": 5,
+        "Items": [
+          "N8",
+          "N4",
+          "N16"
+        ]
+      }
+    ],
+    "Diagnostics": {
+      "PositionCounts": {
+        "N8": [
+          4,
+          4,
+          4
+        ],
+        "N4": [
+          4,
+          4,
+          4
+        ],
+        "N16": [
+          4,
+          4,
+          4
+        ]
+      },
+      "CarryoverCounts": {
+        "N4->N8": 4,
+        "N8->N16": 4,
+        "N4->N16": 4,
+        "N16->N4": 4,
+        "N8->N4": 4,
+        "N16->N8": 4
+      },
+      "PositionImbalance": 0.0,
+      "CarryoverImbalance": 0.0
+    }
+  }
+}
