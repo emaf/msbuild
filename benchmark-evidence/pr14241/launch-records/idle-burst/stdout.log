@@ -1,0 +1,1639 @@
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\_setup\roslyn
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: no-coordinator
+[restore-normal1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-normal2] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-normal3] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-normal4] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-high1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal2] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal3] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal4] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-high1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Compilers.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\_setup\roslyn\scenario-summary.csv
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\_setup\aspire
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: no-coordinator
+[restore-normal1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-normal2] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-normal3] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-normal4] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[restore-high1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /t:Restore /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal2] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal3] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-normal4] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+[warm-high1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll Aspire-Core.slnf /m:16 /v:q /nodeReuse:false /p:UseSharedCompilation=false /p:InstallBrowsersForPlaywright=false
+MSBuild version 18.10.0-dev.26407.1+dcf76ee02 for .NET
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\_setup\aspire\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b1-a1-AUTO-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b1-a1-F4-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b1-a1-F4-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b1-a1-AUTO-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-001\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b2-a1-F4-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b2-a1-AUTO-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b2-a1-AUTO-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b2-a1-F4-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-002\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b3-a1-AUTO-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+[33;1mWARNING: AUTO-N: 2 system-counter timestamp gap(s) exceeded the 5 second warning threshold; maximum 7.17 seconds.[0m
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b3-a1-F4-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b3-a1-F4-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b3-a1-AUTO-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-003\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b4-a1-F4-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b4-a1-AUTO-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b4-a1-AUTO-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b4-a1-F4-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-004\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b5-a1-AUTO-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b5-a1-F4-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b5-a1-F4-H
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\roslyn
+RepositoryName: roslyn-b5-a1-AUTO-N
+BuildPath: Compilers.slnf
+TouchFileRelativePath: src\Compilers\Core\Portable\Diagnostic\Diagnostic.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\rf
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\roslyn\block-005\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b1-a1-AUTO-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b1-a1-F4-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b1-a1-F4-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\F4-H\benchmark\scenario-summary.csv
+[33;1mWARNING: F4-H: 1 system-counter timestamp gap(s) exceeded the 5 second warning threshold; maximum 5.484 seconds.[0m
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b1-a1-AUTO-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-001\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b2-a1-F4-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b2-a1-AUTO-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b2-a1-AUTO-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b2-a1-F4-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-002\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b3-a1-AUTO-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b3-a1-F4-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b3-a1-F4-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b3-a1-AUTO-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-003\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b4-a1-F4-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b4-a1-AUTO-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b4-a1-AUTO-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b4-a1-F4-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-004\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b5-a1-AUTO-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\AUTO-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4            True                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\AUTO-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b5-a1-F4-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\F4-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4           False                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\F4-N\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b5-a1-F4-H
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\F4-H\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: False
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-priority
+Starting coordinator-priority-r1 (coordinator=True, high priority=High, /m:16)
+[shutdown-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-priority-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+
+[32;1mscenario            [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThresh[0m
+[32;1m                    [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m                 old[0m
+[32;1m--------            [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-------------------[0m
+coordinator-priority     1           True High                 16     4           4           False                   3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\F4-H\benchmark\scenario-summary.csv
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+VB/C# compiler server shut down successfully.
+MSBuild server shut down successfully.
+BenchmarkRoot: C:\perf\repos\aspire
+RepositoryName: aspire-b5-a1-AUTO-N
+BuildPath: Aspire-Core.slnf
+TouchFileRelativePath: src\Aspire.Hosting\DistributedApplication.cs
+DotNetPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe
+MSBuildDllPath: C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\sdk\10.0.300\MSBuild.dll
+WorkRoot: C:\w\af
+OutputRoot: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\AUTO-N\benchmark
+Logical processors: 16
+NodeBudget: 16
+Slice: 4
+Reservation: 4
+AutomaticPolicy: True
+PriorityAgingThreshold: 3
+NormalBuildCount: 4
+HighBuildCount: 1
+Scenarios: coordinator-all-normal
+Starting coordinator-all-normal-r1 (coordinator=True, high priority=Normal, /m:16)
+[shutdown-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+[shutdown-after-coordinator-all-normal-r1] C:\perf\coordinator-bootstrap-staging\dcf76ee0204f-F8B91508ED12\core\dotnet.exe build-server shutdown
+Shutting down MSBuild server...
+Shutting down VB/C# compiler server...
+MSBuild server shut down successfully.
+VB/C# compiler server shut down successfully.
+
+[32;1mscenario              [0m[32;1m round[0m[32;1m useCoordinator[0m[32;1m highPriority[0m[32;1m nodeBudget[0m[32;1m slice[0m[32;1m reservation[0m[32;1m automaticPolicy[0m[32;1m priorityAgingThre[0m
+[32;1m                      [0m[32;1m      [0m[32;1m               [0m[32;1m             [0m[32;1m           [0m[32;1m      [0m[32;1m            [0m[32;1m                [0m[32;1m             shold[0m
+[32;1m--------              [0m [32;1m-----[0m [32;1m--------------[0m [32;1m------------[0m [32;1m----------[0m [32;1m-----[0m [32;1m-----------[0m [32;1m---------------[0m [32;1m-----------------[0m
+coordinator-all-normal     1           True Normal               16     4           4            True                 3
+
+Summary CSV: C:\perf\results\idle-node-burst-matrix-20260807-181942\aspire\block-005\attempt-01\AUTO-N\benchmark\scenario-summary.csv
+RUN_ROOT=C:\perf\results\idle-node-burst-matrix-20260807-181942
