@@ -2554,6 +2554,26 @@ while (-not [IO.File]::Exists('$($lateScenarioGatePath.Replace("'", "''"))')) {
     Assert-True -Condition (($planOutput | Out-String) -match 'CARRYOVER_IMBALANCE=0') -Message 'PlanOnly emits exact zero carryover imbalance'
 
     $fixtures = Join-Path $PSScriptRoot 'fixtures'
+    $liveTracePath = Join-Path $testRoot 'live-trace-snapshot.trace'
+    $liveTraceStream = [IO.File]::Open(
+        $liveTracePath,
+        [IO.FileMode]::Create,
+        [IO.FileAccess]::ReadWrite,
+        [IO.FileShare]::ReadWrite)
+    try {
+        $completeLine = "thread 2026-08-12T12:00:00.0000000Z + 1ms: CoordinatorServer: complete`r`n"
+        $partialLine = 'thread 2026-08-12T12:00:01.0000000Z + 2ms: CoordinatorServer: partial'
+        $liveTraceBytes = [Text.Encoding]::UTF8.GetBytes($completeLine + $partialLine)
+        $liveTraceStream.Write($liveTraceBytes, 0, $liveTraceBytes.Length)
+        $liveTraceStream.Flush()
+        $liveSnapshot = @(Read-CoordinatorTraceSnapshot -Path $liveTracePath)
+        Assert-Equal -Actual $liveSnapshot.Count -Expected 1 -Message 'Live trace snapshot reads while writer handle remains open'
+        Assert-True -Condition $liveSnapshot[0].EndsWith('complete', [StringComparison]::Ordinal) -Message 'Live trace snapshot retains the complete record'
+        Assert-True -Condition (-not ($liveSnapshot -join "`n").Contains('partial', [StringComparison]::Ordinal)) -Message 'Live trace snapshot excludes an unterminated trailing record'
+    }
+    finally {
+        $liveTraceStream.Dispose()
+    }
     foreach ($name in @('final', 'base')) {
         $runs = @(Get-Content -LiteralPath (Join-Path $fixtures "$name-valid-runs.json") -Raw | ConvertFrom-Json)
         $trace = ConvertFrom-CoordinatorTrace `

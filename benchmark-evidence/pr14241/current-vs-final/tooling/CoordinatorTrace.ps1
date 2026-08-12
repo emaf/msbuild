@@ -145,6 +145,50 @@ function Get-LiveTraceState {
     return $null
 }
 
+function Read-CoordinatorTraceSnapshot {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Path
+    )
+
+    $stream = [IO.File]::Open(
+        $Path,
+        [IO.FileMode]::Open,
+        [IO.FileAccess]::Read,
+        [IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete)
+    try {
+        $snapshotLength = $stream.Length
+        if ($snapshotLength -eq 0) {
+            return @()
+        }
+        if ($snapshotLength -gt [int]::MaxValue) {
+            throw "Coordinator trace '$Path' is too large for an atomic live snapshot."
+        }
+        $bytes = [byte[]]::new([int]$snapshotLength)
+        $offset = 0
+        while ($offset -lt $bytes.Length) {
+            $read = $stream.Read($bytes, $offset, $bytes.Length - $offset)
+            if ($read -eq 0) {
+                break
+            }
+            $offset += $read
+        }
+        $text = [Text.Encoding]::UTF8.GetString($bytes, 0, $offset)
+    }
+    finally {
+        $stream.Dispose()
+    }
+
+    # The writer may be between writes at the snapshot boundary. Expose only
+    # newline-terminated records so strict parsing never consumes a partial event.
+    $lastNewline = $text.LastIndexOf("`n", [StringComparison]::Ordinal)
+    if ($lastNewline -lt 0) {
+        return @()
+    }
+    $complete = $text.Substring(0, $lastNewline).TrimEnd("`r")
+    return @($complete -split '\r?\n')
+}
+
 function ConvertFrom-CoordinatorTrace {
     param(
         [Parameter(Mandatory)]
@@ -170,7 +214,7 @@ function ConvertFrom-CoordinatorTrace {
         }
         $sourceOrdinal++
         $lineNumber = 0
-        foreach ($line in [IO.File]::ReadLines($tracePath)) {
+        foreach ($line in Read-CoordinatorTraceSnapshot -Path $tracePath) {
             $lineNumber++
             $parsed = Get-TraceTimestampAndMessage -Line $line -SourcePath $tracePath -LineNumber $lineNumber
             if ($null -ne $parsed -and $parsed.Message.StartsWith('CoordinatorServer:', [StringComparison]::Ordinal)) {
