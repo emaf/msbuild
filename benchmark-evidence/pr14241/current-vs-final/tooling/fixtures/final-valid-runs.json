@@ -2,18 +2,24 @@
   {
     "RunId": "normal1",
     "RootProcessId": 101,
+    "RequestedNodes": 16,
+    "GrantedNodes": 8,
     "ProcessStartUtc": "2026-08-12T00:00:00.9000000Z",
     "ProcessExitUtc": "2026-08-12T00:00:05.1000000Z"
   },
   {
     "RunId": "normal2",
     "RootProcessId": 102,
+    "RequestedNodes": 16,
+    "GrantedNodes": 4,
     "ProcessStartUtc": "2026-08-12T00:00:01.9000000Z",
     "ProcessExitUtc": "2026-08-12T00:00:04.1000000Z"
   },
   {
     "RunId": "normal3",
     "RootProcessId": 103,
+    "RequestedNodes": 16,
+    "GrantedNodes": 4,
     "ProcessStartUtc": "2026-08-12T00:00:02.9000000Z",
     "ProcessExitUtc": "2026-08-12T00:00:06.1000000Z"
   }

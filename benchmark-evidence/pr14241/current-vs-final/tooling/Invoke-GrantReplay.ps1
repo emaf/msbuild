@@ -69,7 +69,8 @@ if (-not (Test-Path -LiteralPath $scannerDll -PathType Leaf)) {
         -JournalPath $JournalPath `
         -OutputDirectory (Join-Path $WorkRoot 'command-output') `
         -Label 'build-grant-replay' `
-        -Environment $scannerEnvironment)
+        -Environment $scannerEnvironment `
+        -TimeoutSeconds 300)
     Write-JsonAtomic -Path $buildMarker -Value ([pscustomobject][ordered]@{
         BuiltUtc = [DateTime]::UtcNow.ToString('O')
         BootstrapCommit = $bootstrap.ExpectedCommit
@@ -107,7 +108,8 @@ try {
         -JournalPath $JournalPath `
         -OutputDirectory (Join-Path $WorkRoot 'command-output') `
         -Label 'replay-grants' `
-        -Environment $replayEnvironment)
+        -Environment $replayEnvironment `
+        -TimeoutSeconds 120)
 }
 finally {
     Remove-Item -LiteralPath $listPath -Force -ErrorAction SilentlyContinue

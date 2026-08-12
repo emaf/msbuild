@@ -237,13 +237,9 @@ function Invoke-SyntheticScenario {
                 -Path (Join-Path $scenarioRoot 'lifecycle-cleanup.json') `
                 -Value $cleanup
             if (-not $cleanup.Succeeded) {
-                if (@($cleanup.LiveRunIds).Count -gt 0) {
-                    [void](Write-ScenarioTerminalOutcome `
-                        -ScenarioRoot $scenarioRoot `
-                        -OutcomeType 'LiveBuildCleanupFailure' `
-                        -Disposition 'NonRetryableHarnessFailure' `
-                        -Errors @("Synthetic preflight builds remained live: $(@($cleanup.LiveRunIds) -join ', ')."))
-                }
+                [void](Write-ScenarioCleanupTerminalOutcome `
+                    -ScenarioRoot $scenarioRoot `
+                    -Cleanup $cleanup)
                 $cleanupException = [InvalidOperationException]::new(
                     "Synthetic scenario cleanup failed: $($cleanup.Errors -join '; ')")
             }

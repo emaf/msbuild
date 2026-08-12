@@ -30,6 +30,674 @@ function ConvertTo-UtcDateTimeOffset {
     return $parsed.ToUniversalTime()
 }
 
+if ($null -eq (Get-Variable `
+    -Name CurrentVsFinalToolingProcessRegistry `
+    -Scope Global `
+    -ErrorAction SilentlyContinue)) {
+    $global:CurrentVsFinalToolingProcessRegistry =
+        [Collections.Generic.List[object]]::new()
+    $global:CurrentVsFinalToolingProcessRegistryKeys =
+        [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $global:CurrentVsFinalToolingProcessRegistryPath = $null
+}
+
+function Initialize-ToolingProcessRegistry {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Path,
+
+        [switch]$Reset
+    )
+
+    $fullPath = [IO.Path]::GetFullPath($Path)
+    $earlyEntries = if ($Reset) {
+        @()
+    }
+    else {
+        @(Get-ToolingProcessRegistry)
+    }
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $fullPath) | Out-Null
+    $stream = [IO.File]::Open(
+        $fullPath,
+        [IO.FileMode]::CreateNew,
+        [IO.FileAccess]::Write,
+        [IO.FileShare]::Read)
+    $stream.Dispose()
+    if ($Reset) {
+        $global:CurrentVsFinalToolingProcessRegistry.Clear()
+        $global:CurrentVsFinalToolingProcessRegistryKeys.Clear()
+    }
+    $global:CurrentVsFinalToolingProcessRegistryPath = $fullPath
+    foreach ($entry in $earlyEntries) {
+        $json = $entry | ConvertTo-Json -Depth 5 -Compress
+        [IO.File]::AppendAllText(
+            $fullPath,
+            $json + [Environment]::NewLine,
+            [Text.UTF8Encoding]::new($false))
+    }
+    return $fullPath
+}
+
+function Get-ToolingProcessRegistry {
+    return @($global:CurrentVsFinalToolingProcessRegistry)
+}
+
+function Get-ToolingProcessRegistryPath {
+    return $global:CurrentVsFinalToolingProcessRegistryPath
+}
+
+function Register-ProcessIdentity {
+    param(
+        [Parameter(Mandatory)]
+        [int]$ProcessId,
+
+        [AllowNull()]
+        [object]$ProcessStartUtc,
+
+        [Parameter(Mandatory)]
+        [string]$Kind,
+
+        [string]$Source,
+
+        [string]$IdentityCaptureError
+    )
+
+    $start = $null
+    if ($null -ne $ProcessStartUtc -and
+        -not [string]::IsNullOrWhiteSpace([string]$ProcessStartUtc)) {
+        try {
+            $start = ConvertTo-UtcDateTimeOffset -Value $ProcessStartUtc
+        }
+        catch {
+            if ([string]::IsNullOrWhiteSpace($IdentityCaptureError)) {
+                $IdentityCaptureError = $_.Exception.ToString()
+            }
+        }
+    }
+    $key = if ($null -eq $start) {
+        "unverified|$ProcessId|$Kind|$([guid]::NewGuid().ToString('N'))"
+    }
+    else {
+        "$ProcessId|$($start.UtcTicks)"
+    }
+    if (-not $global:CurrentVsFinalToolingProcessRegistryKeys.Add($key)) {
+        return @(
+            $global:CurrentVsFinalToolingProcessRegistry |
+                Where-Object IdentityKey -eq $key |
+                Select-Object -First 1
+        )[0]
+    }
+
+    $entry = [pscustomobject][ordered]@{
+        RegisteredUtc = [DateTimeOffset]::UtcNow.ToString('O')
+        Kind = $Kind
+        Source = $Source
+        ProcessId = $ProcessId
+        ProcessStartUtc = if ($null -eq $start) { $null } else { $start.ToString('O') }
+        IdentityKey = $key
+        VerifiedStartIdentity = $null -ne $start
+        IdentityCaptureError = $IdentityCaptureError
+    }
+    $global:CurrentVsFinalToolingProcessRegistry.Add($entry)
+    if (-not [string]::IsNullOrWhiteSpace(
+        $global:CurrentVsFinalToolingProcessRegistryPath)) {
+        $json = $entry | ConvertTo-Json -Depth 5 -Compress
+        [IO.File]::AppendAllText(
+            $global:CurrentVsFinalToolingProcessRegistryPath,
+            $json + [Environment]::NewLine,
+            [Text.UTF8Encoding]::new($false))
+    }
+    return $entry
+}
+
+function Register-StartedProcess {
+    param(
+        [Parameter(Mandatory)]
+        [Diagnostics.Process]$Process,
+
+        [Parameter(Mandatory)]
+        [string]$Kind,
+
+        [string]$Source
+    )
+
+    $processId = $Process.Id
+    try {
+        $start = ConvertTo-UtcDateTimeOffset -Value $Process.StartTime
+    }
+    catch {
+        $captureException = $_.Exception
+        [void](Register-ProcessIdentity `
+            -ProcessId $processId `
+            -ProcessStartUtc $null `
+            -Kind $Kind `
+            -Source $Source `
+            -IdentityCaptureError $captureException.ToString())
+        try {
+            if (-not $Process.HasExited) {
+                $Process.Kill($true)
+                [void]$Process.WaitForExit(15000)
+            }
+        }
+        catch {
+            throw [AggregateException]::new(
+                "Started PID $processId without a queryable identity, and direct-reference cleanup failed.",
+                [Exception[]]@($captureException, $_.Exception))
+        }
+        throw "Started PID $processId but could not capture its start identity: $($captureException.Message)"
+    }
+    $entry = Register-ProcessIdentity `
+        -ProcessId $processId `
+        -ProcessStartUtc $start `
+        -Kind $Kind `
+        -Source $Source
+    return $entry
+}
+
+function Get-VerifiedProcessIdentityStatus {
+    param(
+        [Parameter(Mandatory)]
+        [int]$ProcessId,
+
+        [Parameter(Mandatory)]
+        [object]$ProcessStartUtc,
+
+        [scriptblock]$ProcessQuery
+    )
+
+    $expected = ConvertTo-UtcDateTimeOffset -Value $ProcessStartUtc
+    $process = $null
+    try {
+        try {
+            $process = if ($null -eq $ProcessQuery) {
+                [Diagnostics.Process]::GetProcessById($ProcessId)
+            }
+            else {
+                & $ProcessQuery $ProcessId
+            }
+        }
+        catch [ArgumentException] {
+            return [pscustomobject][ordered]@{
+                Status = 'ConfirmedAbsent'
+                Live = $false
+                ProcessId = $ProcessId
+                ExpectedStartUtc = $expected.ToString('O')
+                ActualStartUtc = $null
+                Error = $null
+            }
+        }
+        catch {
+            return [pscustomobject][ordered]@{
+                Status = 'QueryFailed'
+                Live = $null
+                ProcessId = $ProcessId
+                ExpectedStartUtc = $expected.ToString('O')
+                ActualStartUtc = $null
+                Error = $_.Exception.ToString()
+            }
+        }
+        if ($null -eq $process) {
+            return [pscustomobject][ordered]@{
+                Status = 'QueryFailed'
+                Live = $null
+                ProcessId = $ProcessId
+                ExpectedStartUtc = $expected.ToString('O')
+                ActualStartUtc = $null
+                Error = 'The process query returned null.'
+            }
+        }
+
+        try {
+            if ($process.HasExited) {
+                return [pscustomobject][ordered]@{
+                    Status = 'ConfirmedAbsent'
+                    Live = $false
+                    ProcessId = $ProcessId
+                    ExpectedStartUtc = $expected.ToString('O')
+                    ActualStartUtc = $null
+                    Error = $null
+                }
+            }
+            $actual = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+        }
+        catch {
+            return [pscustomobject][ordered]@{
+                Status = 'QueryFailed'
+                Live = $null
+                ProcessId = $ProcessId
+                ExpectedStartUtc = $expected.ToString('O')
+                ActualStartUtc = $null
+                Error = $_.Exception.ToString()
+            }
+        }
+
+        if ([Math]::Abs(($actual - $expected).TotalSeconds) -ge 1) {
+            return [pscustomobject][ordered]@{
+                Status = 'IdentityMismatch'
+                Live = $false
+                ProcessId = $ProcessId
+                ExpectedStartUtc = $expected.ToString('O')
+                ActualStartUtc = $actual.ToString('O')
+                Error = $null
+            }
+        }
+        return [pscustomobject][ordered]@{
+            Status = 'Live'
+            Live = $true
+            ProcessId = $ProcessId
+            ExpectedStartUtc = $expected.ToString('O')
+            ActualStartUtc = $actual.ToString('O')
+            Error = $null
+        }
+    }
+    finally {
+        if ($null -ne $process -and $process -is [IDisposable]) {
+            $process.Dispose()
+        }
+    }
+}
+
+function Test-VerifiedProcessIdentity {
+    param(
+        [Parameter(Mandatory)]
+        [int]$ProcessId,
+
+        [Parameter(Mandatory)]
+        [object]$ProcessStartUtc,
+
+        [scriptblock]$ProcessQuery
+    )
+
+    $status = Get-VerifiedProcessIdentityStatus `
+        -ProcessId $ProcessId `
+        -ProcessStartUtc $ProcessStartUtc `
+        -ProcessQuery $ProcessQuery
+    if ($status.Status -eq 'QueryFailed') {
+        throw "Could not verify PID $ProcessId identity: $($status.Error)"
+    }
+    return $status.Live -eq $true
+}
+
+function Stop-VerifiedProcessTree {
+    param(
+        [Parameter(Mandatory)]
+        [int]$RootProcessId,
+
+        [Parameter(Mandatory)]
+        [object]$RootProcessStartUtc,
+
+        [string[]]$DescendantIdentities = @(),
+
+        [ValidateRange(1, 3600)]
+        [int]$TimeoutSeconds = 15
+    )
+
+    $errors = [Collections.Generic.List[string]]::new()
+    $targets = [Collections.Generic.List[object]]::new()
+    $targets.Add([pscustomobject]@{
+        ProcessId = $RootProcessId
+        ProcessStartUtc = (ConvertTo-UtcDateTimeOffset -Value $RootProcessStartUtc)
+        Root = $true
+    })
+    foreach ($identity in $DescendantIdentities) {
+        $parts = [string]$identity -split '\|', 2
+        if ($parts.Count -ne 2 -or [string]::IsNullOrWhiteSpace($parts[1])) {
+            $errors.Add("Captured descendant identity '$identity' is incomplete.")
+            continue
+        }
+        try {
+            $targets.Add([pscustomobject]@{
+                ProcessId = [int]$parts[0]
+                ProcessStartUtc = (ConvertTo-UtcDateTimeOffset -Value $parts[1])
+                Root = $false
+            })
+        }
+        catch {
+            $errors.Add("Captured descendant identity '$identity' is invalid: $($_.Exception.Message)")
+        }
+    }
+    $targets = @($targets | Sort-Object Root -Descending | Group-Object {
+        "$($_.ProcessId)|$($_.ProcessStartUtc.UtcTicks)"
+    } | ForEach-Object { $_.Group[0] })
+
+    foreach ($target in $targets) {
+        $process = $null
+        try {
+            try {
+                $process = [Diagnostics.Process]::GetProcessById($target.ProcessId)
+            }
+            catch [ArgumentException] {
+                continue
+            }
+            $actualStart = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+            if ([Math]::Abs(($actualStart - $target.ProcessStartUtc).TotalSeconds) -ge 1) {
+                continue
+            }
+            if (-not $process.HasExited) {
+                $process.Kill($true)
+                if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
+                    $errors.Add("PID $($target.ProcessId) did not exit within $TimeoutSeconds seconds.")
+                }
+            }
+        }
+        catch [InvalidOperationException] {
+            # The exact process exited between the identity query and termination.
+        }
+        catch {
+            $errors.Add("Failed to terminate verified PID $($target.ProcessId): $($_.Exception.Message)")
+        }
+        finally {
+            if ($null -ne $process) {
+                $process.Dispose()
+            }
+        }
+    }
+
+    $timer = [Diagnostics.Stopwatch]::StartNew()
+    $live = @()
+    $queryFailures = @()
+    do {
+        $statuses = @(
+            foreach ($target in $targets) {
+                Get-VerifiedProcessIdentityStatus `
+                    -ProcessId $target.ProcessId `
+                    -ProcessStartUtc $target.ProcessStartUtc
+            }
+        )
+        $live = @($statuses | Where-Object Status -eq 'Live')
+        $queryFailures = @($statuses | Where-Object Status -eq 'QueryFailed')
+        if (($live.Count -eq 0 -and $queryFailures.Count -eq 0) -or
+            $timer.Elapsed.TotalSeconds -ge $TimeoutSeconds) {
+            break
+        }
+        Start-Sleep -Milliseconds 100
+    } while ($true)
+    if ($live.Count -gt 0) {
+        $errors.Add("Verified process identities remain live: $(@($live | ForEach-Object { "$($_.ProcessId)|$($_.ExpectedStartUtc)" }) -join ', ').")
+    }
+    foreach ($failure in $queryFailures) {
+        $errors.Add("Could not verify PID $($failure.ProcessId) after termination: $($failure.Error)")
+    }
+
+    [pscustomobject][ordered]@{
+        Succeeded = $errors.Count -eq 0 -and $live.Count -eq 0 -and $queryFailures.Count -eq 0
+        Errors = $errors.ToArray()
+        LiveIdentities = @($live | ForEach-Object {
+            "$($_.ProcessId)|$($_.ExpectedStartUtc)"
+        })
+        QueryFailures = @($queryFailures)
+    }
+}
+
+function Stop-RegisteredProcessTrees {
+    param(
+        [object[]]$Entries = @(Get-ToolingProcessRegistry),
+
+        [ValidateRange(1, 3600)]
+        [int]$TimeoutSeconds = 15
+    )
+
+    $errors = [Collections.Generic.List[string]]::new()
+    $results = [Collections.Generic.List[object]]::new()
+    foreach ($entry in @($Entries | Sort-Object RegisteredUtc -Descending)) {
+        if ((-not $entry.VerifiedStartIdentity) -or
+            [string]::IsNullOrWhiteSpace([string]$entry.ProcessStartUtc)) {
+            $errors.Add(
+                "Registry entry '$($entry.Kind)' for PID $($entry.ProcessId) has no verified start identity.")
+            continue
+        }
+        $stop = Stop-VerifiedProcessTree `
+            -RootProcessId ([int]$entry.ProcessId) `
+            -RootProcessStartUtc $entry.ProcessStartUtc `
+            -TimeoutSeconds $TimeoutSeconds
+        $results.Add([pscustomobject]@{
+            Kind = $entry.Kind
+            ProcessId = [int]$entry.ProcessId
+            ProcessStartUtc = [string]$entry.ProcessStartUtc
+            Stop = $stop
+        })
+        foreach ($message in @($stop.Errors)) {
+            $errors.Add("$($entry.Kind): $message")
+        }
+    }
+    [pscustomobject][ordered]@{
+        Succeeded = $errors.Count -eq 0
+        Errors = $errors.ToArray()
+        Results = $results.ToArray()
+    }
+}
+
+function Register-ProcessTreeDescendants {
+    param(
+        [Parameter(Mandatory)]
+        [int]$RootProcessId,
+
+        [Parameter(Mandatory)]
+        [string]$Kind,
+
+        [string]$Source,
+
+        [AllowNull()]
+        [object]$MinimumStartUtc
+    )
+
+    $minimumStart = if ($null -eq $MinimumStartUtc -or
+        [string]::IsNullOrWhiteSpace([string]$MinimumStartUtc)) {
+        $null
+    }
+    else {
+        ConvertTo-UtcDateTimeOffset -Value $MinimumStartUtc
+    }
+    $processes = @(
+        Get-CimInstance `
+            Win32_Process `
+            -OperationTimeoutSec 5 `
+            -ErrorAction Stop
+    )
+    $children = @{}
+    $byPid = @{}
+    foreach ($process in $processes) {
+        $processId = [int]$process.ProcessId
+        $byPid[$processId] = $process
+        $parentId = [int]$process.ParentProcessId
+        if (-not $children.ContainsKey($parentId)) {
+            $children[$parentId] = [Collections.Generic.List[int]]::new()
+        }
+        $children[$parentId].Add($processId)
+    }
+
+    $captured = [Collections.Generic.List[string]]::new()
+    $queue = [Collections.Generic.Queue[int]]::new()
+    $seen = [Collections.Generic.HashSet[int]]::new()
+    $queue.Enqueue($RootProcessId)
+    [void]$seen.Add($RootProcessId)
+    while ($queue.Count -gt 0) {
+        $parentId = $queue.Dequeue()
+        if (-not $children.ContainsKey($parentId)) {
+            continue
+        }
+        foreach ($childId in $children[$parentId]) {
+            if (-not $seen.Add($childId)) {
+                continue
+            }
+            $creationDate = $byPid[$childId].CreationDate
+            if ($null -eq $creationDate) {
+                $queue.Enqueue($childId)
+                [void](Register-ProcessIdentity `
+                    -ProcessId $childId `
+                    -ProcessStartUtc $null `
+                    -Kind $Kind `
+                    -Source $Source `
+                    -IdentityCaptureError 'Win32_Process did not provide CreationDate.')
+                continue
+            }
+            $start = ConvertTo-UtcDateTimeOffset -Value $creationDate
+            if ($null -ne $minimumStart -and
+                $start -lt $minimumStart.AddSeconds(-2)) {
+                continue
+            }
+            $queue.Enqueue($childId)
+            [void](Register-ProcessIdentity `
+                -ProcessId $childId `
+                -ProcessStartUtc $start `
+                -Kind $Kind `
+                -Source $Source)
+            $captured.Add("$childId|$($start.ToString('O'))")
+        }
+    }
+    return $captured.ToArray()
+}
+
+function Register-ProcessTreeDescendantsRepeated {
+    param(
+        [Parameter(Mandatory)]
+        [int]$RootProcessId,
+
+        [Parameter(Mandatory)]
+        [object]$RootProcessStartUtc,
+
+        [Parameter(Mandatory)]
+        [string]$Kind,
+
+        [string]$Source,
+
+        [ValidateRange(100, 5000)]
+        [int]$CaptureWindowMilliseconds = 750,
+
+        [ValidateRange(10, 1000)]
+        [int]$PollMilliseconds = 75
+    )
+
+    $captured =
+        [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $errors = [Collections.Generic.List[string]]::new()
+    $timer = [Diagnostics.Stopwatch]::StartNew()
+    $sampleCount = 0
+    $successfulSampleCount = 0
+    do {
+        $sampleCount++
+        try {
+            foreach ($identity in @(
+                Register-ProcessTreeDescendants `
+                    -RootProcessId $RootProcessId `
+                    -Kind $Kind `
+                    -Source $Source `
+                    -MinimumStartUtc $RootProcessStartUtc
+            )) {
+                [void]$captured.Add([string]$identity)
+            }
+            $successfulSampleCount++
+        }
+        catch {
+            $errors.Add($_.Exception.ToString())
+        }
+        if ($timer.ElapsedMilliseconds -ge $CaptureWindowMilliseconds) {
+            break
+        }
+        Start-Sleep -Milliseconds $PollMilliseconds
+    } while ($true)
+
+    [pscustomobject][ordered]@{
+        Succeeded = $successfulSampleCount -gt 0
+        SampleCount = $sampleCount
+        SuccessfulSampleCount = $successfulSampleCount
+        CaptureWindowMilliseconds = $CaptureWindowMilliseconds
+        CapturedIdentities = @($captured)
+        Errors = $errors.ToArray()
+    }
+}
+
+function Stop-VerifiedProcessTreeWithDescendantCapture {
+    param(
+        [Parameter(Mandatory)]
+        [int]$RootProcessId,
+
+        [Parameter(Mandatory)]
+        [object]$RootProcessStartUtc,
+
+        [Parameter(Mandatory)]
+        [string]$Kind,
+
+        [string]$Source,
+
+        [string[]]$DescendantIdentities = @(),
+
+        [ValidateRange(1, 3600)]
+        [int]$TimeoutSeconds = 15,
+
+        [ValidateRange(100, 5000)]
+        [int]$CaptureWindowMilliseconds = 750
+    )
+
+    $captured =
+        [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($identity in $DescendantIdentities) {
+        if (-not [string]::IsNullOrWhiteSpace([string]$identity)) {
+            [void]$captured.Add([string]$identity)
+        }
+    }
+    $captureErrors = [Collections.Generic.List[string]]::new()
+    $preStopCapture = Register-ProcessTreeDescendantsRepeated `
+        -RootProcessId $RootProcessId `
+        -RootProcessStartUtc $RootProcessStartUtc `
+        -Kind $Kind `
+        -Source $Source `
+        -CaptureWindowMilliseconds $CaptureWindowMilliseconds
+    foreach ($identity in @($preStopCapture.CapturedIdentities)) {
+        [void]$captured.Add([string]$identity)
+    }
+    foreach ($message in @($preStopCapture.Errors)) {
+        $captureErrors.Add([string]$message)
+    }
+
+    $firstStop = Stop-VerifiedProcessTree `
+        -RootProcessId $RootProcessId `
+        -RootProcessStartUtc $RootProcessStartUtc `
+        -DescendantIdentities @($captured) `
+        -TimeoutSeconds $TimeoutSeconds
+
+    $postStopCapture = Register-ProcessTreeDescendantsRepeated `
+        -RootProcessId $RootProcessId `
+        -RootProcessStartUtc $RootProcessStartUtc `
+        -Kind $Kind `
+        -Source $Source `
+        -CaptureWindowMilliseconds $CaptureWindowMilliseconds
+    foreach ($identity in @($postStopCapture.CapturedIdentities)) {
+        [void]$captured.Add([string]$identity)
+    }
+    foreach ($message in @($postStopCapture.Errors)) {
+        $captureErrors.Add([string]$message)
+    }
+    $finalStop = Stop-VerifiedProcessTree `
+        -RootProcessId $RootProcessId `
+        -RootProcessStartUtc $RootProcessStartUtc `
+        -DescendantIdentities @($captured) `
+        -TimeoutSeconds $TimeoutSeconds
+
+    $errors = [Collections.Generic.List[string]]::new()
+    if (-not $preStopCapture.Succeeded -or -not $postStopCapture.Succeeded) {
+        $errors.Add('At least one required recursive process-tree capture window had no successful sample.')
+    }
+    foreach ($message in @($firstStop.Errors) + @($finalStop.Errors)) {
+        $errors.Add([string]$message)
+    }
+    [pscustomobject][ordered]@{
+        Succeeded =
+            $preStopCapture.Succeeded -and
+            $postStopCapture.Succeeded -and
+            $finalStop.Succeeded
+        Errors = $errors.ToArray()
+        CaptureErrors = $captureErrors.ToArray()
+        CapturedDescendantIdentities = @($captured)
+        LiveIdentities = @($finalStop.LiveIdentities)
+        QueryFailures = @($finalStop.QueryFailures)
+        FirstStop = $firstStop
+        FinalStop = $finalStop
+        PreStopCapture = $preStopCapture
+        PostStopCapture = $postStopCapture
+    }
+}
+
 $script:CoordinatorEnvironmentVariables = @(
     'MSBUILDUSECOORDINATOR',
     'MSBUILDCOORDINATORPIPENAME',
@@ -1136,7 +1804,10 @@ function Invoke-RecordedCommand {
 
         [hashtable]$Environment = @{},
 
-        [switch]$AllowFailure
+        [switch]$AllowFailure,
+
+        [ValidateRange(1, 86400)]
+        [int]$TimeoutSeconds = 3600
     )
 
     if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
@@ -1172,25 +1843,159 @@ function Invoke-RecordedCommand {
     $process.StartInfo = $startInfo
     $exitCode = $null
     $startError = $null
+    $executionError = $null
+    $processIdentity = $null
+    $startedProcessId = $null
+    $processStartUtc = $null
+    $processStarted = $false
+    $stdoutTask = $null
+    $stderrTask = $null
+    $stdout = ''
+    $stderr = ''
+    $timedOut = $false
+    $termination = $null
+    $streamDrainTimedOut = $false
+    $postExitTreeCapture = $null
+    $strictProcessTrackingFailure = $null
+    $capturedDescendants =
+        [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $treeCaptureErrors = [Collections.Generic.List[string]]::new()
+    $registrySource = "Invoke-RecordedCommand/$Label/$([guid]::NewGuid().ToString('N'))"
     try {
         [void]$process.Start()
+        $processStarted = $true
+        $startedProcessId = $process.Id
+        $processIdentity = Register-StartedProcess `
+            -Process $process `
+            -Kind "recorded-command/$Label" `
+            -Source $registrySource
+        $processStartUtc =
+            ConvertTo-UtcDateTimeOffset -Value $processIdentity.ProcessStartUtc
         $stdoutTask = $process.StandardOutput.ReadToEndAsync()
         $stderrTask = $process.StandardError.ReadToEndAsync()
-        $process.WaitForExit()
-        $stdout = $stdoutTask.GetAwaiter().GetResult()
-        $stderr = $stderrTask.GetAwaiter().GetResult()
-        [IO.File]::WriteAllText($stdoutPath, $stdout, [Text.UTF8Encoding]::new($false))
-        [IO.File]::WriteAllText($stderrPath, $stderr, [Text.UTF8Encoding]::new($false))
-        $exitCode = $process.ExitCode
+        $timer = [Diagnostics.Stopwatch]::StartNew()
+        $nextTreeCaptureSeconds = 1
+        while (-not $process.WaitForExit(200)) {
+            if ($timer.Elapsed.TotalSeconds -ge $nextTreeCaptureSeconds) {
+                try {
+                    foreach ($identity in @(
+                        Register-ProcessTreeDescendants `
+                            -RootProcessId $process.Id `
+                            -Kind "recorded-command-descendant/$Label" `
+                            -Source $registrySource `
+                            -MinimumStartUtc $processStartUtc
+                    )) {
+                        [void]$capturedDescendants.Add([string]$identity)
+                    }
+                }
+                catch {
+                    $treeCaptureErrors.Add($_.Exception.ToString())
+                }
+                $nextTreeCaptureSeconds += 1
+            }
+            if ($timer.Elapsed.TotalSeconds -ge $TimeoutSeconds) {
+                $timedOut = $true
+                break
+            }
+        }
+
+        if ($timedOut) {
+            $termination = Stop-VerifiedProcessTreeWithDescendantCapture `
+                -RootProcessId $process.Id `
+                -RootProcessStartUtc $processStartUtc `
+                -Kind "recorded-command-descendant/$Label" `
+                -Source $registrySource `
+                -DescendantIdentities @($capturedDescendants) `
+                -TimeoutSeconds ([Math]::Min(15, $TimeoutSeconds))
+            foreach ($identity in @($termination.CapturedDescendantIdentities)) {
+                [void]$capturedDescendants.Add([string]$identity)
+            }
+            foreach ($message in @($termination.CaptureErrors)) {
+                $treeCaptureErrors.Add([string]$message)
+            }
+        }
+        else {
+            $postExitTreeCapture = Register-ProcessTreeDescendantsRepeated `
+                -RootProcessId $process.Id `
+                -RootProcessStartUtc $processStartUtc `
+                -Kind "recorded-command-descendant/$Label" `
+                -Source $registrySource
+            foreach ($identity in @($postExitTreeCapture.CapturedIdentities)) {
+                [void]$capturedDescendants.Add([string]$identity)
+            }
+            foreach ($message in @($postExitTreeCapture.Errors)) {
+                $treeCaptureErrors.Add([string]$message)
+            }
+            if (-not $postExitTreeCapture.Succeeded) {
+                $strictProcessTrackingFailure =
+                    'Post-exit recursive process ancestry capture had no successful sample.'
+            }
+            $exitCode = $process.ExitCode
+        }
+
+        $stdoutComplete = $stdoutTask.Wait([TimeSpan]::FromSeconds(5))
+        $stderrComplete = $stderrTask.Wait([TimeSpan]::FromSeconds(5))
+        if ($stdoutComplete) {
+            $stdout = $stdoutTask.GetAwaiter().GetResult()
+        }
+        if ($stderrComplete) {
+            $stderr = $stderrTask.GetAwaiter().GetResult()
+        }
+        if (-not $stdoutComplete -or -not $stderrComplete) {
+            $streamDrainTimedOut = $true
+            $timedOut = $true
+            if ($null -eq $termination) {
+                $termination = Stop-VerifiedProcessTreeWithDescendantCapture `
+                    -RootProcessId $process.Id `
+                    -RootProcessStartUtc $processStartUtc `
+                    -Kind "recorded-command-descendant/$Label" `
+                    -Source $registrySource `
+                    -DescendantIdentities @($capturedDescendants) `
+                    -TimeoutSeconds ([Math]::Min(15, $TimeoutSeconds))
+                foreach ($identity in @($termination.CapturedDescendantIdentities)) {
+                    [void]$capturedDescendants.Add([string]$identity)
+                }
+                foreach ($message in @($termination.CaptureErrors)) {
+                    $treeCaptureErrors.Add([string]$message)
+                }
+            }
+        }
     }
     catch {
-        $startError = $_.Exception.ToString()
-        [IO.File]::WriteAllText($stdoutPath, '', [Text.UTF8Encoding]::new($false))
-        [IO.File]::WriteAllText($stderrPath, $startError, [Text.UTF8Encoding]::new($false))
+        if (-not $processStarted) {
+            $startError = $_.Exception.ToString()
+        }
+        else {
+            $executionError = $_.Exception.ToString()
+            if ($null -eq $termination -and $null -ne $processStartUtc) {
+                $termination = Stop-VerifiedProcessTreeWithDescendantCapture `
+                    -RootProcessId $process.Id `
+                    -RootProcessStartUtc $processStartUtc `
+                    -Kind "recorded-command-descendant/$Label" `
+                    -Source $registrySource `
+                    -DescendantIdentities @($capturedDescendants) `
+                    -TimeoutSeconds ([Math]::Min(15, $TimeoutSeconds))
+                foreach ($identity in @($termination.CapturedDescendantIdentities)) {
+                    [void]$capturedDescendants.Add([string]$identity)
+                }
+                foreach ($message in @($termination.CaptureErrors)) {
+                    $treeCaptureErrors.Add([string]$message)
+                }
+            }
+        }
     }
     finally {
         $process.Dispose()
     }
+
+    if (-not [string]::IsNullOrWhiteSpace($startError)) {
+        $stderr = $startError
+    }
+    elseif (-not [string]::IsNullOrWhiteSpace($executionError)) {
+        $stderr = @($stderr, $executionError) -join [Environment]::NewLine
+    }
+    [IO.File]::WriteAllText($stdoutPath, $stdout, [Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText($stderrPath, $stderr, [Text.UTF8Encoding]::new($false))
 
     $entry = [pscustomobject][ordered]@{
         Label = $Label
@@ -1202,12 +2007,53 @@ function Invoke-RecordedCommand {
         EnvironmentOverrides = $Environment
         ExitCode = $exitCode
         StartError = $startError
+        ExecutionError = $executionError
+        ProcessId = $startedProcessId
+        ProcessStartUtc = if ($null -eq $processStartUtc) {
+            $null
+        }
+        else {
+            $processStartUtc.ToString('O')
+        }
+        TimeoutSeconds = $TimeoutSeconds
+        TimedOut = $timedOut
+        StreamDrainTimedOut = $streamDrainTimedOut
+        CapturedDescendantIdentities = @($capturedDescendants)
+        ProcessTreeCaptureErrors = $treeCaptureErrors.ToArray()
+        PostExitProcessTreeCapture = $postExitTreeCapture
+        StrictProcessTrackingFailure = $strictProcessTrackingFailure
+        Termination = $termination
         Stdout = $stdoutPath
         Stderr = $stderrPath
     }
     Add-CommandJournalEntry -JournalPath $JournalPath -Entry $entry
-    if (($null -ne $startError -or $exitCode -ne 0) -and -not $AllowFailure) {
-        $failureKind = if ($null -eq $exitCode) { 'failed to start' } else { "failed with exit code $exitCode" }
+    if ($timedOut) {
+        $terminationDetail = if ($null -eq $termination) {
+            'No verified termination result was available.'
+        }
+        elseif ($termination.Succeeded) {
+            'The exact process tree was terminated and verified absent.'
+        }
+        else {
+            "Termination verification failed: $(@($termination.Errors) -join '; ')"
+        }
+        throw "'$Label' timed out after $TimeoutSeconds seconds. $terminationDetail See '$stderrPath'."
+    }
+    if (-not [string]::IsNullOrWhiteSpace($strictProcessTrackingFailure)) {
+        throw "'$Label' could not prove post-exit process-tree capture: $strictProcessTrackingFailure See '$stderrPath'."
+    }
+    if (($null -ne $startError -or
+        $null -ne $executionError -or
+        $exitCode -ne 0) -and -not $AllowFailure) {
+        $failureKind = if ($null -ne $startError) {
+            'failed to start'
+        }
+        elseif ($null -ne $executionError) {
+            'failed while executing'
+        }
+        else {
+            "failed with exit code $exitCode"
+        }
         throw "'$Label' $failureKind. See '$stderrPath'."
     }
     return $entry
@@ -1222,21 +2068,234 @@ function Get-NativeOutput {
         [string[]]$Arguments,
 
         [Parameter(Mandatory)]
-        [string]$WorkingDirectory
+        [string]$WorkingDirectory,
+
+        [ValidateRange(1, 3600)]
+        [int]$TimeoutSeconds = 300
     )
 
-    Push-Location $WorkingDirectory
+    $startInfo = [Diagnostics.ProcessStartInfo]::new($FileName)
+    foreach ($argument in $Arguments) {
+        [void]$startInfo.ArgumentList.Add($argument)
+    }
+    $startInfo.WorkingDirectory = $WorkingDirectory
+    $startInfo.UseShellExecute = $false
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    $startInfo.CreateNoWindow = $true
+
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo = $startInfo
+    $processStarted = $false
+    $processStartUtc = $null
+    $stdoutTask = $null
+    $stderrTask = $null
+    $stdout = ''
+    $stderr = ''
+    $exitCode = $null
+    $timedOut = $false
+    $streamDrainTimedOut = $false
+    $termination = $null
+    $executionException = $null
+    $capturedDescendants =
+        [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $registrySource = "Get-NativeOutput/$([guid]::NewGuid().ToString('N'))"
+    $kind = "native-output/$([IO.Path]::GetFileName($FileName))"
     try {
-        $output = @(& $FileName @Arguments 2>&1 | ForEach-Object { [string]$_ })
-        $exitCode = $LASTEXITCODE
+        [void]$process.Start()
+        $processStarted = $true
+        $identity = Register-StartedProcess `
+            -Process $process `
+            -Kind $kind `
+            -Source $registrySource
+        $processStartUtc =
+            ConvertTo-UtcDateTimeOffset -Value $identity.ProcessStartUtc
+        $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+        $stderrTask = $process.StandardError.ReadToEndAsync()
+
+        $timer = [Diagnostics.Stopwatch]::StartNew()
+        $nextTreeCaptureSeconds = 1
+        while (-not $process.WaitForExit(100)) {
+            if ($timer.Elapsed.TotalSeconds -ge $nextTreeCaptureSeconds) {
+                foreach ($descendant in @(
+                    Register-ProcessTreeDescendants `
+                        -RootProcessId $process.Id `
+                        -Kind "$kind/descendant" `
+                        -Source $registrySource `
+                        -MinimumStartUtc $processStartUtc
+                )) {
+                    [void]$capturedDescendants.Add([string]$descendant)
+                }
+                $nextTreeCaptureSeconds++
+            }
+            if ($timer.Elapsed.TotalSeconds -ge $TimeoutSeconds) {
+                $timedOut = $true
+                break
+            }
+        }
+
+        if (-not $timedOut) {
+            $postExitCapture = Register-ProcessTreeDescendantsRepeated `
+                -RootProcessId $process.Id `
+                -RootProcessStartUtc $processStartUtc `
+                -Kind "$kind/descendant" `
+                -Source $registrySource
+            foreach ($descendant in @($postExitCapture.CapturedIdentities)) {
+                [void]$capturedDescendants.Add([string]$descendant)
+            }
+            if (-not $postExitCapture.Succeeded) {
+                throw "Post-exit ancestry capture failed: $(@($postExitCapture.Errors) -join '; ')"
+            }
+            $exitCode = $process.ExitCode
+            $stdoutComplete = $stdoutTask.Wait([TimeSpan]::FromSeconds(5))
+            $stderrComplete = $stderrTask.Wait([TimeSpan]::FromSeconds(5))
+            if (-not $stdoutComplete -or -not $stderrComplete) {
+                $streamDrainTimedOut = $true
+                $timedOut = $true
+            }
+        }
+
+        if ($timedOut) {
+            $termination = Stop-VerifiedProcessTreeWithDescendantCapture `
+                -RootProcessId $process.Id `
+                -RootProcessStartUtc $processStartUtc `
+                -Kind "$kind/descendant" `
+                -Source $registrySource `
+                -DescendantIdentities @($capturedDescendants) `
+                -TimeoutSeconds ([Math]::Min(15, $TimeoutSeconds))
+            foreach ($descendant in @($termination.CapturedDescendantIdentities)) {
+                [void]$capturedDescendants.Add([string]$descendant)
+            }
+        }
+
+        if ($null -ne $stdoutTask -and
+            $stdoutTask.Wait([TimeSpan]::FromSeconds(5))) {
+            $stdout = $stdoutTask.GetAwaiter().GetResult()
+        }
+        if ($null -ne $stderrTask -and
+            $stderrTask.Wait([TimeSpan]::FromSeconds(5))) {
+            $stderr = $stderrTask.GetAwaiter().GetResult()
+        }
+        if (-not $timedOut -and
+            $exitCode -ne 0 -and
+            $capturedDescendants.Count -gt 0) {
+            $termination = Stop-VerifiedProcessTreeWithDescendantCapture `
+                -RootProcessId $process.Id `
+                -RootProcessStartUtc $processStartUtc `
+                -Kind "$kind/descendant" `
+                -Source $registrySource `
+                -DescendantIdentities @($capturedDescendants) `
+                -TimeoutSeconds ([Math]::Min(15, $TimeoutSeconds))
+            foreach ($descendant in @($termination.CapturedDescendantIdentities)) {
+                [void]$capturedDescendants.Add([string]$descendant)
+            }
+        }
+    }
+    catch {
+        $executionException = $_.Exception
+        if ($processStarted -and
+            $null -ne $processStartUtc -and
+            $null -eq $termination) {
+            try {
+                $termination = Stop-VerifiedProcessTreeWithDescendantCapture `
+                    -RootProcessId $process.Id `
+                    -RootProcessStartUtc $processStartUtc `
+                    -Kind "$kind/descendant" `
+                    -Source $registrySource `
+                    -DescendantIdentities @($capturedDescendants) `
+                    -TimeoutSeconds ([Math]::Min(15, $TimeoutSeconds))
+                foreach ($descendant in @($termination.CapturedDescendantIdentities)) {
+                    [void]$capturedDescendants.Add([string]$descendant)
+                }
+            }
+            catch {
+                $executionException = [AggregateException]::new(
+                    "Native command failed and its verified cleanup also failed.",
+                    [Exception[]]@($executionException, $_.Exception))
+            }
+        }
+        if ($null -ne $stdoutTask -and
+            $stdoutTask.Wait([TimeSpan]::FromSeconds(5))) {
+            $stdout = $stdoutTask.GetAwaiter().GetResult()
+        }
+        if ($null -ne $stderrTask -and
+            $stderrTask.Wait([TimeSpan]::FromSeconds(5))) {
+            $stderr = $stderrTask.GetAwaiter().GetResult()
+        }
     }
     finally {
-        Pop-Location
+        $process.Dispose()
+    }
+
+    $detailParts = [Collections.Generic.List[string]]::new()
+    if (-not [string]::IsNullOrWhiteSpace($stdout)) {
+        [void]$detailParts.Add("stdout:$([Environment]::NewLine)$($stdout.TrimEnd())")
+    }
+    if (-not [string]::IsNullOrWhiteSpace($stderr)) {
+        [void]$detailParts.Add("stderr:$([Environment]::NewLine)$($stderr.TrimEnd())")
+    }
+    $detail = if ($detailParts.Count -eq 0) {
+        'No stdout or stderr was captured.'
+    }
+    else {
+        $detailParts -join [Environment]::NewLine
+    }
+    $displayCommand = "'$FileName $($Arguments -join ' ')'"
+    if ($null -ne $executionException) {
+        $terminationDetail = if ($null -eq $termination) {
+            'No verified process-tree cleanup result was available.'
+        }
+        elseif ($termination.Succeeded) {
+            'The exact process tree was terminated and verified absent.'
+        }
+        else {
+            "Process-tree cleanup failed: $(@($termination.Errors) -join '; ')"
+        }
+        throw "$displayCommand failed while executing: $($executionException.Message) $terminationDetail $detail"
+    }
+    if ($timedOut) {
+        $terminationDetail = if ($null -ne $termination -and $termination.Succeeded) {
+            'The exact process tree was terminated and verified absent.'
+        }
+        elseif ($null -eq $termination) {
+            'No verified process-tree cleanup result was available.'
+        }
+        else {
+            "Process-tree cleanup failed: $(@($termination.Errors) -join '; ')"
+        }
+        if ($streamDrainTimedOut) {
+            throw "$displayCommand exited but redirected streams and descendants did not quiesce within 5 seconds (execution timeout: $TimeoutSeconds seconds). $terminationDetail $detail"
+        }
+        throw "$displayCommand timed out after $TimeoutSeconds seconds during process execution. $terminationDetail $detail"
     }
     if ($exitCode -ne 0) {
-        throw "'$FileName $($Arguments -join ' ')' failed with exit code $exitCode`: $($output -join [Environment]::NewLine)"
+        $cleanupDetail = if ($null -eq $termination) {
+            ''
+        }
+        elseif ($termination.Succeeded) {
+            ' Any captured descendants were terminated and verified absent.'
+        }
+        else {
+            " Descendant cleanup failed: $(@($termination.Errors) -join '; ')"
+        }
+        throw "$displayCommand failed with exit code $exitCode.$cleanupDetail $detail"
     }
-    return $output
+
+    $output = [Collections.Generic.List[string]]::new()
+    foreach ($text in @($stdout, $stderr)) {
+        if ([string]::IsNullOrEmpty([string]$text)) {
+            continue
+        }
+        $normalized = ([string]$text).Replace("`r`n", "`n").Replace("`r", "`n")
+        $lines = @($normalized -split "`n")
+        if ($lines.Count -gt 0 -and $lines[-1] -eq '') {
+            $lines = @($lines | Select-Object -First ($lines.Count - 1))
+        }
+        foreach ($line in $lines) {
+            [void]$output.Add([string]$line)
+        }
+    }
+    return $output.ToArray()
 }
 
 function Get-ExactBootstrapBuildArguments {
@@ -2193,30 +3252,48 @@ function Invoke-BuildServerShutdown {
         [string]$JournalPath,
 
         [Parameter(Mandatory)]
-        [string]$OutputDirectory
+        [string]$OutputDirectory,
+
+        [ValidateRange(1, 600)]
+        [int]$TimeoutSeconds = 60
     )
 
+    $failures = [Collections.Generic.List[Exception]]::new()
     foreach ($bootstrap in $Bootstraps) {
-        if (-not $bootstrap.Verified) {
-            throw "Cannot shut down build servers with an unverified $($bootstrap.Role) bootstrap."
+        try {
+            if (-not $bootstrap.Verified) {
+                throw "Cannot shut down build servers with an unverified $($bootstrap.Role) bootstrap."
+            }
+            $shutdownEnvironment = @{
+                DOTNET_ROOT = $bootstrap.Root
+                DOTNET_ROOT_X64 = $bootstrap.Root
+                DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+                PATH = "$($bootstrap.Root)$([IO.Path]::PathSeparator)$([Environment]::GetEnvironmentVariable('PATH', 'Process'))"
+            }
+            foreach ($variable in Get-CoordinatorEnvironmentVariableNames) {
+                $shutdownEnvironment[$variable] = $null
+            }
+            [void](Invoke-RecordedCommand `
+                -FileName $bootstrap.DotNetPath `
+                -Arguments @('build-server', 'shutdown') `
+                -WorkingDirectory $bootstrap.Root `
+                -JournalPath $JournalPath `
+                -OutputDirectory $OutputDirectory `
+                -Label "shutdown-$($bootstrap.Role)" `
+                -Environment $shutdownEnvironment `
+                -TimeoutSeconds $TimeoutSeconds)
         }
-        $shutdownEnvironment = @{
-            DOTNET_ROOT = $bootstrap.Root
-            DOTNET_ROOT_X64 = $bootstrap.Root
-            DOTNET_CLI_TELEMETRY_OPTOUT = '1'
-            PATH = "$($bootstrap.Root)$([IO.Path]::PathSeparator)$([Environment]::GetEnvironmentVariable('PATH', 'Process'))"
+        catch {
+            $failures.Add($_.Exception)
         }
-        foreach ($variable in Get-CoordinatorEnvironmentVariableNames) {
-            $shutdownEnvironment[$variable] = $null
-        }
-        [void](Invoke-RecordedCommand `
-            -FileName $bootstrap.DotNetPath `
-            -Arguments @('build-server', 'shutdown') `
-            -WorkingDirectory $bootstrap.Root `
-            -JournalPath $JournalPath `
-            -OutputDirectory $OutputDirectory `
-            -Label "shutdown-$($bootstrap.Role)" `
-            -Environment $shutdownEnvironment)
+    }
+    if ($failures.Count -eq 1) {
+        throw $failures[0]
+    }
+    if ($failures.Count -gt 1) {
+        throw [AggregateException]::new(
+            'One or more exact build-server shutdowns failed.',
+            [Exception[]]$failures.ToArray())
     }
 }
 
@@ -2369,17 +3446,62 @@ function Get-MaxTimestampGapSeconds {
 function Test-TelemetryContinuity {
     param(
         [Parameter(Mandatory)]
-        [string]$MonitorRoot
+        [string]$MonitorRoot,
+
+        [object]$ReadyUtc,
+
+        [object]$StopUtc
     )
 
     $validity = (Get-CampaignDefinition).Validity
     $errors = [Collections.Generic.List[string]]::new()
     $warnings = [Collections.Generic.List[string]]::new()
     $statistics = [ordered]@{}
+    $validateBoundaries =
+        $PSBoundParameters.ContainsKey('ReadyUtc') -or
+        $PSBoundParameters.ContainsKey('StopUtc')
+    $ready = $null
+    $stop = $null
+    if ($validateBoundaries) {
+        if (-not $PSBoundParameters.ContainsKey('ReadyUtc') -or
+            -not $PSBoundParameters.ContainsKey('StopUtc')) {
+            $errors.Add('Telemetry boundary validation requires both ready and stop timestamps.')
+        }
+        else {
+            try {
+                $ready = ConvertTo-UtcDateTimeOffset -Value $ReadyUtc
+                $stop = ConvertTo-UtcDateTimeOffset -Value $StopUtc
+                if ($stop -lt $ready) {
+                    $errors.Add('Resource monitor stop timestamp precedes its ready timestamp.')
+                }
+            }
+            catch {
+                $errors.Add("Resource monitor boundary timestamp is invalid: $($_.Exception.Message)")
+            }
+        }
+    }
     foreach ($stream in @(
-        [pscustomobject]@{ Name = 'system'; File = 'system.csv'; Hard = $validity.SystemGapHardSeconds; Group = $false },
-        [pscustomobject]@{ Name = 'process'; File = 'processes.csv'; Hard = $validity.ProcessGapHardSeconds; Group = $true },
-        [pscustomobject]@{ Name = 'probe'; File = 'probes.csv'; Hard = $validity.ProbeGapHardSeconds; Group = $false }
+        [pscustomobject]@{
+            Name = 'system'
+            File = 'system.csv'
+            Hard = 30
+            ExpectedSampleSeconds = 1
+            Group = $false
+        },
+        [pscustomobject]@{
+            Name = 'process'
+            File = 'processes.csv'
+            Hard = 15
+            ExpectedSampleSeconds = 5
+            Group = $true
+        },
+        [pscustomobject]@{
+            Name = 'probe'
+            File = 'probes.csv'
+            Hard = 15
+            ExpectedSampleSeconds = 5
+            Group = $false
+        }
     )) {
         $path = Join-Path $MonitorRoot $stream.File
         if (-not (Test-Path -LiteralPath $path -PathType Leaf) -or (Get-Item -LiteralPath $path).Length -eq 0) {
@@ -2388,29 +3510,81 @@ function Test-TelemetryContinuity {
         }
         $rows = @(Import-Csv -LiteralPath $path)
         if ($stream.Group) {
-            $rows = @($rows | Group-Object timestampUtc | ForEach-Object { $_.Group[0] })
+            $seenTimestamps =
+                [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+            $rows = @(
+                foreach ($row in $rows) {
+                    if ($seenTimestamps.Add([string]$row.timestampUtc)) {
+                        $row
+                    }
+                }
+            )
         }
         if ($rows.Count -lt 2) {
             $errors.Add("$($stream.File) has fewer than two samples.")
             continue
         }
-        $maximum = Get-MaxTimestampGapSeconds -Rows $rows
+        $timestamps = [Collections.Generic.List[DateTimeOffset]]::new()
+        try {
+            foreach ($row in $rows) {
+                $timestamps.Add(
+                    (ConvertTo-UtcDateTimeOffset -Value $row.timestampUtc))
+            }
+        }
+        catch {
+            $errors.Add("$($stream.File) contains an invalid timestamp: $($_.Exception.Message)")
+            continue
+        }
+        $maximum = 0.0
+        $monotonic = $true
+        for ($index = 1; $index -lt $timestamps.Count; $index++) {
+            $gap = ($timestamps[$index] - $timestamps[$index - 1]).TotalSeconds
+            if ($gap -lt 0) {
+                $monotonic = $false
+            }
+            elseif ($gap -gt $maximum) {
+                $maximum = $gap
+            }
+        }
+        if (-not $monotonic) {
+            $errors.Add("$($stream.File) timestamps are not monotonic.")
+        }
         $warningGaps = @(
             if ($stream.Name -eq 'system') {
-                for ($index = 1; $index -lt $rows.Count; $index++) {
-                    $current = ConvertTo-UtcDateTimeOffset -Value $rows[$index].timestampUtc
-                    $previous = ConvertTo-UtcDateTimeOffset -Value $rows[$index - 1].timestampUtc
-                    $gap = ($current - $previous).TotalSeconds
+                for ($index = 1; $index -lt $timestamps.Count; $index++) {
+                    $gap = ($timestamps[$index] - $timestamps[$index - 1]).TotalSeconds
                     if ($gap -gt $validity.SystemGapWarningSeconds) {
                         $gap
                     }
                 }
             }
         )
+        $readyToFirstGap = $null
+        $lastToStopGap = $null
+        if ($null -ne $ready -and $null -ne $stop) {
+            $readyToFirstGap =
+                [Math]::Abs(($timestamps[0] - $ready).TotalSeconds)
+            $lastToStopGap =
+                [Math]::Abs(($stop - $timestamps[$timestamps.Count - 1]).TotalSeconds)
+            if ($readyToFirstGap -gt $stream.Hard) {
+                $errors.Add(
+                    "$($stream.Name) ready-to-first-sample gap $([Math]::Round($readyToFirstGap, 3))s exceeded the $($stream.Hard)s hard limit.")
+            }
+            if ($lastToStopGap -gt $stream.Hard) {
+                $errors.Add(
+                    "$($stream.Name) last-sample-to-stop gap $([Math]::Round($lastToStopGap, 3))s exceeded the $($stream.Hard)s hard limit.")
+            }
+        }
         $statistics[$stream.Name] = [pscustomobject]@{
             MaximumGapSeconds = $maximum
             HardLimitSeconds = $stream.Hard
+            ExpectedSampleIntervalSeconds = $stream.ExpectedSampleSeconds
             SampleCount = $rows.Count
+            Monotonic = $monotonic
+            FirstSampleUtc = $timestamps[0].ToString('O')
+            LastSampleUtc = $timestamps[$timestamps.Count - 1].ToString('O')
+            ReadyToFirstSampleGapSeconds = $readyToFirstGap
+            LastSampleToStopGapSeconds = $lastToStopGap
             WarningThresholdSeconds = if ($stream.Name -eq 'system') { $validity.SystemGapWarningSeconds } else { $null }
             WarningCount = $warningGaps.Count
             WarningMaximumSeconds = if ($warningGaps.Count -eq 0) { $null } else { ($warningGaps | Measure-Object -Maximum).Maximum }
@@ -2422,6 +3596,29 @@ function Test-TelemetryContinuity {
             $errors.Add("$($stream.Name) telemetry gap $([Math]::Round($maximum, 3))s exceeded the $($stream.Hard)s hard limit.")
         }
     }
+    $provenancePath = Join-Path $MonitorRoot 'preserved-monitor-provenance.json'
+    if (Test-Path -LiteralPath $provenancePath -PathType Leaf) {
+        try {
+            $provenance = Get-Content -LiteralPath $provenancePath -Raw | ConvertFrom-Json
+            foreach ($expectation in @(
+                [pscustomobject]@{ Property = 'SampleIntervalSeconds'; Value = 1 },
+                [pscustomobject]@{ Property = 'ProcessIntervalSeconds'; Value = 5 },
+                [pscustomobject]@{ Property = 'ProbeIntervalSeconds'; Value = 5 }
+            )) {
+                if ([int]$provenance.($expectation.Property) -ne $expectation.Value) {
+                    $errors.Add(
+                        "Resource monitor $($expectation.Property) was not the required $($expectation.Value)s.")
+                }
+            }
+        }
+        catch {
+            $errors.Add("Resource monitor provenance is invalid: $($_.Exception.Message)")
+        }
+    }
+    elseif ($validateBoundaries) {
+        $errors.Add(
+            'Resource monitor provenance is required for boundary/sample-interval validation.')
+    }
     foreach ($name in @('monitor-errors.log', 'process-monitor-errors.log', 'probe-monitor-errors.log')) {
         $path = Join-Path $MonitorRoot $name
         if ((Test-Path -LiteralPath $path) -and
@@ -2431,6 +3628,9 @@ function Test-TelemetryContinuity {
     }
     [pscustomobject][ordered]@{
         Valid = $errors.Count -eq 0
+        ReadyUtc = if ($null -eq $ready) { $null } else { $ready.ToString('O') }
+        StopUtc = if ($null -eq $stop) { $null } else { $stop.ToString('O') }
+        BoundaryValidationPerformed = $validateBoundaries
         Statistics = [pscustomobject]$statistics
         Warnings = $warnings.ToArray()
         Errors = $errors.ToArray()

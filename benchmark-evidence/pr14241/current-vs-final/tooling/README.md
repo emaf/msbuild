@@ -23,6 +23,8 @@ Entry points:
   and sustained-ability gates.
 - `Run-DirectProjectSmoke.ps1`: validate one excluded direct FINAL-N isolated
   project build per repository before the sustained pilots.
+- `Run-PhaseOneDisposablePreflight.ps1`: synchronously run the disposable
+  Phase 1 end-to-end preflight below in one caller-selected root.
 - `Get-CampaignStatus.ps1 -LaunchRoot <root>`: verify the durable PID/start
   identity and show the current checkpoint.
 
@@ -83,6 +85,90 @@ The exact contemporaneous plan has 82 condition rows. Per repository, isolated
 has 3 warm-up plus 18 measured rows and sustained has 4 warm-up plus 16
 measured rows. Each shape is exactly one complete Williams cycle; every
 measured design has position and carryover imbalance `0/0`.
+
+## Disposable synchronous Phase 1 preflight
+
+This is a separate, explicitly invoked gate. It does not launch or resume the
+public campaign:
+
+```powershell
+pwsh -NoProfile -File .\Run-PhaseOneDisposablePreflight.ps1 `
+  -BootstrapIdentityPath C:\perf\results\<exact-build>\bootstrap-identities.json `
+  -OutputRoot C:\perf\preflight\pr14241-phase-one
+```
+
+Both arguments are mandatory and fully qualified. Before its first write, the
+entry point parses the identity and physically canonicalizes paths. It rejects
+an `OutputRoot` inside any git worktree or overlapping the tooling/repository,
+identity file/directory, BASE/FINAL bootstrap, or source-worktree roots. The
+command runs in the foreground and never calls `Launch-Campaign.ps1` or creates
+a detached campaign. A root-local
+exclusive file lock plus a path-derived named mutex refuse concurrent
+invocations. Each successful invocation also launches the same exact command
+as a short child while it owns the lock and records the expected duplicate
+refusal in `attempt-NNNN\duplicate-refusal.json`.
+
+Every run allocates the next `attempt-NNNN` below the same top-level root.
+Failed attempts and their raw evidence are retained; rerunning allocates the
+next number. Each attempt writes its source identity bytes once with
+`CreateNew` to a read-only `inputs\bootstrap-identities.json` snapshot and uses
+only that snapshot. Completion binds both the snapshot and original source
+path/hash; source mutation or immutable-stage revalidation failure prevents
+promotion. A valid existing root `completion.json` may return only when those
+bindings, the attempt completion hash, synchronous contract, and every required
+component still validate. No root-level failure or success-shaped fallback is
+written.
+
+One passing attempt records all of the following:
+
+- fresh immutable-stage manifests and exact BASE/FINAL source commit,
+  `ProductVersion`, `dotnet.exe`, `MSBuild.dll`, framework, and Coordinator
+  binary identities;
+- the unchanged `Run-PreflightValidation.ps1` BASE/FINAL functional-grant and
+  both-binary controller traces, strict parsing, and net11 GrantReplay scanners
+  compiled against the corresponding exact assemblies with intermediates
+  below the attempt's external `_tooling` root;
+- a real synchronous `controller-lifecycle-smoke` using
+  `Start-ScenarioBuild`: exactly 18 initial full-budget Normal synthetic
+  processes and unique worktrees, real queue/deferred behavior, one-second
+  semantic onset, a successful quiescent replacement, injection after
+  completion 1, end after completion 2, replacement stop, and complete drain.
+  This deliberately abbreviates only the production 30-second onset,
+  completion-6 injection, and completion-12 end; strict controller events,
+  grant replay matched by run/PID/start identity to each strict trace root
+  (including injection), one Coordinator trace, no overlap, and zero final
+  active/queue/allocation remain mandatory;
+- real monitor ready/stop/process-exit timestamps, monotonic samples, and
+  ready/first, inter-sample, and last/stop gap validation at 30/15/15 seconds
+  for the 1/5/5-second system/process/probe streams;
+- keep-awake enablement and restoration from `finally`;
+- a controlled expected-error `finally` exercise with a real short root/child
+  process tree, followed by a persistent start-time identity registry, verified
+  tree stop, and strict audit proving every captured command, build, descendant,
+  duplicate probe, and monitor identity is absent. Query failures are evidence
+  failures, never assumed absence. Early native identities are retained when the
+  attempt registry is created. Every scenario root is created suspended with
+  redirected handles and a Unicode environment, assigned to a dedicated Windows
+  Job Object with `KILL_ON_JOB_CLOSE`, identity-registered, and only then resumed;
+  there is no unsuspended fallback. Authoritative membership censuses retain
+  persistent children after root ancestry disappears, with
+  repeated ancestry sampling as defense in depth. Native and DLL-hosted
+  Coordinators are registered globally but excluded from individual build
+  quiescence; and
+- bounded final BASE and FINAL build-server shutdown. Recorded native commands
+  default to a one-hour timeout, while cleanup and grant replay use smaller
+  bounds; bootstrap/output probes use bounded in-memory capture with a five-minute
+  default. Shutdown, monitor stop, keep-awake restoration, registry audit, and
+  lock release are attempted independently and their failures are aggregated.
+  After the final process audit, a managed-only final `ProductVersion`, tracked
+  binary, and full immutable-stage rehash is bound into both completion records;
+  no native command can run between that rehash and atomic promotion.
+
+Raw traces, binlogs, telemetry, scanner outputs, and child logs remain only
+under the external `OutputRoot`; this entry point does not publish or copy them
+into git. `Test-Tooling.ps1` tests lock refusal, numbered retry/root-completion
+contracts, and lifecycle validation with deterministic fixtures only; it does
+not invoke this entry point or a public workload.
 
 ## Authoritative launch and resume
 

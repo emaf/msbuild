@@ -540,6 +540,12 @@ finally {
         $monitorProcessStartUtc = $monitor.ProcessStartUtc
         try {
             Stop-ScenarioMonitor -Monitor $monitor
+            $metadata['MonitorReadyObservedUtc'] =
+                $monitor.ReadyObservedUtc.ToString('O')
+            $metadata['MonitorStopRequestedUtc'] =
+                $monitor.StopRequestedUtc.ToString('O')
+            $metadata['MonitorProcessExitObservedUtc'] =
+                $monitor.ProcessExitObservedUtc.ToString('O')
         }
         catch {
             $metadata['MonitorStopError'] = $_.Exception.ToString()
@@ -625,7 +631,10 @@ foreach ($run in $runRecords) {
     }
 }
 
-$telemetry = Test-TelemetryContinuity -MonitorRoot $monitorRoot
+$telemetry = Test-TelemetryContinuity `
+    -MonitorRoot $monitorRoot `
+    -ReadyUtc $monitor.ReadyObservedUtc `
+    -StopUtc $monitor.StopRequestedUtc
 foreach ($message in $telemetry.Errors) {
     $externalErrors.Add($message)
 }
