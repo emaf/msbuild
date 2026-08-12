@@ -1,0 +1,45 @@
+{
+  "Plan": {
+    "Shape": "isolated",
+    "Repository": "roslyn",
+    "Condition": "BASE",
+    "BlockNumber": 2,
+    "AnalysisBlockNumber": 1,
+    "IsWarmup": false,
+    "OrderIndex": 1
+  },
+  "Completion": {
+    "Shape": "isolated",
+    "Repository": "roslyn",
+    "BlockNumber": 2,
+    "AnalysisBlockNumber": 1,
+    "IsWarmup": false,
+    "AttemptNumber": 1,
+    "BlockRunIdentity": "isolated|roslyn|block=2|attempt=1",
+    "Disposition": "Valid"
+  },
+  "Validation": {
+    "Shape": "isolated",
+    "Repository": "roslyn",
+    "Condition": "FINAL-N",
+    "BlockNumber": 2,
+    "AnalysisBlockNumber": 1,
+    "IsWarmup": false,
+    "AttemptNumber": 1,
+    "OrderIndex": 1,
+    "RunIdentity": "isolated|roslyn|block=2|attempt=1|order=1|condition=FINAL-N",
+    "Disposition": "Valid",
+    "ValidForAnalysis": true
+  },
+  "Metrics": {
+    "Shape": "isolated",
+    "Repository": "roslyn",
+    "Condition": "FINAL-N",
+    "BlockNumber": 2,
+    "AnalysisBlockNumber": 1,
+    "IsWarmup": false,
+    "AttemptNumber": 1,
+    "OrderIndex": 1,
+    "RunIdentity": "isolated|roslyn|block=2|attempt=1|order=1|condition=FINAL-N"
+  }
+}

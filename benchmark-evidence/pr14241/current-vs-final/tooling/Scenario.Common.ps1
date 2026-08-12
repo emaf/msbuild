@@ -3,6 +3,126 @@ $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Campaign.Common.ps1')
 . (Join-Path $PSScriptRoot 'CoordinatorTrace.ps1')
 
+function Test-VerifiedProcessIdentity {
+    param(
+        [Parameter(Mandatory)]
+        [int]$ProcessId,
+        [Parameter(Mandatory)]
+        [object]$ProcessStartUtc
+    )
+
+    $process = $null
+    try {
+        $process = Get-Process -Id $ProcessId -ErrorAction Stop
+        $expected = ConvertTo-UtcDateTimeOffset -Value $ProcessStartUtc
+        $actual = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+        return -not $process.HasExited -and
+            [Math]::Abs(($actual - $expected).TotalSeconds) -lt 1
+    }
+    catch {
+        return $false
+    }
+    finally {
+        if ($null -ne $process) {
+            $process.Dispose()
+        }
+    }
+}
+
+function Stop-VerifiedProcessTree {
+    param(
+        [Parameter(Mandatory)]
+        [int]$RootProcessId,
+        [Parameter(Mandatory)]
+        [object]$RootProcessStartUtc,
+        [string[]]$DescendantIdentities = @(),
+        [int]$TimeoutSeconds = 15
+    )
+
+    $errors = [Collections.Generic.List[string]]::new()
+    $targets = [Collections.Generic.List[object]]::new()
+    $targets.Add([pscustomobject]@{
+        ProcessId = $RootProcessId
+        ProcessStartUtc = (ConvertTo-UtcDateTimeOffset -Value $RootProcessStartUtc)
+        Root = $true
+    })
+    foreach ($identity in $DescendantIdentities) {
+        $parts = [string]$identity -split '\|', 2
+        if ($parts.Count -ne 2 -or [string]::IsNullOrWhiteSpace($parts[1])) {
+            $errors.Add("Captured descendant identity '$identity' is incomplete.")
+            continue
+        }
+        try {
+            $targets.Add([pscustomobject]@{
+                ProcessId = [int]$parts[0]
+                ProcessStartUtc = (ConvertTo-UtcDateTimeOffset -Value $parts[1])
+                Root = $false
+            })
+        }
+        catch {
+            $errors.Add("Captured descendant identity '$identity' is invalid: $($_.Exception.Message)")
+        }
+    }
+    $targets = @($targets | Sort-Object Root -Descending | Group-Object {
+        "$($_.ProcessId)|$($_.ProcessStartUtc.UtcTicks)"
+    } | ForEach-Object { $_.Group[0] })
+
+    foreach ($target in $targets) {
+        $process = Get-Process -Id $target.ProcessId -ErrorAction SilentlyContinue
+        if ($null -eq $process) {
+            continue
+        }
+        try {
+            $actualStart = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+            if ([Math]::Abs(($actualStart - $target.ProcessStartUtc).TotalSeconds) -ge 1) {
+                continue
+            }
+            if (-not $process.HasExited) {
+                $process.Kill($true)
+                if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
+                    $errors.Add("PID $($target.ProcessId) did not exit within $TimeoutSeconds seconds.")
+                }
+            }
+        }
+        catch {
+            $errors.Add("Failed to terminate verified PID $($target.ProcessId): $($_.Exception.Message)")
+        }
+        finally {
+            if ($null -ne $process) {
+                $process.Dispose()
+            }
+        }
+    }
+
+    $timer = [Diagnostics.Stopwatch]::StartNew()
+    $live = @()
+    do {
+        $live = @(
+            $targets |
+                Where-Object {
+                    Test-VerifiedProcessIdentity `
+                        -ProcessId $_.ProcessId `
+                        -ProcessStartUtc $_.ProcessStartUtc
+                }
+        )
+        if ($live.Count -eq 0 -or $timer.Elapsed.TotalSeconds -ge $TimeoutSeconds) {
+            break
+        }
+        Start-Sleep -Milliseconds 100
+    } while ($true)
+    if ($live.Count -gt 0) {
+        $errors.Add("Verified process identities remain live: $(@($live | ForEach-Object { "$($_.ProcessId)|$($_.ProcessStartUtc.ToString('O'))" }) -join ', ').")
+    }
+
+    [pscustomobject][ordered]@{
+        Succeeded = $errors.Count -eq 0 -and $live.Count -eq 0
+        Errors = $errors.ToArray()
+        LiveIdentities = @($live | ForEach-Object {
+            "$($_.ProcessId)|$($_.ProcessStartUtc.ToString('O'))"
+        })
+    }
+}
+
 function Start-ScenarioMonitor {
     param(
         [Parameter(Mandatory)]
@@ -31,21 +151,40 @@ function Start-ScenarioMonitor {
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
     $process = [Diagnostics.Process]::Start($startInfo)
-    $timer = [Diagnostics.Stopwatch]::StartNew()
-    while (-not (Test-Path -LiteralPath $readyFile)) {
-        if ($process.HasExited) {
-            throw "Resource monitor exited before readiness with code $($process.ExitCode)."
+    $processStartUtc = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+    try {
+        $timer = [Diagnostics.Stopwatch]::StartNew()
+        while (-not (Test-Path -LiteralPath $readyFile)) {
+            if ($process.HasExited) {
+                throw "Resource monitor exited before readiness with code $($process.ExitCode)."
+            }
+            if ($timer.Elapsed.TotalSeconds -gt 30) {
+                throw 'Resource monitor did not become ready within 30 seconds.'
+            }
+            Start-Sleep -Milliseconds 100
         }
-        if ($timer.Elapsed.TotalSeconds -gt 30) {
-            Stop-Process -Id $process.Id
-            throw 'Resource monitor did not become ready within 30 seconds.'
+        return [pscustomobject]@{
+            Process = $process
+            ProcessStartUtc = $processStartUtc
+            StopFile = $stopFile
+            ReadyFile = $readyFile
         }
-        Start-Sleep -Milliseconds 100
     }
-    [pscustomobject]@{
-        Process = $process
-        StopFile = $stopFile
-        ReadyFile = $readyFile
+    catch {
+        $startupException = $_.Exception
+        $stop = Stop-VerifiedProcessTree `
+            -RootProcessId $process.Id `
+            -RootProcessStartUtc $processStartUtc
+        $process.Dispose()
+        if (-not $stop.Succeeded) {
+            throw [AggregateException]::new(
+                'Resource monitor startup and cleanup failed.',
+                [Exception[]]@(
+                    $startupException,
+                    [InvalidOperationException]::new(($stop.Errors -join '; '))
+                ))
+        }
+        throw $startupException
     }
 }
 
@@ -55,15 +194,32 @@ function Stop-ScenarioMonitor {
         [pscustomobject]$Monitor
     )
 
-    New-Item -ItemType File -Force -Path $Monitor.StopFile | Out-Null
-    if (-not $Monitor.Process.WaitForExit(30000)) {
-        Stop-Process -Id $Monitor.Process.Id
-        [void]$Monitor.Process.WaitForExit(5000)
+    $errors = [Collections.Generic.List[string]]::new()
+    try {
+        New-Item -ItemType File -Force -Path $Monitor.StopFile | Out-Null
+        if (-not $Monitor.Process.WaitForExit(30000)) {
+            $stop = Stop-VerifiedProcessTree `
+                -RootProcessId $Monitor.Process.Id `
+                -RootProcessStartUtc $Monitor.ProcessStartUtc
+            foreach ($message in $stop.Errors) {
+                $errors.Add($message)
+            }
+        }
+        if (-not $Monitor.Process.HasExited) {
+            $errors.Add('Resource monitor remained live after targeted shutdown.')
+        }
+        elseif ($Monitor.Process.ExitCode -ne 0) {
+            $errors.Add("Resource monitor exited with code $($Monitor.Process.ExitCode).")
+        }
     }
-    $exitCode = $Monitor.Process.ExitCode
-    $Monitor.Process.Dispose()
-    if ($exitCode -ne 0) {
-        throw "Resource monitor exited with code $exitCode."
+    catch {
+        $errors.Add($_.Exception.Message)
+    }
+    finally {
+        $Monitor.Process.Dispose()
+    }
+    if ($errors.Count -gt 0) {
+        throw ($errors -join '; ')
     }
 }
 
@@ -136,7 +292,7 @@ function Start-ScenarioBuild {
         [int]$Generation,
 
         [Parameter(Mandatory)]
-        [DateTime]$ScenarioStartedUtc,
+        [DateTimeOffset]$ScenarioStartedUtc,
 
         [switch]$Injected
     )
@@ -185,37 +341,67 @@ function Start-ScenarioBuild {
     }
     $process = [Diagnostics.Process]::new()
     $process.StartInfo = $startInfo
-    [void]$process.Start()
-    $processStartUtc = $process.StartTime.ToUniversalTime()
-    [pscustomobject][ordered]@{
-        RunId = $RunId
-        Kind = $Kind
-        Worker = $Worker
-        Generation = $Generation
-        Priority = if ($Condition -eq 'FINAL-H' -and $Injected) { 'High' } else { 'Normal' }
-        Injected = [bool]$Injected
-        Worktree = $Worktree
-        Process = $process
-        RootProcessId = $process.Id
-        ProcessStartUtc = $processStartUtc
-        ProcessExitUtc = $null
-        StartOffsetSeconds = ($processStartUtc - $ScenarioStartedUtc).TotalSeconds
-        ExitCode = $null
-        Quiescent = $null
-        Completed = $false
-        CompletionEventWritten = $false
-        StdoutTask = $process.StandardOutput.ReadToEndAsync()
-        StderrTask = $process.StandardError.ReadToEndAsync()
-        Stdout = $stdout
-        Stderr = $stderr
-        Binlog = $binlog
-        EnvironmentPath = $environmentPath
-        Command = [pscustomobject]@{
-            FileName = $Bootstrap.DotNetPath
-            Arguments = $arguments
-            WorkingDirectory = $Worktree
+    $processStartUtc = $null
+    try {
+        [void]$process.Start()
+        $processStartUtc = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+        return [pscustomobject][ordered]@{
+            RunId = $RunId
+            Kind = $Kind
+            Worker = $Worker
+            Generation = $Generation
+            Priority = if ($Condition -eq 'FINAL-H' -and $Injected) { 'High' } else { 'Normal' }
+            Injected = [bool]$Injected
+            Worktree = $Worktree
+            Process = $process
+            RootProcessId = $process.Id
+            ProcessStartUtc = $processStartUtc
+            ProcessExitUtc = $null
+            StartOffsetSeconds = ($processStartUtc - $ScenarioStartedUtc).TotalSeconds
+            ExitCode = $null
+            Quiescent = $null
+            Completed = $false
+            CompletionEventWritten = $false
+            StdoutTask = $process.StandardOutput.ReadToEndAsync()
+            StderrTask = $process.StandardError.ReadToEndAsync()
+            Stdout = $stdout
+            Stderr = $stderr
+            Binlog = $binlog
+            EnvironmentPath = $environmentPath
+            Command = [pscustomobject]@{
+                FileName = $Bootstrap.DotNetPath
+                Arguments = $arguments
+                WorkingDirectory = $Worktree
+            }
+            DescendantIdentities = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
         }
-        DescendantIdentities = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    }
+    catch {
+        $startException = $_.Exception
+        $cleanupErrors = @()
+        if ($null -ne $processStartUtc) {
+            $stop = Stop-VerifiedProcessTree `
+                -RootProcessId $process.Id `
+                -RootProcessStartUtc $processStartUtc
+            $cleanupErrors = @($stop.Errors)
+            if (@($stop.LiveIdentities).Count -gt 0) {
+                [void](Write-ScenarioTerminalOutcome `
+                    -ScenarioRoot $ScenarioRoot `
+                    -OutcomeType 'LiveBuildStartupCleanupFailure' `
+                    -Disposition 'NonRetryableHarnessFailure' `
+                    -Errors @("Build '$RunId' remained live after startup cleanup."))
+            }
+        }
+        $process.Dispose()
+        if ($cleanupErrors.Count -gt 0) {
+            throw [AggregateException]::new(
+                "Build '$RunId' startup and targeted cleanup failed.",
+                [Exception[]]@(
+                    $startException,
+                    [InvalidOperationException]::new(($cleanupErrors -join '; '))
+                ))
+        }
+        throw $startException
     }
 }
 
@@ -264,7 +450,7 @@ function Update-ScenarioProcessTrees {
                     ''
                 }
                 else {
-                    ([DateTime]$process.CreationDate).ToUniversalTime().ToString('O')
+                    (ConvertTo-UtcDateTimeOffset -Value $process.CreationDate).ToString('O')
                 }
                 [void]$run.DescendantIdentities.Add("$child|$created")
             }
@@ -288,8 +474,9 @@ function Test-RunDescendantsExited {
             if ([string]::IsNullOrWhiteSpace($parts[1])) {
                 return $false
             }
-            $capturedStart = ([DateTime]$parts[1]).ToUniversalTime()
-            if ([Math]::Abs(($process.StartTime.ToUniversalTime() - $capturedStart).TotalSeconds) -lt 1) {
+            $capturedStart = ConvertTo-UtcDateTimeOffset -Value $parts[1]
+            $actualStart = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+            if ([Math]::Abs(($actualStart - $capturedStart).TotalSeconds) -lt 1) {
                 return $false
             }
         }
@@ -311,32 +498,211 @@ function Complete-ExitedScenarioBuild {
     if ($Run.Completed -or -not $Run.Process.HasExited) {
         return $false
     }
-    $Run.Process.WaitForExit()
-    $Run.ProcessExitUtc = $Run.Process.ExitTime.ToUniversalTime()
-    $Run.ExitCode = $Run.Process.ExitCode
-    if (-not $Run.StdoutTask.Wait([TimeSpan]::FromSeconds($QuiescenceTimeoutSeconds)) -or
-        -not $Run.StderrTask.Wait([TimeSpan]::FromSeconds($QuiescenceTimeoutSeconds))) {
-        $Run.Quiescent = $false
-    }
-    else {
-        [IO.File]::WriteAllText(
-            $Run.Stdout,
-            $Run.StdoutTask.GetAwaiter().GetResult(),
-            [Text.UTF8Encoding]::new($false))
-        [IO.File]::WriteAllText(
-            $Run.Stderr,
-            $Run.StderrTask.GetAwaiter().GetResult(),
-            [Text.UTF8Encoding]::new($false))
-        $timer = [Diagnostics.Stopwatch]::StartNew()
-        while ($timer.Elapsed.TotalSeconds -le $QuiescenceTimeoutSeconds -and
-            -not (Test-RunDescendantsExited -Run $Run)) {
-            Start-Sleep -Milliseconds 100
+    $completionError = $null
+    try {
+        $Run.Process.WaitForExit()
+        $Run.ProcessExitUtc = ConvertTo-UtcDateTimeOffset -Value $Run.Process.ExitTime
+        $Run.ExitCode = $Run.Process.ExitCode
+        if (-not $Run.StdoutTask.Wait([TimeSpan]::FromSeconds($QuiescenceTimeoutSeconds)) -or
+            -not $Run.StderrTask.Wait([TimeSpan]::FromSeconds($QuiescenceTimeoutSeconds))) {
+            $Run.Quiescent = $false
         }
-        $Run.Quiescent = Test-RunDescendantsExited -Run $Run
+        else {
+            [IO.File]::WriteAllText(
+                $Run.Stdout,
+                $Run.StdoutTask.GetAwaiter().GetResult(),
+                [Text.UTF8Encoding]::new($false))
+            [IO.File]::WriteAllText(
+                $Run.Stderr,
+                $Run.StderrTask.GetAwaiter().GetResult(),
+                [Text.UTF8Encoding]::new($false))
+            $timer = [Diagnostics.Stopwatch]::StartNew()
+            while ($timer.Elapsed.TotalSeconds -le $QuiescenceTimeoutSeconds -and
+                -not (Test-RunDescendantsExited -Run $Run)) {
+                Start-Sleep -Milliseconds 100
+            }
+            $Run.Quiescent = Test-RunDescendantsExited -Run $Run
+        }
     }
-    $Run.Completed = $true
-    $Run.Process.Dispose()
+    catch {
+        $Run.Quiescent = $false
+        $completionError = $_.Exception
+    }
+    finally {
+        $Run.Completed = $true
+        $Run.Process.Dispose()
+    }
+    if ($null -ne $completionError) {
+        throw $completionError
+    }
     return $true
+}
+
+function Stop-UnfinishedScenarioBuilds {
+    param(
+        [Parameter(Mandatory)]
+        [object[]]$Runs,
+        [int]$TimeoutSeconds = 15
+    )
+
+    $errors = [Collections.Generic.List[string]]::new()
+    $liveRunIds = [Collections.Generic.List[string]]::new()
+    $quiescenceUncertainRunIds = [Collections.Generic.List[string]]::new()
+    $cleanupRuns = @(
+        $Runs |
+            Where-Object {
+                -not $_.Completed -or $_.Quiescent -ne $true
+            }
+    )
+    if ($cleanupRuns.Count -eq 0) {
+        return [pscustomobject][ordered]@{
+            Succeeded = $true
+            Errors = @()
+            LiveRunIds = @()
+            QuiescenceUncertainRunIds = @()
+        }
+    }
+
+    try {
+        Update-ScenarioProcessTrees -Runs $cleanupRuns
+    }
+    catch {
+        $errors.Add("Final process-tree capture failed: $($_.Exception.Message)")
+        foreach ($run in $cleanupRuns) {
+            if (-not $quiescenceUncertainRunIds.Contains([string]$run.RunId)) {
+                $quiescenceUncertainRunIds.Add([string]$run.RunId)
+            }
+        }
+    }
+    foreach ($run in $cleanupRuns) {
+        $wasCompleted = [bool]$run.Completed
+        if ($wasCompleted -and $run.Quiescent -ne $true) {
+            $errors.Add("$($run.RunId): root completed without proven redirected-stream/descendant quiescence.")
+            if (-not $quiescenceUncertainRunIds.Contains([string]$run.RunId)) {
+                $quiescenceUncertainRunIds.Add([string]$run.RunId)
+            }
+        }
+        $stop = Stop-VerifiedProcessTree `
+            -RootProcessId $run.RootProcessId `
+            -RootProcessStartUtc $run.ProcessStartUtc `
+            -DescendantIdentities @($run.DescendantIdentities) `
+            -TimeoutSeconds $TimeoutSeconds
+        foreach ($message in $stop.Errors) {
+            $errors.Add("$($run.RunId): $message")
+            if (-not $quiescenceUncertainRunIds.Contains([string]$run.RunId)) {
+                $quiescenceUncertainRunIds.Add([string]$run.RunId)
+            }
+        }
+        if (-not $wasCompleted) {
+            try {
+                if (-not $run.Process.HasExited) {
+                    [void]$run.Process.WaitForExit($TimeoutSeconds * 1000)
+                }
+                if ($run.Process.HasExited) {
+                    [void](Complete-ExitedScenarioBuild `
+                        -Run $run `
+                        -QuiescenceTimeoutSeconds $TimeoutSeconds)
+                    if (-not $run.Quiescent) {
+                        $errors.Add("$($run.RunId): redirected streams or captured descendants did not quiesce.")
+                        if (-not $quiescenceUncertainRunIds.Contains([string]$run.RunId)) {
+                            $quiescenceUncertainRunIds.Add([string]$run.RunId)
+                        }
+                    }
+                }
+            }
+            catch {
+                $errors.Add("$($run.RunId): process completion failed: $($_.Exception.Message)")
+                if (-not $quiescenceUncertainRunIds.Contains([string]$run.RunId)) {
+                    $quiescenceUncertainRunIds.Add([string]$run.RunId)
+                }
+                if (-not $run.Completed) {
+                    $run.Process.Dispose()
+                }
+            }
+        }
+
+        $rootLive = Test-VerifiedProcessIdentity `
+            -ProcessId $run.RootProcessId `
+            -ProcessStartUtc $run.ProcessStartUtc
+        $descendantLive = @(
+            foreach ($identity in @($run.DescendantIdentities)) {
+                $parts = [string]$identity -split '\|', 2
+                if ($parts.Count -eq 2 -and
+                    -not [string]::IsNullOrWhiteSpace($parts[1]) -and
+                    (Test-VerifiedProcessIdentity `
+                        -ProcessId ([int]$parts[0]) `
+                        -ProcessStartUtc $parts[1])) {
+                    $identity
+                }
+            }
+        )
+        if ($rootLive -or $descendantLive.Count -gt 0) {
+            $liveRunIds.Add([string]$run.RunId)
+            if (-not $quiescenceUncertainRunIds.Contains([string]$run.RunId)) {
+                $quiescenceUncertainRunIds.Add([string]$run.RunId)
+            }
+        }
+    }
+
+    [pscustomobject][ordered]@{
+        Succeeded =
+            $errors.Count -eq 0 -and
+            $liveRunIds.Count -eq 0 -and
+            $quiescenceUncertainRunIds.Count -eq 0
+        Errors = $errors.ToArray()
+        LiveRunIds = $liveRunIds.ToArray()
+        QuiescenceUncertainRunIds = $quiescenceUncertainRunIds.ToArray()
+    }
+}
+
+function Write-ScenarioCleanupTerminalOutcome {
+    param(
+        [Parameter(Mandatory)]
+        [string]$ScenarioRoot,
+
+        [Parameter(Mandatory)]
+        [pscustomobject]$Cleanup
+    )
+
+    if ($Cleanup.Succeeded) {
+        return $null
+    }
+    $liveRunIds = @(
+        if ($null -ne $Cleanup.PSObject.Properties['LiveRunIds']) {
+            $Cleanup.LiveRunIds
+        }
+    )
+    $uncertainRunIds = @(
+        if ($null -ne $Cleanup.PSObject.Properties['QuiescenceUncertainRunIds']) {
+            $Cleanup.QuiescenceUncertainRunIds
+        }
+    )
+    $terminalErrors = [Collections.Generic.List[string]]::new()
+    foreach ($message in @($Cleanup.Errors)) {
+        $terminalErrors.Add([string]$message)
+    }
+    if ($liveRunIds.Count -gt 0) {
+        $terminalErrors.Add(
+            "Build process identities remained live after cleanup: $($liveRunIds -join ', ').")
+    }
+    if ($uncertainRunIds.Count -gt 0) {
+        $terminalErrors.Add(
+            "Build quiescence could not be established without forced or uncertain cleanup: $($uncertainRunIds -join ', ').")
+    }
+    if ($terminalErrors.Count -eq 0) {
+        $terminalErrors.Add('Scenario build cleanup failed without proving process quiescence.')
+    }
+
+    Write-ScenarioTerminalOutcome `
+        -ScenarioRoot $ScenarioRoot `
+        -OutcomeType $(if ($liveRunIds.Count -gt 0) {
+            'LiveBuildCleanupFailure'
+        }
+        else {
+            'BuildQuiescenceFailure'
+        }) `
+        -Disposition 'NonRetryableHarnessFailure' `
+        -Errors $terminalErrors.ToArray()
 }
 
 function Wait-ScenarioBuilds {
@@ -348,11 +714,11 @@ function Wait-ScenarioBuilds {
     )
 
     $timer = [Diagnostics.Stopwatch]::StartNew()
-    $lastProcessTreeSampleUtc = [DateTime]::MinValue
+    $lastProcessTreeSampleUtc = [DateTimeOffset]::MinValue
     while (@($Runs | Where-Object { -not $_.Completed }).Count -gt 0) {
-        if (([DateTime]::UtcNow - $lastProcessTreeSampleUtc).TotalSeconds -ge 5) {
+        if (([DateTimeOffset]::UtcNow - $lastProcessTreeSampleUtc).TotalSeconds -ge 5) {
             Update-ScenarioProcessTrees -Runs $Runs
-            $lastProcessTreeSampleUtc = [DateTime]::UtcNow
+            $lastProcessTreeSampleUtc = [DateTimeOffset]::UtcNow
         }
         foreach ($run in @($Runs | Where-Object { -not $_.Completed })) {
             [void](Complete-ExitedScenarioBuild -Run $run)
@@ -372,9 +738,9 @@ function Get-ScenarioResourceMetrics {
         [Parameter(Mandatory)]
         [object[]]$RunRecords,
 
-        [DateTime]$WindowStartUtc,
+        [DateTimeOffset]$WindowStartUtc,
 
-        [DateTime]$WindowEndUtc
+        [DateTimeOffset]$WindowEndUtc
     )
 
     $systemRows = @(Import-Csv -LiteralPath (Join-Path $MonitorRoot 'system.csv'))
@@ -382,7 +748,7 @@ function Get-ScenarioResourceMetrics {
         $systemRows = @(
             $systemRows |
                 Where-Object {
-                    $timestamp = ([DateTime]$_.timestampUtc).ToUniversalTime()
+                    $timestamp = ConvertTo-UtcDateTimeOffset -Value $_.timestampUtc
                     $timestamp -ge $WindowStartUtc.ToUniversalTime() -and
                         $timestamp -le $WindowEndUtc.ToUniversalTime()
                 }
@@ -393,12 +759,12 @@ function Get-ScenarioResourceMetrics {
         foreach ($run in $RunRecords) {
             [pscustomobject]@{
                 ProcessId = [int]$run.RootProcessId
-                StartUtc = ([DateTime]$run.ProcessStartUtc).ToUniversalTime()
+                StartUtc = ConvertTo-UtcDateTimeOffset -Value $run.ProcessStartUtc
                 ExitUtc = if ([string]::IsNullOrWhiteSpace([string]$run.ProcessExitUtc)) {
-                    [DateTime]::MaxValue
+                    [DateTimeOffset]::MaxValue
                 }
                 else {
-                    ([DateTime]$run.ProcessExitUtc).ToUniversalTime()
+                    ConvertTo-UtcDateTimeOffset -Value $run.ProcessExitUtc
                 }
             }
         }
@@ -411,7 +777,7 @@ function Get-ScenarioResourceMetrics {
     $noiseCpuByIdentity = @{}
     $foreignConflictingIdentities = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     foreach ($snapshot in $processRows | Group-Object timestampUtc) {
-        $timestamp = ([DateTime]$snapshot.Name).ToUniversalTime()
+        $timestamp = ConvertTo-UtcDateTimeOffset -Value $snapshot.Name
         if ($PSBoundParameters.ContainsKey('WindowStartUtc') -and
             ($timestamp -lt $WindowStartUtc.ToUniversalTime() -or $timestamp -gt $WindowEndUtc.ToUniversalTime())) {
             continue
@@ -530,16 +896,16 @@ function Get-GrantMetricsForRun {
 
     $grants = @($Replay.Grants)
     $waits = @($Replay.Waits)
-    $traceGrant = ([DateTime]$TraceState.GrantedUtc).ToUniversalTime()
-    $start = ([DateTime]$Run.ProcessStartUtc).ToUniversalTime()
-    $exit = ([DateTime]$Run.ProcessExitUtc).ToUniversalTime()
+    $traceGrant = ConvertTo-UtcDateTimeOffset -Value $TraceState.GrantedUtc
+    $start = ConvertTo-UtcDateTimeOffset -Value $Run.ProcessStartUtc
+    $exit = ConvertTo-UtcDateTimeOffset -Value $Run.ProcessExitUtc
     $grant = if ($grants.Count -eq 1) { $grants[0] } else { $null }
-    $grantUtc = if ($null -eq $grant) { $null } else { ([DateTime]$grant.TimestampUtc).ToUniversalTime() }
+    $grantUtc = if ($null -eq $grant) { $null } else { ConvertTo-UtcDateTimeOffset -Value $grant.TimestampUtc }
     $waitStarted = if ($waits.Count -gt 0) {
-        ([DateTime]$waits[0].TimestampUtc).ToUniversalTime()
+        ConvertTo-UtcDateTimeOffset -Value $waits[0].TimestampUtc
     }
     elseif ($null -ne $TraceState.QueuedUtc) {
-        ([DateTime]$TraceState.QueuedUtc).ToUniversalTime()
+        ConvertTo-UtcDateTimeOffset -Value $TraceState.QueuedUtc
     }
     else {
         $traceGrant
@@ -555,7 +921,7 @@ function Get-GrantMetricsForRun {
         RequestToGrantSeconds = if ($null -eq $grantUtc) { $null } else { ($grantUtc - $start).TotalSeconds }
         QueueWaitSeconds = if ($null -eq $grantUtc) { $null } else { [Math]::Max(0, ($grantUtc - $waitStarted).TotalSeconds) }
         RequestToCompletionSeconds = ($exit - $start).TotalSeconds
-        CoordinatorNegotiationSeconds = ($traceGrant - ([DateTime]$TraceState.ConnectedUtc).ToUniversalTime()).TotalSeconds
+        CoordinatorNegotiationSeconds = ($traceGrant - (ConvertTo-UtcDateTimeOffset -Value $TraceState.ConnectedUtc)).TotalSeconds
         BinlogErrorCount = [int]$Replay.ErrorCount
         BinlogWarningCount = [int]$Replay.WarningCount
     }
@@ -580,12 +946,12 @@ function Get-StateAtTimestamp {
         [object[]]$Timeline,
 
         [Parameter(Mandatory)]
-        [DateTime]$TimestampUtc
+        [DateTimeOffset]$TimestampUtc
     )
 
     $state = [pscustomobject]@{ QueueDepth = 0; ActiveBuilds = 0; AllocatedNodes = 0 }
-    foreach ($row in $Timeline | Sort-Object { [DateTime]$_.TimestampUtc }, Sequence) {
-        if (([DateTime]$row.TimestampUtc -gt $TimestampUtc)) {
+    foreach ($row in $Timeline | Sort-Object { ConvertTo-UtcDateTimeOffset -Value $_.TimestampUtc }, Sequence) {
+        if ((ConvertTo-UtcDateTimeOffset -Value $row.TimestampUtc) -gt $TimestampUtc.ToUniversalTime()) {
             break
         }
         $state = $row

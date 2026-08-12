@@ -1,6 +1,35 @@
 Set-StrictMode -Version 3.0
 $ErrorActionPreference = 'Stop'
 
+function ConvertTo-UtcDateTimeOffset {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Value
+    )
+
+    if ($Value -is [DateTimeOffset]) {
+        return ([DateTimeOffset]$Value).ToUniversalTime()
+    }
+    if ($Value -is [DateTime]) {
+        $dateTime = [DateTime]$Value
+        if ($dateTime.Kind -eq [DateTimeKind]::Unspecified) {
+            $dateTime = [DateTime]::SpecifyKind($dateTime, [DateTimeKind]::Utc)
+        }
+        return [DateTimeOffset]::new($dateTime).ToUniversalTime()
+    }
+
+    $parsed = [DateTimeOffset]::MinValue
+    if (-not [DateTimeOffset]::TryParse(
+        [string]$Value,
+        [Globalization.CultureInfo]::InvariantCulture,
+        [Globalization.DateTimeStyles]::AssumeUniversal -bor
+            [Globalization.DateTimeStyles]::AdjustToUniversal,
+        [ref]$parsed)) {
+        throw "Timestamp '$Value' is not a valid ISO-8601 instant."
+    }
+    return $parsed.ToUniversalTime()
+}
+
 $script:CoordinatorEnvironmentVariables = @(
     'MSBUILDUSECOORDINATOR',
     'MSBUILDCOORDINATORPIPENAME',
@@ -351,6 +380,352 @@ function Get-ProjectOutputContentIdentity {
     }
 }
 
+function Test-GitStatusWithinProjectOutputs {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Worktree,
+
+        [Parameter(Mandatory)]
+        [string[]]$OutputDirectories
+    )
+
+    $root = [IO.Path]::GetFullPath($Worktree)
+    $allowedRoots = @(
+        foreach ($relativePath in $OutputDirectories) {
+            $fullPath = [IO.Path]::GetFullPath((Join-Path $root $relativePath))
+            if (-not $fullPath.StartsWith(
+                $root.TrimEnd('\') + '\',
+                [StringComparison]::OrdinalIgnoreCase)) {
+                throw "Output directory '$relativePath' resolves outside '$root'."
+            }
+            $fullPath.TrimEnd('\')
+        }
+    )
+    $status = @(
+        Get-NativeOutput `
+            -FileName git `
+            -Arguments @(
+                '-C', $root,
+                'status',
+                '--porcelain=v1',
+                '--untracked-files=all',
+                '--ignored'
+            ) `
+            -WorkingDirectory $root |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
+    $unexpected = [Collections.Generic.List[object]]::new()
+    foreach ($line in $status) {
+        $relativePath = $null
+        if ($line.Length -ge 4) {
+            $relativePath = $line.Substring(3)
+            if ($relativePath.StartsWith('"', [StringComparison]::Ordinal) -and
+                $relativePath.EndsWith('"', [StringComparison]::Ordinal)) {
+                try {
+                    $relativePath = [string]($relativePath | ConvertFrom-Json)
+                }
+                catch {
+                    $relativePath = $null
+                }
+            }
+        }
+        $fullPath = $null
+        $allowed = $false
+        if (-not [string]::IsNullOrWhiteSpace($relativePath)) {
+            try {
+                $fullPath = [IO.Path]::GetFullPath(
+                    (Join-Path $root $relativePath.Replace('/', '\').TrimEnd('\')))
+                $allowed = @(
+                    $allowedRoots |
+                        Where-Object {
+                            $fullPath.Equals(
+                                $_,
+                                [StringComparison]::OrdinalIgnoreCase) -or
+                                $fullPath.StartsWith(
+                                    $_ + '\',
+                                    [StringComparison]::OrdinalIgnoreCase)
+                        }
+                ).Count -gt 0
+            }
+            catch {
+                $allowed = $false
+            }
+        }
+        if (-not $allowed) {
+            $unexpected.Add([pscustomobject][ordered]@{
+                Status = $line.Substring(0, [Math]::Min(2, $line.Length))
+                RelativePath = $relativePath
+                Raw = $line
+            })
+        }
+    }
+
+    [pscustomobject][ordered]@{
+        Valid = $unexpected.Count -eq 0
+        StatusEntries = $status
+        UnexpectedEntries = $unexpected.ToArray()
+        OutputDirectories = $OutputDirectories
+    }
+}
+
+function Test-PreparationCompletionRecord {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Record,
+        [Parameter(Mandatory)]
+        [object]$BaseBootstrap,
+        [Parameter(Mandatory)]
+        [object]$FinalBootstrap,
+        [Parameter(Mandatory)]
+        [object[]]$RepositoryDefinitions,
+        [string]$BootstrapIdentityPath,
+        [switch]$ValidateFileSystem
+    )
+
+    $errors = [Collections.Generic.List[string]]::new()
+    if ($null -eq $Record.PSObject.Properties['SchemaVersion'] -or
+        [int]$Record.SchemaVersion -ne 2) {
+        $errors.Add('Preparation completion schema must be exactly version 2.')
+    }
+    if ($null -eq $Record.PSObject.Properties['CompletedUtc']) {
+        $errors.Add('Preparation completion has no completion timestamp.')
+    }
+    else {
+        try {
+            [void](ConvertTo-UtcDateTimeOffset -Value $Record.CompletedUtc)
+        }
+        catch {
+            $errors.Add("Preparation completion timestamp is invalid: $($_.Exception.Message)")
+        }
+    }
+    if ($null -eq $Record.PSObject.Properties['Authoritative'] -or
+        -not (ConvertTo-StrictBoolean -Value $Record.Authoritative)) {
+        $errors.Add('Preparation completion is not authoritative.')
+    }
+    if ([string]$Record.PreparationBootstrapRole -ne 'final') {
+        $errors.Add('Preparation completion did not use the exact FINAL bootstrap.')
+    }
+    if (-not [string]::IsNullOrWhiteSpace($BootstrapIdentityPath)) {
+        $identityPathMatches = try {
+            [IO.Path]::GetFullPath([string]$Record.BootstrapIdentityPath).Equals(
+                [IO.Path]::GetFullPath($BootstrapIdentityPath),
+                [StringComparison]::OrdinalIgnoreCase)
+        }
+        catch {
+            $false
+        }
+        if (-not $identityPathMatches -or
+            -not (Test-Path -LiteralPath $BootstrapIdentityPath -PathType Leaf) -or
+            [string]$Record.BootstrapIdentitySha256 -ne
+                (Get-FileHash -LiteralPath $BootstrapIdentityPath -Algorithm SHA256).Hash) {
+            $errors.Add('Preparation bootstrap identity file changed.')
+        }
+    }
+
+    $recordedBootstraps = $Record.PSObject.Properties['BootstrapIdentities']
+    if ($null -eq $recordedBootstraps) {
+        $errors.Add('Preparation completion has no bootstrap identities.')
+    }
+    else {
+        foreach ($expectedBootstrap in @(
+            [pscustomobject]@{ Name = 'Base'; Value = $BaseBootstrap },
+            [pscustomobject]@{ Name = 'Final'; Value = $FinalBootstrap }
+        )) {
+            $recordedProperty = $recordedBootstraps.Value.PSObject.Properties[$expectedBootstrap.Name]
+            if ($null -eq $recordedProperty) {
+                $errors.Add("Preparation completion has no $($expectedBootstrap.Name) bootstrap identity.")
+                continue
+            }
+            $recorded = $recordedProperty.Value
+            $expected = $expectedBootstrap.Value
+            $rootMatches = try {
+                [IO.Path]::GetFullPath([string]$recorded.Root).Equals(
+                    [IO.Path]::GetFullPath([string]$expected.Root),
+                    [StringComparison]::OrdinalIgnoreCase)
+            }
+            catch {
+                $false
+            }
+            if (-not $rootMatches -or
+                [string]$recorded.Commit -ne [string]$expected.ExpectedCommit -or
+                [string]$recorded.MSBuildDllSha256 -ne [string]$expected.MSBuildDllSha256) {
+                $errors.Add("Preparation completion $($expectedBootstrap.Name) bootstrap identity changed.")
+            }
+        }
+    }
+
+    $expectedRepositoryNames = @($RepositoryDefinitions.Name | Sort-Object)
+    $recordedRepositories = @($Record.Repositories)
+    $actualRepositoryNames = @($recordedRepositories.Name | ForEach-Object { [string]$_ } | Sort-Object)
+    if (($expectedRepositoryNames -join '|') -ne ($actualRepositoryNames -join '|')) {
+        $errors.Add("Preparation repositories '$($actualRepositoryNames -join ',')' do not match '$($expectedRepositoryNames -join ',')'.")
+    }
+
+    $expectedWorktreeNames = @((1..18 | ForEach-Object { "normal$_" }) + @('injected') | Sort-Object)
+    foreach ($definition in $RepositoryDefinitions) {
+        $repository = $recordedRepositories |
+            Where-Object Name -eq $definition.Name |
+            Select-Object -First 1
+        if ($null -eq $repository) {
+            continue
+        }
+        if (-not (ConvertTo-StrictBoolean -Value $repository.Restored) -or
+            -not (ConvertTo-StrictBoolean -Value $repository.Warmed)) {
+            $errors.Add("Preparation repository '$($definition.Name)' is not restored and warmed.")
+        }
+        $recordedIdentity = $repository.PSObject.Properties['Repository']
+        if ($null -eq $recordedIdentity) {
+            $errors.Add("Preparation repository '$($definition.Name)' has no source identity.")
+        }
+        else {
+            $rootMatches = try {
+                [IO.Path]::GetFullPath([string]$recordedIdentity.Value.Root).Equals(
+                    [IO.Path]::GetFullPath([string]$definition.Root),
+                    [StringComparison]::OrdinalIgnoreCase)
+            }
+            catch {
+                $false
+            }
+            if (-not $rootMatches -or
+                [string]$recordedIdentity.Value.ActualCommit -ne [string]$definition.Commit -or
+                [string]$recordedIdentity.Value.ExpectedCommit -ne [string]$definition.Commit -or
+                -not (ConvertTo-StrictBoolean -Value $recordedIdentity.Value.Clean) -or
+                -not (ConvertTo-StrictBoolean -Value $recordedIdentity.Value.Verified)) {
+                $errors.Add("Preparation repository '$($definition.Name)' source identity changed.")
+            }
+            $remote = $recordedIdentity.Value.PSObject.Properties['Remote']
+            if ($null -eq $remote -or
+                [string]$remote.Value.ExpectedUrl -ne [string]$definition.Repository -or
+                -not (ConvertTo-StrictBoolean -Value $remote.Value.Verified)) {
+                $errors.Add("Preparation repository '$($definition.Name)' remote identity is invalid.")
+            }
+        }
+        if ([string]$repository.BuildPath -ne [string]$definition.BuildPath -or
+            [string]$repository.TouchPath -ne [string]$definition.TouchPath) {
+            $errors.Add("Preparation repository '$($definition.Name)' workload paths changed.")
+        }
+        $workRootMatches = try {
+            [IO.Path]::GetFullPath([string]$repository.WorkRoot).Equals(
+                [IO.Path]::GetFullPath([string]$definition.WorkRoot),
+                [StringComparison]::OrdinalIgnoreCase)
+        }
+        catch {
+            $false
+        }
+        if (-not $workRootMatches -or
+            (@($repository.AdditionalBuildArguments) -join '|') -ne
+                (@($definition.AdditionalBuildArguments) -join '|')) {
+            $errors.Add("Preparation repository '$($definition.Name)' work root or build arguments changed.")
+        }
+
+        $worktrees = @($repository.Worktrees)
+        $actualWorktreeNames = @($worktrees.Name | ForEach-Object { [string]$_ } | Sort-Object)
+        if ($worktrees.Count -ne 19 -or
+            ($actualWorktreeNames -join '|') -ne ($expectedWorktreeNames -join '|')) {
+            $errors.Add("Preparation repository '$($definition.Name)' does not contain the exact 19 worktrees.")
+            continue
+        }
+        foreach ($worktree in $worktrees) {
+            $expectedPath = [IO.Path]::GetFullPath((Join-Path $definition.WorkRoot ([string]$worktree.Name)))
+            $pathMatches = try {
+                [IO.Path]::GetFullPath([string]$worktree.Path).Equals(
+                    $expectedPath,
+                    [StringComparison]::OrdinalIgnoreCase)
+            }
+            catch {
+                $false
+            }
+            if (-not $pathMatches) {
+                $errors.Add("Prepared worktree '$($definition.Name)/$($worktree.Name)' path changed.")
+                continue
+            }
+            if ($null -eq $worktree.PSObject.Properties['Git'] -or
+                [string]$worktree.Git.ActualCommit -ne [string]$definition.Commit -or
+                [string]$worktree.Git.ExpectedCommit -ne [string]$definition.Commit -or
+                -not (ConvertTo-StrictBoolean -Value $worktree.Git.Clean) -or
+                -not (ConvertTo-StrictBoolean -Value $worktree.Git.Verified)) {
+                $errors.Add("Prepared worktree '$($definition.Name)/$($worktree.Name)' recorded Git identity is invalid.")
+            }
+            $baseline = $worktree.PSObject.Properties['BaselineOutputIdentity']
+            if ($null -eq $baseline -or
+                [string]$baseline.Value.ContentSha256 -notmatch '^[0-9A-Fa-f]{64}$' -or
+                [int]$baseline.Value.FileCount -le 0) {
+                $errors.Add("Prepared worktree '$($definition.Name)/$($worktree.Name)' has no valid baseline output identity.")
+                continue
+            }
+            if (-not $ValidateFileSystem) {
+                continue
+            }
+            try {
+                [void](Get-GitIdentity `
+                    -Root $expectedPath `
+                    -ExpectedCommit $definition.Commit `
+                    -RequireClean)
+                $trackedFiles = @(
+                    Get-NativeOutput `
+                        -FileName git `
+                        -Arguments @('-C', $expectedPath, 'ls-files') `
+                        -WorkingDirectory $expectedPath
+                )
+                $current = Get-ProjectOutputContentIdentity `
+                    -Worktree $expectedPath `
+                    -TrackedRelativePaths $trackedFiles
+                $statusValidation = Test-GitStatusWithinProjectOutputs `
+                    -Worktree $expectedPath `
+                    -OutputDirectories @($current.OutputDirectories)
+                if (-not $statusValidation.Valid) {
+                    $unexpectedPaths = @(
+                        $statusValidation.UnexpectedEntries |
+                            ForEach-Object {
+                                if ([string]::IsNullOrWhiteSpace([string]$_.RelativePath)) {
+                                    [string]$_.Raw
+                                }
+                                else {
+                                    [string]$_.RelativePath
+                                }
+                            }
+                    )
+                    $errors.Add(
+                        "Prepared worktree '$($definition.Name)/$($worktree.Name)' has ignored or untracked state outside explicitly hashed/reset output roots: $($unexpectedPaths -join ', ').")
+                }
+                if ([string]$current.ContentSha256 -ne [string]$baseline.Value.ContentSha256 -or
+                    [int]$current.FileCount -ne [int]$baseline.Value.FileCount -or
+                    [int64]$current.TotalBytes -ne [int64]$baseline.Value.TotalBytes -or
+                    (@($current.OutputDirectories) -join '|') -ne
+                        (@($baseline.Value.OutputDirectories) -join '|')) {
+                    $errors.Add("Prepared worktree '$($definition.Name)/$($worktree.Name)' baseline output identity changed.")
+                }
+            }
+            catch {
+                $errors.Add("Prepared worktree '$($definition.Name)/$($worktree.Name)' validation failed: $($_.Exception.Message)")
+            }
+        }
+
+        if ($ValidateFileSystem) {
+            try {
+                [void](Get-GitIdentity `
+                    -Root $definition.Root `
+                    -ExpectedCommit $definition.Commit `
+                    -RequireClean)
+                [void](Get-GitRemoteIdentity `
+                    -Root $definition.Root `
+                    -RemoteName origin `
+                    -ExpectedUrl $definition.Repository)
+            }
+            catch {
+                $errors.Add("Preparation repository '$($definition.Name)' current identity failed: $($_.Exception.Message)")
+            }
+        }
+    }
+
+    [pscustomobject][ordered]@{
+        Valid = $errors.Count -eq 0
+        Errors = $errors.ToArray()
+        RepositoryCount = $recordedRepositories.Count
+        WorktreeCount = @($recordedRepositories | ForEach-Object { @($_.Worktrees).Count } | Measure-Object -Sum).Sum
+    }
+}
+
 function Test-WorktreeResetCheckpointRecord {
     param(
         [Parameter(Mandatory)]
@@ -434,6 +809,291 @@ function Write-JsonAtomic {
     }
     finally {
         Remove-Item -LiteralPath $temporaryPath -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function ConvertTo-StrictBoolean {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Value
+    )
+
+    if ($Value -is [bool]) {
+        return [bool]$Value
+    }
+    $parsed = $false
+    if (-not [bool]::TryParse([string]$Value, [ref]$parsed)) {
+        throw "Value '$Value' is not an exact Boolean."
+    }
+    return $parsed
+}
+
+function New-BlockRunIdentity {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Shape,
+        [Parameter(Mandatory)]
+        [string]$Repository,
+        [Parameter(Mandatory)]
+        [int]$BlockNumber,
+        [Parameter(Mandatory)]
+        [int]$AttemptNumber
+    )
+
+    return "$Shape|$Repository|block=$BlockNumber|attempt=$AttemptNumber"
+}
+
+function New-ScenarioRunIdentity {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Shape,
+        [Parameter(Mandatory)]
+        [string]$Repository,
+        [Parameter(Mandatory)]
+        [string]$Condition,
+        [Parameter(Mandatory)]
+        [int]$BlockNumber,
+        [Parameter(Mandatory)]
+        [int]$AttemptNumber,
+        [Parameter(Mandatory)]
+        [int]$OrderIndex
+    )
+
+    $blockIdentity = New-BlockRunIdentity `
+        -Shape $Shape `
+        -Repository $Repository `
+        -BlockNumber $BlockNumber `
+        -AttemptNumber $AttemptNumber
+    return "$blockIdentity|order=$OrderIndex|condition=$Condition"
+}
+
+function Test-ScenarioEvidenceIdentity {
+    param(
+        [Parameter(Mandatory)]
+        [object]$PlanRow,
+        [Parameter(Mandatory)]
+        [object]$BlockCompletion,
+        [Parameter(Mandatory)]
+        [object]$Validation,
+        [Parameter(Mandatory)]
+        [object]$Metrics
+    )
+
+    $errors = [Collections.Generic.List[string]]::new()
+    try {
+        $expected = [ordered]@{
+            Shape = [string]$PlanRow.Shape
+            Repository = [string]$PlanRow.Repository
+            Condition = [string]$PlanRow.Condition
+            BlockNumber = [int]$PlanRow.BlockNumber
+            AnalysisBlockNumber = [int]$PlanRow.AnalysisBlockNumber
+            IsWarmup = ConvertTo-StrictBoolean -Value $PlanRow.IsWarmup
+            AttemptNumber = [int]$BlockCompletion.AttemptNumber
+            OrderIndex = [int]$PlanRow.OrderIndex
+        }
+        $expectedBlockIdentity = New-BlockRunIdentity `
+            -Shape $expected.Shape `
+            -Repository $expected.Repository `
+            -BlockNumber $expected.BlockNumber `
+            -AttemptNumber $expected.AttemptNumber
+        $expectedRunIdentity = New-ScenarioRunIdentity `
+            -Shape $expected.Shape `
+            -Repository $expected.Repository `
+            -Condition $expected.Condition `
+            -BlockNumber $expected.BlockNumber `
+            -AttemptNumber $expected.AttemptNumber `
+            -OrderIndex $expected.OrderIndex
+
+        foreach ($field in @('Shape', 'Repository', 'BlockNumber', 'AnalysisBlockNumber', 'IsWarmup', 'AttemptNumber')) {
+            $property = $BlockCompletion.PSObject.Properties[$field]
+            if ($null -eq $property) {
+                $errors.Add("Block completion is missing identity field '$field'.")
+                continue
+            }
+            $actual = if ($field -eq 'IsWarmup') {
+                ConvertTo-StrictBoolean -Value $property.Value
+            }
+            elseif ($field -in @('BlockNumber', 'AnalysisBlockNumber', 'AttemptNumber')) {
+                [int]$property.Value
+            }
+            else {
+                [string]$property.Value
+            }
+            if ($actual -ne $expected[$field]) {
+                $errors.Add("Block completion $field '$actual' does not match plan '$($expected[$field])'.")
+            }
+        }
+        $blockIdentityProperty = $BlockCompletion.PSObject.Properties['BlockRunIdentity']
+        if ($null -eq $blockIdentityProperty -or
+            [string]$blockIdentityProperty.Value -ne $expectedBlockIdentity) {
+            $errors.Add("Block completion run identity does not match '$expectedBlockIdentity'.")
+        }
+
+        foreach ($artifact in @(
+            [pscustomobject]@{ Name = 'validation'; Value = $Validation },
+            [pscustomobject]@{ Name = 'metrics'; Value = $Metrics }
+        )) {
+            foreach ($field in $expected.Keys) {
+                $property = $artifact.Value.PSObject.Properties[$field]
+                if ($null -eq $property) {
+                    $errors.Add("Scenario $($artifact.Name) is missing identity field '$field'.")
+                    continue
+                }
+                $actual = if ($field -eq 'IsWarmup') {
+                    ConvertTo-StrictBoolean -Value $property.Value
+                }
+                elseif ($field -in @('BlockNumber', 'AnalysisBlockNumber', 'AttemptNumber', 'OrderIndex')) {
+                    [int]$property.Value
+                }
+                else {
+                    [string]$property.Value
+                }
+                if ($actual -ne $expected[$field]) {
+                    $errors.Add("Scenario $($artifact.Name) $field '$actual' does not match plan '$($expected[$field])'.")
+                }
+            }
+            $runIdentityProperty = $artifact.Value.PSObject.Properties['RunIdentity']
+            if ($null -eq $runIdentityProperty -or
+                [string]$runIdentityProperty.Value -ne $expectedRunIdentity) {
+                $errors.Add("Scenario $($artifact.Name) run identity does not match '$expectedRunIdentity'.")
+            }
+        }
+    }
+    catch {
+        $errors.Add("Scenario identity could not be validated: $($_.Exception.Message)")
+    }
+
+    [pscustomobject][ordered]@{
+        Valid = $errors.Count -eq 0
+        Errors = $errors.ToArray()
+    }
+}
+
+function Write-ScenarioTerminalOutcome {
+    param(
+        [Parameter(Mandatory)]
+        [string]$ScenarioRoot,
+        [Parameter(Mandatory)]
+        [string]$OutcomeType,
+        [Parameter(Mandatory)]
+        [string]$Disposition,
+        [Parameter(Mandatory)]
+        [string[]]$Errors
+    )
+
+    $path = Join-Path $ScenarioRoot 'scenario-terminal-outcome.json'
+    if (Test-Path -LiteralPath $path -PathType Leaf) {
+        return Get-ScenarioTerminalOutcome -ScenarioRoot $ScenarioRoot
+    }
+    $record = [pscustomobject][ordered]@{
+        SchemaVersion = 1
+        EstablishedUtc = [DateTimeOffset]::UtcNow.ToString('O')
+        OutcomeType = $OutcomeType
+        Disposition = $Disposition
+        RetryAllowed = $false
+        Errors = $Errors
+    }
+    Write-JsonAtomic -Path $path -Value $record
+    return $record
+}
+
+function Get-ScenarioTerminalOutcome {
+    param(
+        [Parameter(Mandatory)]
+        [string]$ScenarioRoot
+    )
+
+    $path = Join-Path $ScenarioRoot 'scenario-terminal-outcome.json'
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+        return $null
+    }
+    $record = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
+    if ([int]$record.SchemaVersion -ne 1 -or
+        [string]::IsNullOrWhiteSpace([string]$record.OutcomeType) -or
+        [string]::IsNullOrWhiteSpace([string]$record.Disposition) -or
+        (ConvertTo-StrictBoolean -Value $record.RetryAllowed)) {
+        throw "Scenario terminal outcome '$path' is invalid."
+    }
+    [void](ConvertTo-UtcDateTimeOffset -Value $record.EstablishedUtc)
+    return $record
+}
+
+function Get-InterruptedAttemptTerminalPromotion {
+    param(
+        [Parameter(Mandatory)]
+        [string]$AttemptRoot,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('Pilot', 'MeasuredBlock')]
+        [string]$ResumeScope
+    )
+
+    if (-not (Test-Path -LiteralPath $AttemptRoot -PathType Container)) {
+        return $null
+    }
+    $terminalPaths = @(
+        Get-ChildItem `
+            -LiteralPath $AttemptRoot `
+            -Recurse `
+            -File `
+            -Filter 'scenario-terminal-outcome.json' `
+            -ErrorAction Stop |
+            Sort-Object FullName
+    )
+    if ($terminalPaths.Count -eq 0) {
+        return $null
+    }
+
+    $outcomes = [Collections.Generic.List[object]]::new()
+    foreach ($terminalPath in $terminalPaths) {
+        $scenarioRoot = $terminalPath.DirectoryName
+        $outcome = Get-ScenarioTerminalOutcome -ScenarioRoot $scenarioRoot
+        $outcomes.Add([pscustomobject][ordered]@{
+            Scenario = [IO.Path]::GetRelativePath($AttemptRoot, $scenarioRoot)
+            OutcomeType = [string]$outcome.OutcomeType
+            Disposition = [string]$outcome.Disposition
+            RetryAllowed = $false
+            Errors = @($outcome.Errors)
+        })
+    }
+
+    $dispositions = @($outcomes.Disposition)
+    $promotedDisposition = if ($dispositions -contains 'CampaignAbilityGateFailure') {
+        'CampaignAbilityGateFailure'
+    }
+    elseif ($dispositions -contains 'TestedConditionPolicyOutcome') {
+        'TestedConditionPolicyOutcome'
+    }
+    else {
+        'NonRetryableHarnessFailure'
+    }
+    $promotionMarkerName = if ($ResumeScope -eq 'Pilot') {
+        'pilot-nonretriable-failure.json'
+    }
+    else {
+        switch ($promotedDisposition) {
+            'CampaignAbilityGateFailure' { 'block-ability-gate-failure.json' }
+            'TestedConditionPolicyOutcome' { 'block-policy-outcome.json' }
+            default { 'block-nonretriable-harness-failure.json' }
+        }
+    }
+    $errors = @(
+        foreach ($outcome in $outcomes) {
+            $detail = @($outcome.Errors) -join '; '
+            if ([string]::IsNullOrWhiteSpace($detail)) {
+                $detail = 'No terminal error detail was recorded.'
+            }
+            "$($outcome.Scenario): terminal disposition '$($outcome.Disposition)' ($($outcome.OutcomeType)): $detail"
+        }
+    )
+
+    [pscustomobject][ordered]@{
+        ResumeScope = $ResumeScope
+        Disposition = $promotedDisposition
+        RetryAllowed = $false
+        PromotionMarkerName = $promotionMarkerName
+        Errors = $errors
+        TerminalOutcomes = $outcomes.ToArray()
     }
 }
 
@@ -577,6 +1237,66 @@ function Get-NativeOutput {
         throw "'$FileName $($Arguments -join ' ')' failed with exit code $exitCode`: $($output -join [Environment]::NewLine)"
     }
     return $output
+}
+
+function Get-ExactBootstrapBuildArguments {
+    return @(
+        '-configuration', 'Release',
+        '-msbuildEngine', 'dotnet',
+        '-verbosity', 'quiet',
+        '/p:CreateTlb=false',
+        '/p:RuntimeOutputTargetFrameworks=net11.0'
+    )
+}
+
+function Get-GrantReplayBuildArguments {
+    param(
+        [Parameter(Mandatory)]
+        [string]$ProjectPath,
+        [Parameter(Mandatory)]
+        [string]$ScannerRoot,
+        [Parameter(Mandatory)]
+        [string]$MSBuildAssembliesRoot
+    )
+
+    $intermediateRoot = Join-Path $ScannerRoot 'intermediate'
+    $baseIntermediate = "$([IO.Path]::GetFullPath($intermediateRoot).TrimEnd('\'))\"
+    return @(
+        'build',
+        [IO.Path]::GetFullPath($ProjectPath),
+        '--configuration', 'Release',
+        '--output', [IO.Path]::GetFullPath($ScannerRoot),
+        '--nologo',
+        '/v:q',
+        "/p:MSBuildAssembliesRoot=$([IO.Path]::GetFullPath($MSBuildAssembliesRoot))",
+        "/p:MSBuildProjectExtensionsPath=$($baseIntermediate)project-extensions\",
+        "/p:BaseIntermediateOutputPath=$baseIntermediate",
+        "/p:IntermediateOutputPath=$($baseIntermediate)configuration\"
+    )
+}
+
+function Get-ImmutableBootstrapStageCandidates {
+    param(
+        [Parameter(Mandatory)]
+        [string]$StagingRoot,
+
+        [Parameter(Mandatory)]
+        [string]$ExpectedCommit
+    )
+
+    if ($ExpectedCommit.Length -lt 12) {
+        throw 'Expected bootstrap commit must contain at least 12 characters.'
+    }
+    if (-not (Test-Path -LiteralPath $StagingRoot -PathType Container)) {
+        return @()
+    }
+    return @(
+        Get-ChildItem -LiteralPath $StagingRoot -Directory -Filter "$($ExpectedCommit.Substring(0, 12))-*" |
+            Where-Object {
+                (Test-Path -LiteralPath (Join-Path $_.FullName 'core') -PathType Container) -and
+                    (Test-Path -LiteralPath (Join-Path $_.FullName 'staging-metadata.json') -PathType Leaf)
+            }
+    )
 }
 
 function Assert-FreeDiskSpace {
@@ -1636,7 +2356,9 @@ function Get-MaxTimestampGapSeconds {
 
     $maximum = 0.0
     for ($index = 1; $index -lt $Rows.Count; $index++) {
-        $gap = ([DateTime]$Rows[$index].timestampUtc - [DateTime]$Rows[$index - 1].timestampUtc).TotalSeconds
+        $current = ConvertTo-UtcDateTimeOffset -Value $Rows[$index].timestampUtc
+        $previous = ConvertTo-UtcDateTimeOffset -Value $Rows[$index - 1].timestampUtc
+        $gap = ($current - $previous).TotalSeconds
         if ($gap -gt $maximum) {
             $maximum = $gap
         }
@@ -1676,7 +2398,9 @@ function Test-TelemetryContinuity {
         $warningGaps = @(
             if ($stream.Name -eq 'system') {
                 for ($index = 1; $index -lt $rows.Count; $index++) {
-                    $gap = ([DateTime]$rows[$index].timestampUtc - [DateTime]$rows[$index - 1].timestampUtc).TotalSeconds
+                    $current = ConvertTo-UtcDateTimeOffset -Value $rows[$index].timestampUtc
+                    $previous = ConvertTo-UtcDateTimeOffset -Value $rows[$index - 1].timestampUtc
+                    $gap = ($current - $previous).TotalSeconds
                     if ($gap -gt $validity.SystemGapWarningSeconds) {
                         $gap
                     }

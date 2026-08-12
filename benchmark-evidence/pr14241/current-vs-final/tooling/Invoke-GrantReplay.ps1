@@ -58,18 +58,14 @@ if (-not (Test-Path -LiteralPath $scannerDll -PathType Leaf)) {
     foreach ($variable in Get-CoordinatorEnvironmentVariableNames) {
         $scannerEnvironment[$variable] = $null
     }
+    $buildArguments = Get-GrantReplayBuildArguments `
+        -ProjectPath $project `
+        -ScannerRoot $scannerRoot `
+        -MSBuildAssembliesRoot $bootstrap.SdkRoot
     [void](Invoke-RecordedCommand `
         -FileName $bootstrap.DotNetPath `
-        -Arguments @(
-            'build',
-            $project,
-            '--configuration', 'Release',
-            '--output', $scannerRoot,
-            '--nologo',
-            '/v:q',
-            "/p:MSBuildAssembliesRoot=$($bootstrap.SdkRoot)"
-        ) `
-        -WorkingDirectory $PSScriptRoot `
+        -Arguments $buildArguments `
+        -WorkingDirectory $scannerRoot `
         -JournalPath $JournalPath `
         -OutputDirectory (Join-Path $WorkRoot 'command-output') `
         -Label 'build-grant-replay' `

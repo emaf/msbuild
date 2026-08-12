@@ -1,0 +1,5 @@
+{
+  "StartUtc": "2026-08-12T12:00:00.0000000Z",
+  "EndUtcMinus04": "2026-08-12T08:00:30.0000000-04:00",
+  "ExpectedElapsedSeconds": 30
+}

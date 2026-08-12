@@ -38,6 +38,28 @@ function Assert-Equal {
     Assert-True -Condition ($Actual -eq $Expected) -Message "$Message (actual='$Actual', expected='$Expected')"
 }
 
+function Start-TestPowerShellProcess {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Script,
+        [switch]$RedirectOutput
+    )
+
+    $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($Script))
+    $startInfo = [Diagnostics.ProcessStartInfo]::new((Get-Command pwsh).Source)
+    foreach ($argument in @('-NoLogo', '-NoProfile', '-EncodedCommand', $encoded)) {
+        $startInfo.ArgumentList.Add($argument)
+    }
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardOutput = $RedirectOutput
+    $startInfo.RedirectStandardError = $RedirectOutput
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo = $startInfo
+    [void]$process.Start()
+    return $process
+}
+
 try {
     $parseErrors = [Collections.Generic.List[string]]::new()
     foreach ($scriptFile in Get-ChildItem -LiteralPath $PSScriptRoot -Recurse -File -Filter '*.ps1') {
@@ -65,9 +87,6 @@ try {
     Assert-True -Condition (-not $grantProjectText.Contains('C:\perf', [StringComparison]::OrdinalIgnoreCase)) -Message 'Grant scanner project has no historical hard-coded bootstrap'
     Assert-True -Condition $grantProjectText.Contains('<TargetFramework>net11.0</TargetFramework>', [StringComparison]::Ordinal) -Message 'Grant scanner targets the exact bootstrap runtime generation'
     $exactBuildText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Build-ExactRevisions.ps1') -Raw
-    Assert-True -Condition $exactBuildText.Contains("'-msbuildEngine', 'dotnet'", [StringComparison]::Ordinal) -Message 'Exact builds use the repository-supported dotnet engine'
-    Assert-True -Condition $exactBuildText.Contains("'/p:CreateTlb=false'", [StringComparison]::Ordinal) -Message 'Exact builds do not require Visual Studio TLB tooling'
-    Assert-True -Condition $exactBuildText.Contains("'/p:RuntimeOutputTargetFrameworks=net11.0'", [StringComparison]::Ordinal) -Message 'Exact builds use the validated runtime target framework'
     Assert-True -Condition $exactBuildText.Contains('Test-ImmutableBootstrapStage', [StringComparison]::Ordinal) -Message 'Exact builds can reuse only integrity-validated immutable stages'
     Assert-True -Condition $exactBuildText.Contains('ReusedValidatedStages', [StringComparison]::Ordinal) -Message 'Exact build identity records disclose validated stage reuse'
     $commonText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Campaign.Common.ps1') -Raw
@@ -75,7 +94,18 @@ try {
     $preflightText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Run-PreflightValidation.ps1') -Raw
     Assert-True -Condition $preflightText.Contains("'base-functional-isolated'", [StringComparison]::Ordinal) -Message 'Preflight includes an exact BASE functional grant smoke'
     Assert-True -Condition $preflightText.Contains("'final-functional-default-isolated'", [StringComparison]::Ordinal) -Message 'Preflight includes an exact FINAL functional grant smoke'
+    Assert-True -Condition $preflightText.Contains('Stop-UnfinishedScenarioBuilds', [StringComparison]::Ordinal) -Message 'Preflight synthetic failures clean captured process trees in finally'
+    Assert-True -Condition $preflightText.Contains('BuildServerShutdownError', [StringComparison]::Ordinal) -Message 'Preflight failure evidence retains build-server shutdown errors'
     Assert-True -Condition (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'Run-DirectProjectSmoke.ps1') -PathType Leaf) -Message 'Preflight includes direct isolated project smoke tooling'
+    $invokeScenarioText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Invoke-Scenario.ps1') -Raw
+    Assert-True -Condition $invokeScenarioText.Contains('Stop-UnfinishedScenarioBuilds', [StringComparison]::Ordinal) -Message 'Scenario finally performs verified captured-build cleanup'
+    Assert-True -Condition $invokeScenarioText.Contains('Test-SustainedControllerEvents', [StringComparison]::Ordinal) -Message 'Scenario output enforces sustained controller event validation'
+    $analyzeText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Analyze-Campaign.ps1') -Raw
+    Assert-True -Condition $analyzeText.Contains('Test-ScenarioEvidenceIdentity', [StringComparison]::Ordinal) -Message 'Analysis validates evidence identity before labeling metric rows'
+    $preparationText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Prepare-Workloads.ps1') -Raw
+    Assert-True -Condition $preparationText.Contains('Test-PreparationCompletionRecord', [StringComparison]::Ordinal) -Message 'Preparation resume invokes authoritative checkpoint validation'
+    $grantReplayText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Invoke-GrantReplay.ps1') -Raw
+    Assert-True -Condition $grantReplayText.Contains('Get-GrantReplayBuildArguments', [StringComparison]::Ordinal) -Message 'Grant replay build consumes isolated intermediate arguments'
 
     . (Join-Path $PSScriptRoot 'Campaign.Common.ps1')
     $OutputRoot = 'trace-library-caller-output-sentinel'
@@ -84,6 +114,7 @@ try {
     Remove-Variable OutputRoot
     . (Join-Path $PSScriptRoot 'ControllerValidation.ps1')
     . (Join-Path $PSScriptRoot 'Analysis.Common.ps1')
+    . (Join-Path $PSScriptRoot 'Scenario.Common.ps1')
 
     $nativeSingleLine = @(
         Get-NativeOutput `
@@ -93,6 +124,346 @@ try {
     )
     Assert-Equal -Actual $nativeSingleLine.Count -Expected 1 -Message 'Native single-line output remains a one-element line collection'
     Assert-Equal -Actual $nativeSingleLine[0] -Expected 'single-line' -Message 'Native single-line output is not indexed as its first character'
+    Assert-True -Condition (-not (ConvertTo-StrictBoolean -Value 'False')) -Message 'CSV warmup identity parses False without PowerShell string truthiness'
+    $exactBuildArguments = @(Get-ExactBootstrapBuildArguments)
+    Assert-Equal -Actual ($exactBuildArguments -join '|') -Expected '-configuration|Release|-msbuildEngine|dotnet|-verbosity|quiet|/p:CreateTlb=false|/p:RuntimeOutputTargetFrameworks=net11.0' -Message 'Exact builds use the validated repository-supported dotnet command'
+
+    $stageFixtureRoot = Join-Path $testRoot 'stage-candidates'
+    $expectedStageCommit = '0123456789abcdef0123456789abcdef01234567'
+    $validStage = Join-Path $stageFixtureRoot '0123456789ab-valid'
+    $missingMetadataStage = Join-Path $stageFixtureRoot '0123456789ab-missing-metadata'
+    $wrongCommitStage = Join-Path $stageFixtureRoot 'ffffffffffff-wrong'
+    New-Item -ItemType Directory -Force -Path (Join-Path $validStage 'core'),(Join-Path $missingMetadataStage 'core'),(Join-Path $wrongCommitStage 'core') | Out-Null
+    Set-Content -LiteralPath (Join-Path $validStage 'staging-metadata.json') -Value '{}' -Encoding utf8
+    Set-Content -LiteralPath (Join-Path $wrongCommitStage 'staging-metadata.json') -Value '{}' -Encoding utf8
+    $stageCandidates = @(Get-ImmutableBootstrapStageCandidates -StagingRoot $stageFixtureRoot -ExpectedCommit $expectedStageCommit)
+    Assert-Equal -Actual $stageCandidates.Count -Expected 1 -Message 'Stage discovery requires matching commit, core directory, and metadata'
+    Assert-Equal -Actual $stageCandidates[0].FullName -Expected $validStage -Message 'Stage discovery returns only the complete exact-commit candidate'
+
+    $scannerRoot = Join-Path $testRoot 'grant-scanner\hash-a'
+    $scannerProject = Join-Path $PSScriptRoot 'GrantReplay\GrantReplay.csproj'
+    $scannerSdk = Join-Path $testRoot 'bootstrap\sdk\fixture'
+    $grantBuildArguments = @(
+        Get-GrantReplayBuildArguments `
+            -ProjectPath $scannerProject `
+            -ScannerRoot $scannerRoot `
+            -MSBuildAssembliesRoot $scannerSdk
+    )
+    $scannerFullPath = [IO.Path]::GetFullPath($scannerRoot)
+    foreach ($propertyName in @(
+        'MSBuildProjectExtensionsPath',
+        'BaseIntermediateOutputPath',
+        'IntermediateOutputPath'
+    )) {
+        $propertyArgument = $grantBuildArguments |
+            Where-Object { $_.StartsWith("/p:$propertyName=", [StringComparison]::Ordinal) } |
+            Select-Object -First 1
+        Assert-True -Condition (-not [string]::IsNullOrWhiteSpace($propertyArgument)) -Message "Grant replay sets $propertyName"
+        $propertyPath = $propertyArgument.Substring($propertyArgument.IndexOf('=') + 1)
+        Assert-True `
+            -Condition ([IO.Path]::GetFullPath($propertyPath).StartsWith(
+                "$($scannerFullPath.TrimEnd('\'))\",
+                [StringComparison]::OrdinalIgnoreCase)) `
+            -Message "Grant replay $propertyName stays below the bootstrap-hash scanner root"
+    }
+    Assert-True `
+        -Condition (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'GrantReplay\obj'))) `
+        -Message 'Grant replay source tree has no generated obj directory'
+
+    $offsetFixture = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'fixtures\utc-offset-window.json') -Raw | ConvertFrom-Json
+    $offsetStart = ConvertTo-UtcDateTimeOffset -Value $offsetFixture.StartUtc
+    $offsetEnd = ConvertTo-UtcDateTimeOffset -Value $offsetFixture.EndUtcMinus04
+    $legacyLocalDateTime = [DateTime]$offsetFixture.StartUtc
+    $normalizedLegacyDateTime = ConvertTo-UtcDateTimeOffset -Value $legacyLocalDateTime
+    Assert-Equal `
+        -Actual $normalizedLegacyDateTime.UtcTicks `
+        -Expected $offsetStart.UtcTicks `
+        -Message 'A Z timestamp materialized as local DateTime is explicitly restored to its UTC instant'
+    Assert-Equal `
+        -Actual ($offsetEnd - $offsetStart).TotalSeconds `
+        -Expected ([double]$offsetFixture.ExpectedElapsedSeconds) `
+        -Message 'UTC Z and UTC-04 persisted timestamps describe the same timeline without four-hour skew'
+    $offsetTimeline = @(
+        [pscustomobject]@{
+            TimestampUtc = $offsetFixture.StartUtc
+            Sequence = 1
+            Event = 'Granted'
+            QueueDepth = 1
+            ActiveBuilds = 1
+            AllocatedNodes = 8
+        }
+    )
+    $offsetWindow = Get-TraceWindowMetrics `
+        -Timeline $offsetTimeline `
+        -StartUtc $offsetFixture.StartUtc `
+        -EndUtc $offsetFixture.EndUtcMinus04 `
+        -Budget 16
+    Assert-Equal -Actual $offsetWindow.WindowSeconds -Expected 30 -Message 'Trace window arithmetic is offset-stable'
+
+    $terminalRoot = Join-Path $testRoot 'terminal-outcome'
+    $abilityOutcome = Write-ScenarioTerminalOutcome `
+        -ScenarioRoot $terminalRoot `
+        -OutcomeType 'SustainedCompletionTimeout' `
+        -Disposition 'CampaignAbilityGateFailure' `
+        -Errors @('synthetic 10-minute timeout')
+    $cleanupOutcome = Write-ScenarioTerminalOutcome `
+        -ScenarioRoot $terminalRoot `
+        -OutcomeType 'LiveBuildCleanupFailure' `
+        -Disposition 'NonRetryableHarnessFailure' `
+        -Errors @('synthetic later cleanup error')
+    $persistedOutcome = Get-ScenarioTerminalOutcome -ScenarioRoot $terminalRoot
+    Assert-Equal -Actual $cleanupOutcome.Disposition -Expected 'CampaignAbilityGateFailure' -Message 'Later cleanup cannot replace an established ability timeout'
+    Assert-Equal -Actual $persistedOutcome.OutcomeType -Expected 'SustainedCompletionTimeout' -Message 'Typed timeout marker remains authoritative'
+    Assert-True -Condition (-not $persistedOutcome.RetryAllowed) -Message 'Established timeout marker is non-retriable'
+    $terminalOnlyPilotAttempt = Join-Path $testRoot 'terminal-only-pilot\attempt-01'
+    [void](Write-ScenarioTerminalOutcome `
+        -ScenarioRoot (Join-Path $terminalOnlyPilotAttempt 'scenario') `
+        -OutcomeType 'SustainedCompletionTimeout' `
+        -Disposition 'CampaignAbilityGateFailure' `
+        -Errors @('terminal-only pilot ability failure'))
+    $pilotPromotion = Get-InterruptedAttemptTerminalPromotion `
+        -AttemptRoot $terminalOnlyPilotAttempt `
+        -ResumeScope Pilot
+    Assert-Equal -Actual $pilotPromotion.Disposition -Expected 'CampaignAbilityGateFailure' -Message 'Terminal-only interrupted pilot preserves ability-gate disposition'
+    Assert-Equal -Actual $pilotPromotion.PromotionMarkerName -Expected 'pilot-nonretriable-failure.json' -Message 'Terminal-only interrupted pilot promotes to the pilot non-retriable marker'
+    Assert-True -Condition (-not $pilotPromotion.RetryAllowed) -Message 'Terminal-only interrupted pilot cannot be retried'
+    Assert-True -Condition (-not (Test-Path -LiteralPath (Join-Path $terminalOnlyPilotAttempt 'invalid-attempt.json'))) -Message 'Terminal-only interrupted pilot is never marked retryable'
+    $terminalOnlyBlockAttempt = Join-Path $testRoot 'terminal-only-block\attempt-01'
+    [void](Write-ScenarioTerminalOutcome `
+        -ScenarioRoot (Join-Path $terminalOnlyBlockAttempt '03-FINAL-N') `
+        -OutcomeType 'BuildQuiescenceFailure' `
+        -Disposition 'NonRetryableHarnessFailure' `
+        -Errors @('terminal-only measured-block cleanup failure'))
+    $blockPromotion = Get-InterruptedAttemptTerminalPromotion `
+        -AttemptRoot $terminalOnlyBlockAttempt `
+        -ResumeScope MeasuredBlock
+    Assert-Equal -Actual $blockPromotion.Disposition -Expected 'NonRetryableHarnessFailure' -Message 'Terminal-only interrupted measured block preserves non-retriable semantics'
+    Assert-Equal -Actual $blockPromotion.PromotionMarkerName -Expected 'block-nonretriable-harness-failure.json' -Message 'Terminal-only interrupted measured block promotes to the block harness marker'
+    Assert-True -Condition (-not $blockPromotion.RetryAllowed) -Message 'Terminal-only interrupted measured block cannot be retried'
+    $timingGateText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Run-ProjectTimingGate.ps1') -Raw
+    $campaignRunText = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Run-Campaign.ps1') -Raw
+    Assert-True -Condition $timingGateText.Contains('Get-InterruptedAttemptTerminalPromotion', [StringComparison]::Ordinal) -Message 'Timing-gate resume promotes terminal-only interrupted pilots before retry marking'
+    Assert-True -Condition $campaignRunText.Contains('Get-InterruptedAttemptTerminalPromotion', [StringComparison]::Ordinal) -Message 'Campaign resume promotes terminal-only interrupted blocks before retry marking'
+
+    $treeIdentityPath = Join-Path $testRoot 'synthetic-tree-child.txt'
+    $pwshPath = (Get-Command pwsh).Source
+    $childEncoded = [Convert]::ToBase64String(
+        [Text.Encoding]::Unicode.GetBytes('Start-Sleep -Seconds 120'))
+    $parentScript = @"
+`$child = Start-Process -FilePath '$($pwshPath.Replace("'", "''"))' -ArgumentList @('-NoLogo', '-NoProfile', '-EncodedCommand', '$childEncoded') -PassThru
+[IO.File]::WriteAllText('$($treeIdentityPath.Replace("'", "''"))', "`$(`$child.Id)|`$(`$child.StartTime.ToUniversalTime().ToString('O'))")
+Start-Sleep -Seconds 120
+"@
+    $treeProcess = $null
+    $treeRootStart = $null
+    $treeChildIdentity = $null
+    try {
+        $treeProcess = Start-TestPowerShellProcess -Script $parentScript
+        $treeRootStart = ConvertTo-UtcDateTimeOffset -Value $treeProcess.StartTime
+        $waitForChild = [Diagnostics.Stopwatch]::StartNew()
+        while (-not (Test-Path -LiteralPath $treeIdentityPath -PathType Leaf)) {
+            if ($treeProcess.HasExited -or $waitForChild.Elapsed.TotalSeconds -gt 10) {
+                throw 'Synthetic process tree did not publish its child identity.'
+            }
+            Start-Sleep -Milliseconds 50
+        }
+        $treeChildIdentity = (Get-Content -LiteralPath $treeIdentityPath -Raw).Trim()
+        $wrongIdentityStop = Stop-VerifiedProcessTree `
+            -RootProcessId $treeProcess.Id `
+            -RootProcessStartUtc $treeRootStart.AddMinutes(-1) `
+            -TimeoutSeconds 1
+        Assert-True -Condition $wrongIdentityStop.Succeeded -Message 'PID reuse guard treats a mismatched identity as an already-gone target'
+        Assert-True `
+            -Condition (Test-VerifiedProcessIdentity -ProcessId $treeProcess.Id -ProcessStartUtc $treeRootStart) `
+            -Message 'PID reuse guard never kills a process with a different start identity'
+
+        $treeStop = Stop-VerifiedProcessTree `
+            -RootProcessId $treeProcess.Id `
+            -RootProcessStartUtc $treeRootStart `
+            -DescendantIdentities @($treeChildIdentity) `
+            -TimeoutSeconds 5
+        Assert-True -Condition $treeStop.Succeeded -Message 'Targeted verified process-tree termination reaches quiescence'
+        Assert-True `
+            -Condition (-not (Test-VerifiedProcessIdentity -ProcessId $treeProcess.Id -ProcessStartUtc $treeRootStart)) `
+            -Message 'Synthetic root process is gone after targeted tree termination'
+        $childParts = $treeChildIdentity -split '\|', 2
+        Assert-True `
+            -Condition (-not (Test-VerifiedProcessIdentity -ProcessId ([int]$childParts[0]) -ProcessStartUtc $childParts[1])) `
+            -Message 'Synthetic child process is gone after targeted tree termination'
+    }
+    finally {
+        if ($null -ne $treeProcess) {
+            if ($null -ne $treeRootStart -and
+                (Test-VerifiedProcessIdentity -ProcessId $treeProcess.Id -ProcessStartUtc $treeRootStart)) {
+                [void](Stop-VerifiedProcessTree `
+                    -RootProcessId $treeProcess.Id `
+                    -RootProcessStartUtc $treeRootStart `
+                    -DescendantIdentities @($treeChildIdentity) `
+                    -TimeoutSeconds 5)
+            }
+            $treeProcess.Dispose()
+        }
+        if (-not [string]::IsNullOrWhiteSpace($treeChildIdentity)) {
+            $childParts = $treeChildIdentity -split '\|', 2
+            if ($childParts.Count -eq 2 -and
+                (Test-VerifiedProcessIdentity -ProcessId ([int]$childParts[0]) -ProcessStartUtc $childParts[1])) {
+                [void](Stop-VerifiedProcessTree `
+                    -RootProcessId ([int]$childParts[0]) `
+                    -RootProcessStartUtc $childParts[1] `
+                    -TimeoutSeconds 5)
+            }
+        }
+    }
+
+    foreach ($cleanupCase in @(
+        [pscustomobject]@{ Name = 'clean-finally'; InjectCleanupError = $false },
+        [pscustomobject]@{ Name = 'aggregate-error'; InjectCleanupError = $true }
+    )) {
+        $cleanupProcess = $null
+        $cleanupPid = $null
+        $cleanupStart = $null
+        try {
+            $cleanupProcess = Start-TestPowerShellProcess `
+                -Script 'Start-Sleep -Seconds 120' `
+                -RedirectOutput
+            $cleanupPid = $cleanupProcess.Id
+            $cleanupStart = ConvertTo-UtcDateTimeOffset -Value $cleanupProcess.StartTime
+            $descendants = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+            if ($cleanupCase.InjectCleanupError) {
+                [void]$descendants.Add('999999|')
+            }
+            $syntheticRunRoot = Join-Path $testRoot $cleanupCase.Name
+            New-Item -ItemType Directory -Force -Path $syntheticRunRoot | Out-Null
+            $syntheticRun = [pscustomobject][ordered]@{
+                RunId = $cleanupCase.Name
+                Process = $cleanupProcess
+                RootProcessId = $cleanupPid
+                ProcessStartUtc = $cleanupStart
+                ProcessExitUtc = $null
+                ExitCode = $null
+                Quiescent = $null
+                Completed = $false
+                StdoutTask = $cleanupProcess.StandardOutput.ReadToEndAsync()
+                StderrTask = $cleanupProcess.StandardError.ReadToEndAsync()
+                Stdout = Join-Path $syntheticRunRoot 'stdout.log'
+                Stderr = Join-Path $syntheticRunRoot 'stderr.log'
+                DescendantIdentities = $descendants
+            }
+            $cleanupResult = Stop-UnfinishedScenarioBuilds `
+                -Runs @($syntheticRun) `
+                -TimeoutSeconds 3
+            Assert-True -Condition $syntheticRun.Completed -Message "$($cleanupCase.Name) disposes and completes its captured run"
+            Assert-True `
+                -Condition (-not (Test-VerifiedProcessIdentity -ProcessId $syntheticRun.RootProcessId -ProcessStartUtc $cleanupStart)) `
+                -Message "$($cleanupCase.Name) leaves no captured build process alive"
+            Assert-Equal -Actual @($cleanupResult.LiveRunIds).Count -Expected 0 -Message "$($cleanupCase.Name) reaches build quiescence"
+            if ($cleanupCase.InjectCleanupError) {
+                Assert-True -Condition (-not $cleanupResult.Succeeded) -Message 'Cleanup failures are aggregated instead of swallowed'
+                Assert-True -Condition (@($cleanupResult.Errors).Count -gt 0) -Message 'Aggregated cleanup result retains the shutdown error'
+            }
+            else {
+                Assert-True -Condition $cleanupResult.Succeeded -Message 'Synthetic finally cleanup succeeds'
+                Assert-True -Condition $syntheticRun.Quiescent -Message 'Synthetic finally cleanup drains redirected streams'
+            }
+        }
+        finally {
+            if ($null -ne $cleanupProcess -and
+                $null -ne $cleanupPid -and
+                $null -ne $cleanupStart -and
+                (Test-VerifiedProcessIdentity -ProcessId $cleanupPid -ProcessStartUtc $cleanupStart)) {
+                [void](Stop-VerifiedProcessTree `
+                    -RootProcessId $cleanupPid `
+                    -RootProcessStartUtc $cleanupStart `
+                    -TimeoutSeconds 5)
+                $cleanupProcess.Dispose()
+            }
+        }
+    }
+
+    $orphanIdentityPath = Join-Path $testRoot 'completed-root-child.txt'
+    $orphanChildEncoded = [Convert]::ToBase64String(
+        [Text.Encoding]::Unicode.GetBytes('Start-Sleep -Seconds 120'))
+    $orphanParentScript = @"
+`$child = Start-Process -FilePath '$($pwshPath.Replace("'", "''"))' -ArgumentList @('-NoLogo', '-NoProfile', '-EncodedCommand', '$orphanChildEncoded') -PassThru
+[IO.File]::WriteAllText('$($orphanIdentityPath.Replace("'", "''"))', "`$(`$child.Id)|`$(`$child.StartTime.ToUniversalTime().ToString('O'))")
+"@
+    $orphanParent = $null
+    $orphanParentStart = $null
+    $orphanChildIdentity = $null
+    try {
+        $orphanParent = Start-TestPowerShellProcess -Script $orphanParentScript
+        $orphanParentStart = ConvertTo-UtcDateTimeOffset -Value $orphanParent.StartTime
+        $orphanWait = [Diagnostics.Stopwatch]::StartNew()
+        while (-not (Test-Path -LiteralPath $orphanIdentityPath -PathType Leaf)) {
+            if ($orphanWait.Elapsed.TotalSeconds -gt 10) {
+                throw 'Completed-root fixture did not publish its child identity.'
+            }
+            Start-Sleep -Milliseconds 50
+        }
+        if (-not $orphanParent.WaitForExit(5000)) {
+            throw 'Completed-root fixture parent did not exit.'
+        }
+        $orphanChildIdentity = (Get-Content -LiteralPath $orphanIdentityPath -Raw).Trim()
+        $orphanChildParts = $orphanChildIdentity -split '\|', 2
+        Assert-True `
+            -Condition (Test-VerifiedProcessIdentity -ProcessId ([int]$orphanChildParts[0]) -ProcessStartUtc $orphanChildParts[1]) `
+            -Message 'Completed-root fixture leaves a captured child alive'
+        $orphanDescendants = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+        [void]$orphanDescendants.Add($orphanChildIdentity)
+        $completedRootRun = [pscustomobject][ordered]@{
+            RunId = 'completed-root-live-child'
+            Process = $orphanParent
+            RootProcessId = $orphanParent.Id
+            ProcessStartUtc = $orphanParentStart
+            ProcessExitUtc = ConvertTo-UtcDateTimeOffset -Value $orphanParent.ExitTime
+            ExitCode = $orphanParent.ExitCode
+            Quiescent = $false
+            Completed = $true
+            DescendantIdentities = $orphanDescendants
+        }
+        $completedRootCleanup = Stop-UnfinishedScenarioBuilds `
+            -Runs @($completedRootRun) `
+            -TimeoutSeconds 5
+        Assert-True `
+            -Condition (-not (Test-VerifiedProcessIdentity -ProcessId ([int]$orphanChildParts[0]) -ProcessStartUtc $orphanChildParts[1])) `
+            -Message 'Cleanup targets a captured child after its completed root exited'
+        Assert-True -Condition (-not $completedRootCleanup.Succeeded) -Message 'Forced descendant cleanup retains quiescence uncertainty'
+        Assert-True `
+            -Condition (@($completedRootCleanup.QuiescenceUncertainRunIds) -contains $completedRootRun.RunId) `
+            -Message 'Completed root with a surviving child is identified as quiescence-uncertain'
+        $orphanAttemptRoot = Join-Path $testRoot 'completed-root-resume\attempt-01'
+        $orphanScenarioRoot = Join-Path $orphanAttemptRoot '01-FINAL-N'
+        $cleanupTerminal = Write-ScenarioCleanupTerminalOutcome `
+            -ScenarioRoot $orphanScenarioRoot `
+            -Cleanup $completedRootCleanup
+        Assert-Equal -Actual $cleanupTerminal.Disposition -Expected 'NonRetryableHarnessFailure' -Message 'Completed-root quiescence uncertainty persists a non-retriable terminal outcome'
+        $cleanupPromotion = Get-InterruptedAttemptTerminalPromotion `
+            -AttemptRoot $orphanAttemptRoot `
+            -ResumeScope MeasuredBlock
+        Assert-Equal -Actual $cleanupPromotion.PromotionMarkerName -Expected 'block-nonretriable-harness-failure.json' -Message 'Persisted cleanup terminal outcome blocks measured-block retry'
+    }
+    finally {
+        if (-not [string]::IsNullOrWhiteSpace($orphanChildIdentity)) {
+            $orphanChildParts = $orphanChildIdentity -split '\|', 2
+            if ($orphanChildParts.Count -eq 2 -and
+                (Test-VerifiedProcessIdentity -ProcessId ([int]$orphanChildParts[0]) -ProcessStartUtc $orphanChildParts[1])) {
+                [void](Stop-VerifiedProcessTree `
+                    -RootProcessId ([int]$orphanChildParts[0]) `
+                    -RootProcessStartUtc $orphanChildParts[1] `
+                    -TimeoutSeconds 5)
+            }
+        }
+        if ($null -ne $orphanParent) {
+            if ($null -ne $orphanParentStart -and
+                (Test-VerifiedProcessIdentity -ProcessId $orphanParent.Id -ProcessStartUtc $orphanParentStart)) {
+                [void](Stop-VerifiedProcessTree `
+                    -RootProcessId $orphanParent.Id `
+                    -RootProcessStartUtc $orphanParentStart `
+                    -TimeoutSeconds 5)
+            }
+            $orphanParent.Dispose()
+        }
+    }
 
     $campaign = Get-CampaignDefinition
     Assert-Equal -Actual $campaign.Base.Commit -Expected 'ff5b281f0c5828dec0d092fcd1b682019de7d1ca' -Message 'BASE identity is exact'
@@ -185,6 +556,198 @@ try {
         -Repository roslyn `
         -Shape sustained
     Assert-True -Condition (-not $invalidCheckpoint.Valid) -Message 'Incomplete prepared baseline checkpoint is rejected'
+
+    $preparationSource = Join-Path $testRoot 'preparation-source'
+    $preparationWorkRoot = Join-Path $testRoot 'preparation-worktrees'
+    New-Item -ItemType Directory -Force -Path $preparationSource,$preparationWorkRoot | Out-Null
+    [void](Get-NativeOutput -FileName git -Arguments @('init', '--quiet') -WorkingDirectory $preparationSource)
+    [void](Get-NativeOutput -FileName git -Arguments @('config', 'user.name', 'Tooling Test') -WorkingDirectory $preparationSource)
+    [void](Get-NativeOutput -FileName git -Arguments @('config', 'user.email', 'tooling-test@example.invalid') -WorkingDirectory $preparationSource)
+    Set-Content `
+        -LiteralPath (Join-Path $preparationSource '.gitignore') `
+        -Value @('obj/', 'ignored-outside/') `
+        -Encoding utf8
+    Set-Content -LiteralPath (Join-Path $preparationSource 'tracked.txt') -Value 'fixture' -Encoding utf8
+    [void](Get-NativeOutput -FileName git -Arguments @('add', '.gitignore', 'tracked.txt') -WorkingDirectory $preparationSource)
+    [void](Get-NativeOutput -FileName git -Arguments @('commit', '--quiet', '-m', 'fixture') -WorkingDirectory $preparationSource)
+    $preparationCommit = @(
+        Get-NativeOutput -FileName git -Arguments @('rev-parse', 'HEAD') -WorkingDirectory $preparationSource
+    )[0].Trim()
+    $preparationRemote = 'https://example.invalid/preparation-fixture.git'
+    [void](Get-NativeOutput `
+        -FileName git `
+        -Arguments @('remote', 'add', 'origin', $preparationRemote) `
+        -WorkingDirectory $preparationSource)
+    $preparedWorktrees = [Collections.Generic.List[object]]::new()
+    foreach ($worktreeName in @((1..18 | ForEach-Object { "normal$_" }) + @('injected'))) {
+        $worktreePath = Join-Path $preparationWorkRoot $worktreeName
+        [void](Get-NativeOutput `
+            -FileName git `
+            -Arguments @('worktree', 'add', '--quiet', '--detach', $worktreePath, $preparationCommit) `
+            -WorkingDirectory $preparationSource)
+        New-Item -ItemType Directory -Force -Path (Join-Path $worktreePath 'obj') | Out-Null
+        Set-Content -LiteralPath (Join-Path $worktreePath 'obj\baseline.bin') -Value $worktreeName -Encoding utf8
+        $worktreeGit = Get-GitIdentity `
+            -Root $worktreePath `
+            -ExpectedCommit $preparationCommit `
+            -RequireClean
+        $trackedFiles = @(
+            Get-NativeOutput `
+                -FileName git `
+                -Arguments @('ls-files') `
+                -WorkingDirectory $worktreePath
+        )
+        $preparedWorktrees.Add([pscustomobject][ordered]@{
+            Name = $worktreeName
+            Path = $worktreePath
+            Git = $worktreeGit
+            BaselineOutputIdentity = Get-ProjectOutputContentIdentity `
+                -Worktree $worktreePath `
+                -TrackedRelativePaths $trackedFiles
+        })
+    }
+    $preparationRepositoryIdentity = Get-GitIdentity `
+        -Root $preparationSource `
+        -ExpectedCommit $preparationCommit `
+        -RequireClean
+    $preparationRepositoryIdentity | Add-Member `
+        -NotePropertyName Remote `
+        -NotePropertyValue (Get-GitRemoteIdentity `
+            -Root $preparationSource `
+            -RemoteName origin `
+            -ExpectedUrl $preparationRemote)
+    $preparationDefinition = [pscustomobject][ordered]@{
+        Name = 'fixture'
+        Root = $preparationSource
+        Commit = $preparationCommit
+        Repository = $preparationRemote
+        WorkRoot = $preparationWorkRoot
+        BuildPath = 'tracked.txt'
+        TouchPath = 'tracked.txt'
+        AdditionalBuildArguments = @()
+    }
+    $preparationIdentityPath = Join-Path $testRoot 'bootstrap-identities.json'
+    Set-Content -LiteralPath $preparationIdentityPath -Value '{}' -Encoding utf8
+    $fixtureBaseBootstrap = [pscustomobject]@{
+        Root = Join-Path $testRoot 'base-bootstrap'
+        ExpectedCommit = 'base-commit'
+        MSBuildDllSha256 = 'A' * 64
+    }
+    $fixtureFinalBootstrap = [pscustomobject]@{
+        Root = Join-Path $testRoot 'final-bootstrap'
+        ExpectedCommit = 'final-commit'
+        MSBuildDllSha256 = 'B' * 64
+    }
+    $preparationRecord = [pscustomobject][ordered]@{
+        SchemaVersion = 2
+        CompletedUtc = '2026-08-12T12:00:00.0000000Z'
+        Authoritative = $true
+        BootstrapIdentityPath = $preparationIdentityPath
+        BootstrapIdentitySha256 = (Get-FileHash -LiteralPath $preparationIdentityPath -Algorithm SHA256).Hash
+        BootstrapIdentities = [pscustomobject][ordered]@{
+            Base = [pscustomobject]@{
+                Root = $fixtureBaseBootstrap.Root
+                Commit = $fixtureBaseBootstrap.ExpectedCommit
+                MSBuildDllSha256 = $fixtureBaseBootstrap.MSBuildDllSha256
+            }
+            Final = [pscustomobject]@{
+                Root = $fixtureFinalBootstrap.Root
+                Commit = $fixtureFinalBootstrap.ExpectedCommit
+                MSBuildDllSha256 = $fixtureFinalBootstrap.MSBuildDllSha256
+            }
+        }
+        PreparationBootstrapRole = 'final'
+        Repositories = @(
+            [pscustomobject][ordered]@{
+                Name = 'fixture'
+                Repository = $preparationRepositoryIdentity
+                BuildPath = $preparationDefinition.BuildPath
+                TouchPath = $preparationDefinition.TouchPath
+                AdditionalBuildArguments = @()
+                WorkRoot = $preparationWorkRoot
+                Worktrees = $preparedWorktrees.ToArray()
+                Restored = $true
+                Warmed = $true
+            }
+        )
+    }
+    $preparationValidation = Test-PreparationCompletionRecord `
+        -Record $preparationRecord `
+        -BaseBootstrap $fixtureBaseBootstrap `
+        -FinalBootstrap $fixtureFinalBootstrap `
+        -RepositoryDefinitions @($preparationDefinition) `
+        -BootstrapIdentityPath $preparationIdentityPath `
+        -ValidateFileSystem
+    Assert-True -Condition $preparationValidation.Valid -Message 'Authoritative preparation resume validates exact identities, 19 clean worktrees, and baselines'
+    Assert-Equal -Actual $preparationValidation.WorktreeCount -Expected 19 -Message 'Preparation resume requires 19 worktrees per repository'
+    Set-Content -LiteralPath $preparationIdentityPath -Value '{"changed":true}' -Encoding utf8
+    $changedBootstrapPreparation = Test-PreparationCompletionRecord `
+        -Record $preparationRecord `
+        -BaseBootstrap $fixtureBaseBootstrap `
+        -FinalBootstrap $fixtureFinalBootstrap `
+        -RepositoryDefinitions @($preparationDefinition) `
+        -BootstrapIdentityPath $preparationIdentityPath
+    Assert-True -Condition (-not $changedBootstrapPreparation.Valid) -Message 'Preparation resume rejects a changed bootstrap identity file'
+    Set-Content -LiteralPath $preparationIdentityPath -Value '{}' -Encoding utf8
+    Set-Content `
+        -LiteralPath (Join-Path $preparationWorkRoot 'normal1\obj\baseline.bin') `
+        -Value 'changed' `
+        -Encoding utf8
+    $changedPreparation = Test-PreparationCompletionRecord `
+        -Record $preparationRecord `
+        -BaseBootstrap $fixtureBaseBootstrap `
+        -FinalBootstrap $fixtureFinalBootstrap `
+        -RepositoryDefinitions @($preparationDefinition) `
+        -BootstrapIdentityPath $preparationIdentityPath `
+        -ValidateFileSystem
+    Assert-True -Condition (-not $changedPreparation.Valid) -Message 'Preparation resume rejects a changed recorded baseline output hash'
+    Set-Content `
+        -LiteralPath (Join-Path $preparationWorkRoot 'normal1\obj\baseline.bin') `
+        -Value 'normal1' `
+        -Encoding utf8
+    Set-Content `
+        -LiteralPath (Join-Path $preparationWorkRoot 'normal1\unexpected-source.txt') `
+        -Value 'untracked' `
+        -Encoding utf8
+    $uncleanPreparation = Test-PreparationCompletionRecord `
+        -Record $preparationRecord `
+        -BaseBootstrap $fixtureBaseBootstrap `
+        -FinalBootstrap $fixtureFinalBootstrap `
+        -RepositoryDefinitions @($preparationDefinition) `
+        -BootstrapIdentityPath $preparationIdentityPath `
+        -ValidateFileSystem
+    Assert-True -Condition (-not $uncleanPreparation.Valid) -Message 'Preparation resume rejects an unclean pinned worktree'
+    Remove-Item -LiteralPath (Join-Path $preparationWorkRoot 'normal1\unexpected-source.txt') -Force
+    New-Item `
+        -ItemType Directory `
+        -Force `
+        -Path (Join-Path $preparationWorkRoot 'normal1\ignored-outside') |
+        Out-Null
+    Set-Content `
+        -LiteralPath (Join-Path $preparationWorkRoot 'normal1\ignored-outside\mutation.bin') `
+        -Value 'ignored mutation' `
+        -Encoding utf8
+    $ignoredMutationPreparation = Test-PreparationCompletionRecord `
+        -Record $preparationRecord `
+        -BaseBootstrap $fixtureBaseBootstrap `
+        -FinalBootstrap $fixtureFinalBootstrap `
+        -RepositoryDefinitions @($preparationDefinition) `
+        -BootstrapIdentityPath $preparationIdentityPath `
+        -ValidateFileSystem
+    Assert-True -Condition (-not $ignoredMutationPreparation.Valid) -Message 'Preparation resume rejects ignored mutation outside hashed/reset output roots'
+    Assert-True `
+        -Condition (@($ignoredMutationPreparation.Errors | Where-Object { $_ -match 'ignored or untracked state outside explicitly hashed/reset output roots' }).Count -gt 0) `
+        -Message 'Ignored mutation failure identifies the uncaptured state boundary'
+    Remove-Item -LiteralPath (Join-Path $preparationWorkRoot 'normal1\ignored-outside') -Recurse -Force
+    $preparationRecord.Authoritative = $false
+    $preparationRecord.Repositories[0].Warmed = $false
+    $skipWarmPreparation = Test-PreparationCompletionRecord `
+        -Record $preparationRecord `
+        -BaseBootstrap $fixtureBaseBootstrap `
+        -FinalBootstrap $fixtureFinalBootstrap `
+        -RepositoryDefinitions @($preparationDefinition) `
+        -BootstrapIdentityPath $preparationIdentityPath
+    Assert-True -Condition (-not $skipWarmPreparation.Valid) -Message 'SkipWarm preparation checkpoint cannot satisfy authoritative resume'
 
     foreach ($condition in @('BASE', 'COMPAT', 'FINAL-N', 'FINAL-H')) {
         foreach ($injected in @($false, $true)) {
@@ -287,6 +850,20 @@ try {
         -Budget 16 `
         -StrictParsing
     Assert-True -Condition (-not $invalidTrace.Consistent) -Message 'Impossible trace is rejected'
+    $missingRootRuns = @(
+        Get-Content -LiteralPath (Join-Path $fixtures 'final-missing-root-runs.json') -Raw |
+            ConvertFrom-Json
+    )
+    $missingRootTrace = ConvertFrom-CoordinatorTrace `
+        -TracePaths @((Join-Path $fixtures 'final-valid.trace')) `
+        -RunRecords $missingRootRuns `
+        -Budget 16 `
+        -RequireEmptyFinalState `
+        -StrictParsing
+    Assert-True -Condition (-not $missingRootTrace.Consistent) -Message 'Removing a captured root PID makes unresolved non-nested state events inconsistent'
+    Assert-True `
+        -Condition (($missingRootTrace.Errors -join '; ') -match 'PID 102') `
+        -Message 'Unresolved root fixture identifies the removed PID'
     $churnRuns = @(
         Get-Content -LiteralPath (Join-Path $fixtures 'sustained-churn-runs.json') -Raw |
             ConvertFrom-Json
@@ -299,7 +876,7 @@ try {
     Assert-True -Condition $churnTrace.Consistent -Message 'Sustained churn fixture trace is consistent'
     $onsetResult = Test-SteadyOnsetState `
         -Trace $churnTrace `
-        -NowUtc ([DateTime]'2026-08-12T06:00:35Z') `
+        -NowUtc ([DateTimeOffset]'2026-08-12T06:00:35Z') `
         -ExpectedAllocation 12 `
         -MinimumQueueDepth 2 `
         -StableSeconds 30 `
@@ -308,7 +885,7 @@ try {
     Assert-Equal -Actual $onsetResult.BridgedHandoffCount -Expected 3 -Message 'All saturated handoffs in the 30-second interval are bridged'
     $shortfallOnset = Test-SteadyOnsetState `
         -Trace $churnTrace `
-        -NowUtc ([DateTime]'2026-08-12T06:00:43Z') `
+        -NowUtc ([DateTimeOffset]'2026-08-12T06:00:43Z') `
         -ExpectedAllocation 12 `
         -MinimumQueueDepth 2 `
         -StableSeconds 30 `
@@ -316,7 +893,7 @@ try {
     Assert-True -Condition (-not $shortfallOnset.Accepted) -Message 'Allocation shortfall longer than the trace-event tolerance resets semantic saturation'
     $drainedQueueOnset = Test-SteadyOnsetState `
         -Trace $churnTrace `
-        -NowUtc ([DateTime]'2026-08-12T06:00:55Z') `
+        -NowUtc ([DateTimeOffset]'2026-08-12T06:00:55Z') `
         -ExpectedAllocation 12 `
         -MinimumQueueDepth 2 `
         -StableSeconds 30 `
@@ -352,7 +929,7 @@ try {
     $events = [Collections.Generic.List[object]]::new()
     $activeRun = @{}
     $generation = @{}
-    $timestamp = [DateTime]'2026-08-12T03:00:00Z'
+    $timestamp = [DateTimeOffset]'2026-08-12T03:00:00Z'
     foreach ($worker in 1..$controllerModel.InitialWorkers) {
         $generation[$worker] = 1
         $activeRun[$worker] = "normal$worker-g1"
@@ -379,6 +956,7 @@ try {
             Event = 'Completed'
             RunId = $completedRun
             Worker = $worker
+            ExitCode = 0
             Quiescent = $true
         })
         $events.Add([pscustomobject]@{
@@ -426,7 +1004,7 @@ try {
     $overlapEvents = [Collections.Generic.List[object]]::new()
     $overlapEvents.AddRange([object[]]$events.ToArray())
     $overlapEvents.Insert(1, [pscustomobject]@{
-        TimestampUtc = ([DateTime]$events[0].TimestampUtc).AddMilliseconds(1).ToString('O')
+        TimestampUtc = (ConvertTo-UtcDateTimeOffset -Value $events[0].TimestampUtc).AddMilliseconds(1).ToString('O')
         Event = 'ReplacementLaunched'
         RunId = 'overlap'
         Worker = 1
@@ -434,6 +1012,54 @@ try {
     })
     $overlapValidation = Test-SustainedControllerEvents -Events $overlapEvents.ToArray()
     Assert-True -Condition (-not $overlapValidation.Valid) -Message 'Controller overlap is rejected'
+    $nonexistentCompletionEvents = @(
+        Get-Content -LiteralPath (Join-Path $fixtures 'controller-invalid-nonexistent-completion.json') -Raw |
+            ConvertFrom-Json
+    )
+    $nonexistentCompletionValidation = Test-SustainedControllerEvents `
+        -Events $nonexistentCompletionEvents `
+        -InitialWorkers 2 `
+        -InjectionCompletion 1 `
+        -EndingCompletion 1
+    Assert-True -Condition (-not $nonexistentCompletionValidation.Valid) -Message 'Measured marker without a successful quiescent Completed event is rejected'
+    $lateLaunchEvents = @(
+        Get-Content -LiteralPath (Join-Path $fixtures 'controller-invalid-late-launch.json') -Raw |
+            ConvertFrom-Json
+    )
+    $lateLaunchValidation = Test-SustainedControllerEvents `
+        -Events $lateLaunchEvents `
+        -InitialWorkers 2 `
+        -InjectionCompletion 1 `
+        -EndingCompletion 1
+    Assert-True -Condition (-not $lateLaunchValidation.Valid) -Message 'Initial launch after steady onset is rejected'
+
+    $swappedIdentityFixture = Get-Content `
+        -LiteralPath (Join-Path $fixtures 'scenario-identity-swapped.json') `
+        -Raw |
+        ConvertFrom-Json
+    $swappedIdentity = Test-ScenarioEvidenceIdentity `
+        -PlanRow $swappedIdentityFixture.Plan `
+        -BlockCompletion $swappedIdentityFixture.Completion `
+        -Validation $swappedIdentityFixture.Validation `
+        -Metrics $swappedIdentityFixture.Metrics
+    Assert-True -Condition (-not $swappedIdentity.Valid) -Message 'Swapped BASE/FINAL scenario evidence cannot be relabeled from the plan'
+    Assert-True `
+        -Condition (($swappedIdentity.Errors -join '; ') -match 'Condition') `
+        -Message 'Swapped scenario identity reports the exact mismatched condition'
+    $matchingIdentityFixture = Get-Content `
+        -LiteralPath (Join-Path $fixtures 'scenario-identity-swapped.json') `
+        -Raw |
+        ConvertFrom-Json
+    foreach ($artifact in @($matchingIdentityFixture.Validation, $matchingIdentityFixture.Metrics)) {
+        $artifact.Condition = 'BASE'
+        $artifact.RunIdentity = 'isolated|roslyn|block=2|attempt=1|order=1|condition=BASE'
+    }
+    $matchingIdentity = Test-ScenarioEvidenceIdentity `
+        -PlanRow $matchingIdentityFixture.Plan `
+        -BlockCompletion $matchingIdentityFixture.Completion `
+        -Validation $matchingIdentityFixture.Validation `
+        -Metrics $matchingIdentityFixture.Metrics
+    Assert-True -Condition $matchingIdentity.Valid -Message 'Exactly matching plan, completion, validation, and metrics identity is accepted'
 
     $pairs = @(
         [pscustomobject]@{ BaselineValue = 1.0; CandidateValue = 2.0 },
@@ -552,7 +1178,10 @@ try {
         Assertions = $assertionCount
         PowerShellScriptsParsed = @(Get-ChildItem -LiteralPath $PSScriptRoot -Recurse -File -Filter '*.ps1').Count
         PlanRows = $plan.Rows.Count
-        TraceFixtures = 4
+        TraceFixtures = 5
+        ReviewFindingsCovered = 8
+        ControllerInvalidFixtures = 2
+        PreparationWorktreesValidated = 19
         ControllerMeasuredCompletions = $controllerValidation.MeasuredCompletionCount
         ResampleIterations = $estimate1.ResampleIterations
     }

@@ -5,7 +5,7 @@ param(
     [Parameter(Mandatory)]
     [string]$PreparationPath,
     [Parameter(Mandatory)]
-    [DateTime]$CampaignStartedUtc,
+    [DateTimeOffset]$CampaignStartedUtc,
     [Parameter(Mandatory)]
     [string]$OutputRoot
 )
@@ -55,6 +55,24 @@ foreach ($repository in $campaign.Repositories) {
         foreach ($incompleteAttempt in @(
             Get-ChildItem -LiteralPath $conditionRoot -Directory -Filter 'attempt-*' -ErrorAction SilentlyContinue
         )) {
+            $terminalPromotion = Get-InterruptedAttemptTerminalPromotion `
+                -AttemptRoot $incompleteAttempt.FullName `
+                -ResumeScope Pilot
+            if ($null -ne $terminalPromotion) {
+                $promotionRecord = [pscustomobject][ordered]@{
+                    CompletedUtc = [DateTimeOffset]::UtcNow.ToString('O')
+                    Disposition = $terminalPromotion.Disposition
+                    Errors = @($terminalPromotion.Errors)
+                    RetryAllowed = $false
+                    InterruptedAttempt = $incompleteAttempt.FullName
+                    TerminalOutcomes = @($terminalPromotion.TerminalOutcomes)
+                }
+                Write-JsonAtomic `
+                    -Path (Join-Path $conditionRoot $terminalPromotion.PromotionMarkerName) `
+                    -Value $promotionRecord `
+                    -Depth 8
+                throw "Excluded $($repository.Name)/$condition sustained pilot found a prior non-retriable terminal outcome: $(@($terminalPromotion.Errors) -join '; ')"
+            }
             $hasMarker =
                 (Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'valid-attempt.json') -PathType Leaf) -or
                 (Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'invalid-attempt.json') -PathType Leaf)
@@ -101,10 +119,35 @@ foreach ($repository in $campaign.Repositories) {
                 ) | Select-Object -Last 1
             }
             catch {
-                $validation = [pscustomobject]@{
-                    Disposition = 'InvalidRetryable'
-                    HarnessErrors = @($_.Exception.Message)
-                    ExternalValidityErrors = @()
+                $terminalOutcome = Get-ScenarioTerminalOutcome -ScenarioRoot $scenarioRoot
+                if ($null -ne $terminalOutcome) {
+                    $validation = [pscustomobject]@{
+                        Disposition = [string]$terminalOutcome.Disposition
+                        RetryAllowed = $false
+                        HarnessErrors = @()
+                        ExternalValidityErrors = @()
+                        CampaignAbilityGateErrors = if ($terminalOutcome.Disposition -eq 'CampaignAbilityGateFailure') {
+                            @($terminalOutcome.Errors)
+                        }
+                        else {
+                            @()
+                        }
+                        TestedConditionPolicyOutcomes = if ($terminalOutcome.Disposition -eq 'TestedConditionPolicyOutcome') {
+                            @($terminalOutcome.Errors)
+                        }
+                        else {
+                            @()
+                        }
+                        TerminalErrors = @($terminalOutcome.Errors)
+                    }
+                }
+                else {
+                    $validation = [pscustomobject]@{
+                        Disposition = 'InvalidRetryable'
+                        RetryAllowed = $true
+                        HarnessErrors = @($_.Exception.Message)
+                        ExternalValidityErrors = @()
+                    }
                 }
             }
             if ($validation.Disposition -eq 'CampaignAbilityGateFailure') {
@@ -124,6 +167,23 @@ foreach ($repository in $campaign.Repositories) {
                     RetryAllowed = $false
                 })
                 throw "Excluded $($repository.Name)/$condition sustained pilot produced a tested-condition policy outcome: $(@($validation.TestedConditionPolicyOutcomes) -join '; ')"
+            }
+            if ($validation.PSObject.Properties['RetryAllowed'] -and
+                -not (ConvertTo-StrictBoolean -Value $validation.RetryAllowed) -and
+                $validation.Disposition -ne 'Valid') {
+                $terminalErrors = if ($validation.PSObject.Properties['TerminalErrors']) {
+                    @($validation.TerminalErrors)
+                }
+                else {
+                    @("Non-retriable scenario outcome '$($validation.Disposition)'.")
+                }
+                Write-JsonAtomic -Path $nonRetryableFailurePath -Value ([pscustomobject][ordered]@{
+                    CompletedUtc = [DateTimeOffset]::UtcNow.ToString('O')
+                    Disposition = $validation.Disposition
+                    Errors = $terminalErrors
+                    RetryAllowed = $false
+                })
+                throw "Excluded $($repository.Name)/$condition sustained pilot stopped after a non-retriable scenario failure: $($terminalErrors -join '; ')"
             }
             if ($validation.Disposition -ne 'Valid') {
                 Write-JsonAtomic -Path (Join-Path $attemptRoot 'invalid-attempt.json') -Value ([pscustomobject][ordered]@{
@@ -198,7 +258,7 @@ foreach ($repository in $campaign.Repositories) {
     }
 }
 
-$setupElapsedSeconds = ([DateTime]::UtcNow - $CampaignStartedUtc.ToUniversalTime()).TotalSeconds
+$setupElapsedSeconds = ([DateTimeOffset]::UtcNow - $CampaignStartedUtc.ToUniversalTime()).TotalSeconds
 $projection = Get-LeanCampaignProjection `
     -RepositoryTimings $pilots.ToArray() `
     -SetupElapsedSeconds $setupElapsedSeconds

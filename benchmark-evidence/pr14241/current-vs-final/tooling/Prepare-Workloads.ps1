@@ -29,14 +29,25 @@ $definition = Get-CampaignDefinition
 $journal = Join-Path $OutputRoot 'commands.jsonl'
 $commandOutput = Join-Path $OutputRoot 'command-output'
 $completionPath = Join-Path $OutputRoot 'preparation-completion.json'
-if (Test-Path -LiteralPath $completionPath -PathType Leaf) {
-    Write-Host "PREPARATION_COMPLETION=$completionPath"
-    return
-}
-
 $identityRecord = Get-Content -LiteralPath $BootstrapIdentityPath -Raw | ConvertFrom-Json
 $base = Get-BootstrapIdentity -Role base -Root $identityRecord.Base.Root -ExpectedCommit $definition.Base.Commit
 $final = Get-BootstrapIdentity -Role final -Root $identityRecord.Final.Root -ExpectedCommit $definition.Final.Commit
+$repositoryDefinitions = @($RepositoryNames | ForEach-Object { Get-RepositoryDefinition -Name $_ })
+if (Test-Path -LiteralPath $completionPath -PathType Leaf) {
+    $completion = Get-Content -LiteralPath $completionPath -Raw | ConvertFrom-Json
+    $validation = Test-PreparationCompletionRecord `
+        -Record $completion `
+        -BaseBootstrap $base `
+        -FinalBootstrap $final `
+        -RepositoryDefinitions $repositoryDefinitions `
+        -BootstrapIdentityPath $BootstrapIdentityPath `
+        -ValidateFileSystem
+    if (-not $validation.Valid) {
+        throw "Existing preparation completion '$completionPath' is invalid: $($validation.Errors -join '; ')"
+    }
+    Write-Host "PREPARATION_COMPLETION=$completionPath"
+    return
+}
 New-Item -ItemType Directory -Force -Path $OutputRoot | Out-Null
 
 $prepared = [Collections.Generic.List[object]]::new()
@@ -274,10 +285,27 @@ foreach ($name in $RepositoryNames) {
     })
 }
 
+$authoritativeRepositorySet =
+    (@($RepositoryNames | Sort-Object) -join '|') -eq
+    (@($definition.Repositories.Name | Sort-Object) -join '|')
 Write-JsonAtomic -Path $completionPath -Value ([pscustomobject][ordered]@{
-    SchemaVersion = 1
+    SchemaVersion = 2
     CompletedUtc = [DateTime]::UtcNow.ToString('O')
-    BootstrapIdentityPath = $BootstrapIdentityPath
+    Authoritative = -not $SkipWarm -and $authoritativeRepositorySet
+    BootstrapIdentityPath = [IO.Path]::GetFullPath($BootstrapIdentityPath)
+    BootstrapIdentitySha256 = (Get-FileHash -LiteralPath $BootstrapIdentityPath -Algorithm SHA256).Hash
+    BootstrapIdentities = [pscustomobject][ordered]@{
+        Base = [pscustomobject][ordered]@{
+            Root = $base.Root
+            Commit = $base.ExpectedCommit
+            MSBuildDllSha256 = $base.MSBuildDllSha256
+        }
+        Final = [pscustomobject][ordered]@{
+            Root = $final.Root
+            Commit = $final.ExpectedCommit
+            MSBuildDllSha256 = $final.MSBuildDllSha256
+        }
+    }
     PreparationBootstrapRole = 'final'
     Repositories = $prepared.ToArray()
 }) -Depth 12

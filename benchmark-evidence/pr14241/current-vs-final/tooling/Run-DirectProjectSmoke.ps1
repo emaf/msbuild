@@ -27,11 +27,24 @@ $smokes = [Collections.Generic.List[object]]::new()
 foreach ($repository in $campaign.Repositories) {
     $repositoryRoot = Join-Path $OutputRoot $repository.Name
     $repositoryCompletion = Join-Path $repositoryRoot 'smoke-completion.json'
+    $nonRetryableFailurePath = Join-Path $repositoryRoot 'smoke-nonretriable-failure.json'
+    if (Test-Path -LiteralPath $nonRetryableFailurePath -PathType Leaf) {
+        throw "Direct-project smoke previously recorded a non-retriable failure at '$nonRetryableFailurePath'."
+    }
     if (Test-Path -LiteralPath $repositoryCompletion -PathType Leaf) {
         $smokes.Add((Get-Content -LiteralPath $repositoryCompletion -Raw | ConvertFrom-Json))
         continue
     }
     New-Item -ItemType Directory -Force -Path $repositoryRoot | Out-Null
+    foreach ($priorAttempt in @(
+        Get-ChildItem -LiteralPath $repositoryRoot -Directory -Filter 'attempt-*' -ErrorAction SilentlyContinue
+    )) {
+        $priorTerminal = Get-ScenarioTerminalOutcome -ScenarioRoot (Join-Path $priorAttempt.FullName 'scenario')
+        if ($null -ne $priorTerminal) {
+            Write-JsonAtomic -Path $nonRetryableFailurePath -Value $priorTerminal
+            throw "Direct-project smoke found prior non-retriable scenario outcome '$($priorTerminal.Disposition)'."
+        }
+    }
     $existingAttempts = @(
         Get-ChildItem -LiteralPath $repositoryRoot -Directory -Filter 'attempt-*' -ErrorAction SilentlyContinue
     ).Count
@@ -66,14 +79,33 @@ foreach ($repository in $campaign.Repositories) {
             ) | Select-Object -Last 1
         }
         catch {
-            $validation = [pscustomobject]@{
-                Disposition = 'InvalidRetryable'
-                HarnessErrors = @($_.Exception.Message)
-                ExternalValidityErrors = @()
+            $terminalOutcome = Get-ScenarioTerminalOutcome -ScenarioRoot $scenarioRoot
+            if ($null -ne $terminalOutcome) {
+                $validation = [pscustomobject]@{
+                    Disposition = [string]$terminalOutcome.Disposition
+                    RetryAllowed = $false
+                    HarnessErrors = @($terminalOutcome.Errors)
+                    ExternalValidityErrors = @()
+                }
+            }
+            else {
+                $validation = [pscustomobject]@{
+                    Disposition = 'InvalidRetryable'
+                    RetryAllowed = $true
+                    HarnessErrors = @($_.Exception.Message)
+                    ExternalValidityErrors = @()
+                }
             }
         }
         if ($validation.Disposition -eq 'TestedConditionPolicyOutcome') {
+            Write-JsonAtomic -Path $nonRetryableFailurePath -Value $validation
             throw "Direct $($repository.Name) project smoke produced a non-retriable tested-condition outcome."
+        }
+        if ($validation.PSObject.Properties['RetryAllowed'] -and
+            -not (ConvertTo-StrictBoolean -Value $validation.RetryAllowed) -and
+            $validation.Disposition -ne 'Valid') {
+            Write-JsonAtomic -Path $nonRetryableFailurePath -Value $validation
+            throw "Direct $($repository.Name) project smoke produced non-retriable scenario outcome '$($validation.Disposition)'."
         }
         if ($validation.Disposition -ne 'Valid') {
             Write-JsonAtomic -Path (Join-Path $attemptRoot 'invalid-attempt.json') -Value ([pscustomobject][ordered]@{

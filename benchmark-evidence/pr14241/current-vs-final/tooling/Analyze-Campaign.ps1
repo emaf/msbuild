@@ -73,7 +73,7 @@ foreach ($shape in $campaign.Shapes) {
                 continue
             }
             $completion = Get-Content -LiteralPath $completionPath -Raw | ConvertFrom-Json
-            if ($completion.Disposition -ne 'Valid' -or [int]$completion.AnalysisBlockNumber -ne [int]$analysisBlock) {
+            if ($completion.Disposition -ne 'Valid') {
                 $errors.Add("Invalid block completion '$completionPath'.")
                 continue
             }
@@ -93,12 +93,22 @@ foreach ($shape in $campaign.Shapes) {
                     continue
                 }
                 $metrics = Get-Content -LiteralPath $metricsPath -Raw | ConvertFrom-Json
+                $identity = Test-ScenarioEvidenceIdentity `
+                    -PlanRow $row `
+                    -BlockCompletion $completion `
+                    -Validation $validation `
+                    -Metrics $metrics
+                if (-not $identity.Valid) {
+                    $errors.Add("Scenario identity mismatch under '$scenarioRoot': $($identity.Errors -join '; ')")
+                    continue
+                }
                 $metricRows.Add([pscustomobject][ordered]@{
-                    Shape = $shape.Key
-                    Repository = $repository.Name
-                    AnalysisBlockNumber = [int]$analysisBlock
-                    Condition = $row.Condition
-                    OrderIndex = [int]$row.OrderIndex
+                    Shape = [string]$metrics.Shape
+                    Repository = [string]$metrics.Repository
+                    AnalysisBlockNumber = [int]$metrics.AnalysisBlockNumber
+                    Condition = [string]$metrics.Condition
+                    OrderIndex = [int]$metrics.OrderIndex
+                    RunIdentity = [string]$metrics.RunIdentity
                     MetricsPath = [IO.Path]::GetRelativePath($RunRoot, $metricsPath)
                     Metrics = $metrics
                 })

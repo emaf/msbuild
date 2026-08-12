@@ -105,8 +105,12 @@ Resume never overwrites attempts. An interrupted attempt is preserved and
 declared invalid before the next whole-block attempt. A tested-condition build
 failure is a non-retriable policy outcome; only predeclared external/harness
 invalidity can consume one of the three attempts. Failure to produce 12
-sustained completions within 10 minutes is also non-retriable. Before any
-retry, affected worktrees are checked for overlap, explicit untracked
+sustained completions within 10 minutes is persisted immediately as a
+non-retriable terminal outcome and cannot be downgraded by later cleanup.
+Preparation resume requires the authoritative schema, exact bootstrap and
+repository identities, all 19 clean pinned worktrees, and unchanged warmed
+baseline hashes; `-SkipWarm` output is never authoritative. Before any retry,
+affected worktrees are checked for overlap, explicit untracked
 `bin`/`obj`/`artifacts` outputs are removed only after proving they contain no
 tracked files, and restore/warm recreates the recorded baseline. `git clean`
 is not used for retry restoration. The regenerated output file-count, byte

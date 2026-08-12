@@ -52,7 +52,6 @@ $base = Get-BootstrapIdentity -Role base -Root $identityRecord.Base.Root -Expect
 $final = Get-BootstrapIdentity -Role final -Root $identityRecord.Final.Root -ExpectedCommit $campaign.Final.Commit
 $journal = Join-Path $OutputRoot 'commands.jsonl'
 $commandOutput = Join-Path $OutputRoot 'command-output'
-Invoke-BuildServerShutdown -Bootstraps @($base, $final) -JournalPath $journal -OutputDirectory $commandOutput
 
 function Invoke-SyntheticScenario {
     param(
@@ -80,10 +79,14 @@ function Invoke-SyntheticScenario {
     $debugPath = Join-Path $scenarioRoot 'debug'
     New-Item -ItemType Directory -Force -Path $debugPath | Out-Null
     $pipeName = "cvf-preflight-$Name-$PID-$([guid]::NewGuid().ToString('N').Substring(0, 8))"
-    $scenarioStartedUtc = [DateTime]::UtcNow
+    $scenarioStartedUtc = [DateTimeOffset]::UtcNow
     $runs = [Collections.Generic.List[object]]::new()
+    $result = $null
+    $scenarioException = $null
+    $cleanupException = $null
+    try {
     foreach ($build in $Builds) {
-        while (([DateTime]::UtcNow - $scenarioStartedUtc).TotalSeconds -lt [double]$build.DelaySeconds) {
+        while (([DateTimeOffset]::UtcNow - $scenarioStartedUtc).TotalSeconds -lt [double]$build.DelaySeconds) {
             Start-Sleep -Milliseconds 20
         }
         $workerRoot = Join-Path $scenarioRoot "worker-$($build.Worker)"
@@ -112,11 +115,11 @@ function Invoke-SyntheticScenario {
     if ($ExerciseReplacement) {
         $replacementStarted = $false
         $timer = [Diagnostics.Stopwatch]::StartNew()
-        $lastTreeSampleUtc = [DateTime]::MinValue
+        $lastTreeSampleUtc = [DateTimeOffset]::MinValue
         while (-not $replacementStarted) {
-            if (([DateTime]::UtcNow - $lastTreeSampleUtc).TotalSeconds -ge 1) {
+            if (([DateTimeOffset]::UtcNow - $lastTreeSampleUtc).TotalSeconds -ge 1) {
                 Update-ScenarioProcessTrees -Runs $runs.ToArray()
-                $lastTreeSampleUtc = [DateTime]::UtcNow
+                $lastTreeSampleUtc = [DateTimeOffset]::UtcNow
             }
             foreach ($completedRun in @($runs | Where-Object { -not $_.Completed -and $_.Process.HasExited })) {
                 if (-not (Complete-ExitedScenarioBuild -Run $completedRun)) {
@@ -222,11 +225,55 @@ function Invoke-SyntheticScenario {
         Valid = $true
     }
     Write-JsonAtomic -Path (Join-Path $scenarioRoot 'validation.json') -Value $record -Depth 9
-    return $record
+    $result = $record
+    }
+    catch {
+        $scenarioException = $_.Exception
+    }
+    finally {
+        try {
+            $cleanup = Stop-UnfinishedScenarioBuilds -Runs $runs.ToArray()
+            Write-JsonAtomic `
+                -Path (Join-Path $scenarioRoot 'lifecycle-cleanup.json') `
+                -Value $cleanup
+            if (-not $cleanup.Succeeded) {
+                if (@($cleanup.LiveRunIds).Count -gt 0) {
+                    [void](Write-ScenarioTerminalOutcome `
+                        -ScenarioRoot $scenarioRoot `
+                        -OutcomeType 'LiveBuildCleanupFailure' `
+                        -Disposition 'NonRetryableHarnessFailure' `
+                        -Errors @("Synthetic preflight builds remained live: $(@($cleanup.LiveRunIds) -join ', ')."))
+                }
+                $cleanupException = [InvalidOperationException]::new(
+                    "Synthetic scenario cleanup failed: $($cleanup.Errors -join '; ')")
+            }
+        }
+        catch {
+            $cleanupException = $_.Exception
+        }
+    }
+    if ($null -ne $scenarioException -and $null -ne $cleanupException) {
+        throw [AggregateException]::new(
+            "Synthetic scenario '$Name' execution and cleanup failed.",
+            [Exception[]]@($scenarioException, $cleanupException))
+    }
+    if ($null -ne $scenarioException) {
+        throw $scenarioException
+    }
+    if ($null -ne $cleanupException) {
+        throw $cleanupException
+    }
+    return $result
 }
 
+$results = [Collections.Generic.List[object]]::new()
+$preflightException = $null
+$shutdownException = $null
 try {
-    $results = [Collections.Generic.List[object]]::new()
+    Invoke-BuildServerShutdown `
+        -Bootstraps @($base, $final) `
+        -JournalPath $journal `
+        -OutputDirectory $commandOutput
 
     $results.Add((Invoke-SyntheticScenario `
         -Name 'base-functional-isolated' `
@@ -290,25 +337,55 @@ try {
         -RequireDeferred `
         -ExerciseReplacement))
 
-    Invoke-BuildServerShutdown -Bootstraps @($base, $final) -JournalPath $journal -OutputDirectory $commandOutput
-    Write-JsonAtomic -Path $completionPath -Value ([pscustomobject][ordered]@{
-        SchemaVersion = 1
-        CompletedUtc = [DateTime]::UtcNow.ToString('O')
-        ExactlyOnceBaseFunctionalSmoke = $true
-        ExactlyOnceFinalFunctionalSmoke = $true
-        ExactBaseControllerTraceSmoke = $true
-        ExactFinalControllerTraceSmoke = $true
-        Results = $results.ToArray()
-        Valid = $true
-    }) -Depth 12
 }
 catch {
+    $preflightException = $_.Exception
+}
+finally {
+    try {
+        Invoke-BuildServerShutdown `
+            -Bootstraps @($base, $final) `
+            -JournalPath $journal `
+            -OutputDirectory $commandOutput
+    }
+    catch {
+        $shutdownException = $_.Exception
+    }
+}
+if ($null -ne $preflightException -or $null -ne $shutdownException) {
+    $failures = [Collections.Generic.List[Exception]]::new()
+    if ($null -ne $preflightException) {
+        $failures.Add($preflightException)
+    }
+    if ($null -ne $shutdownException) {
+        $failures.Add($shutdownException)
+    }
+    $failure = if ($failures.Count -eq 1) {
+        $failures[0]
+    }
+    else {
+        [AggregateException]::new(
+            'Preflight execution and build-server shutdown both failed.',
+            [Exception[]]$failures.ToArray())
+    }
     Write-JsonAtomic -Path (Join-Path $OutputRoot 'failure.json') -Value ([pscustomobject][ordered]@{
-        FailedUtc = [DateTime]::UtcNow.ToString('O')
-        Error = $_.Exception.ToString()
+        FailedUtc = [DateTimeOffset]::UtcNow.ToString('O')
+        Error = $failure.ToString()
+        ExecutionError = if ($null -eq $preflightException) { $null } else { $preflightException.ToString() }
+        BuildServerShutdownError = if ($null -eq $shutdownException) { $null } else { $shutdownException.ToString() }
         ExactlyOnceSmokeWillNotBeRetriedAutomatically = $true
-    }) -Depth 6
-    throw
+    }) -Depth 8
+    throw $failure
 }
 
+Write-JsonAtomic -Path $completionPath -Value ([pscustomobject][ordered]@{
+    SchemaVersion = 1
+    CompletedUtc = [DateTimeOffset]::UtcNow.ToString('O')
+    ExactlyOnceBaseFunctionalSmoke = $true
+    ExactlyOnceFinalFunctionalSmoke = $true
+    ExactBaseControllerTraceSmoke = $true
+    ExactFinalControllerTraceSmoke = $true
+    Results = $results.ToArray()
+    Valid = $true
+}) -Depth 12
 Write-Host "PREFLIGHT_COMPLETION=$completionPath"

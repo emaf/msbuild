@@ -310,7 +310,7 @@ try {
     $timingGateRoot = Join-Path $runRoot '_setup\project-timing-gate'
     Set-CampaignStatus -Step 'project-timing-gate' -Detail 'Running excluded actual sustained pilots for BASE, FINAL-N, and FINAL-H per repository and enforcing conservative four-hour and ability gates.'
     $runMetadataForTiming = Get-Content -LiteralPath $metadataPath -Raw | ConvertFrom-Json
-    $campaignStartedUtc = [DateTime]::Parse([string]$runMetadataForTiming.CreatedUtc).ToUniversalTime()
+    $campaignStartedUtc = ConvertTo-UtcDateTimeOffset -Value $runMetadataForTiming.CreatedUtc
     & (Join-Path $PSScriptRoot 'Run-ProjectTimingGate.ps1') `
         -BootstrapIdentityPath $bootstrapIdentityPath `
         -PreparationPath $preparationPath `
@@ -357,6 +357,9 @@ try {
                 if (Test-Path -LiteralPath (Join-Path $blockRoot 'block-policy-outcome.json') -PathType Leaf) {
                     throw "Block '$blockRoot' previously recorded a non-retriable tested-condition policy outcome."
                 }
+                if (Test-Path -LiteralPath (Join-Path $blockRoot 'block-nonretriable-harness-failure.json') -PathType Leaf) {
+                    throw "Block '$blockRoot' previously recorded a non-retriable harness cleanup failure."
+                }
                 if (Test-Path -LiteralPath $blockCompletionPath -PathType Leaf) {
                     $existingCompletion = Get-Content -LiteralPath $blockCompletionPath -Raw | ConvertFrom-Json
                     if ($existingCompletion.Disposition -ne 'Valid') {
@@ -368,20 +371,45 @@ try {
                 foreach ($incompleteAttempt in @(
                     Get-ChildItem -LiteralPath $blockRoot -Directory -Filter 'attempt-*' -ErrorAction SilentlyContinue
                 )) {
+                    $attemptNumber = [int]$incompleteAttempt.Name.Substring('attempt-'.Length)
+                    $terminalPromotion = Get-InterruptedAttemptTerminalPromotion `
+                        -AttemptRoot $incompleteAttempt.FullName `
+                        -ResumeScope MeasuredBlock
+                    if ($null -ne $terminalPromotion) {
+                        $promotionRecord = [pscustomobject][ordered]@{
+                            CompletedUtc = [DateTimeOffset]::UtcNow.ToString('O')
+                            Shape = $shape.Key
+                            Repository = $repository.Name
+                            BlockNumber = $blockNumber
+                            AnalysisBlockNumber = $blockRows[0].AnalysisBlockNumber
+                            IsWarmup = ConvertTo-StrictBoolean -Value $blockRows[0].IsWarmup
+                            AttemptNumber = $attemptNumber
+                            Disposition = $terminalPromotion.Disposition
+                            Valid = $false
+                            RetryAllowed = $false
+                            Errors = @($terminalPromotion.Errors)
+                            TerminalOutcomes = @($terminalPromotion.TerminalOutcomes)
+                        }
+                        Write-JsonAtomic `
+                            -Path (Join-Path $blockRoot $terminalPromotion.PromotionMarkerName) `
+                            -Value $promotionRecord `
+                            -Depth 8
+                        throw "Block '$blockRoot' found a prior non-retriable terminal outcome: $(@($terminalPromotion.Errors) -join '; ')"
+                    }
                     $hasMarker = Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'valid-attempt.json') -PathType Leaf
                     $hasMarker = $hasMarker -or
                         (Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'invalid-attempt.json') -PathType Leaf) -or
                         (Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'policy-outcome-attempt.json') -PathType Leaf) -or
-                        (Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'ability-gate-attempt.json') -PathType Leaf)
+                        (Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'ability-gate-attempt.json') -PathType Leaf) -or
+                        (Test-Path -LiteralPath (Join-Path $incompleteAttempt.FullName 'nonretriable-harness-attempt.json') -PathType Leaf)
                     if (-not $hasMarker) {
-                        $attemptNumber = [int]$incompleteAttempt.Name.Substring('attempt-'.Length)
                         Write-JsonAtomic -Path (Join-Path $incompleteAttempt.FullName 'invalid-attempt.json') -Value ([pscustomobject][ordered]@{
                             CompletedUtc = [DateTime]::UtcNow.ToString('O')
                             Shape = $shape.Key
                             Repository = $repository.Name
                             BlockNumber = $blockNumber
                             AnalysisBlockNumber = $blockRows[0].AnalysisBlockNumber
-                            IsWarmup = [bool]$blockRows[0].IsWarmup
+                            IsWarmup = ConvertTo-StrictBoolean -Value $blockRows[0].IsWarmup
                             AttemptNumber = $attemptNumber
                             Disposition = 'InvalidRetryable'
                             Valid = $false
@@ -424,8 +452,17 @@ try {
                     $attemptErrors = [Collections.Generic.List[string]]::new()
                     $policyOutcomes = [Collections.Generic.List[string]]::new()
                     $abilityGateOutcomes = [Collections.Generic.List[string]]::new()
+                    $nonRetryableHarnessOutcomes = [Collections.Generic.List[string]]::new()
                     foreach ($row in $blockRows) {
                         $scenarioRoot = Join-Path $attemptRoot "$('{0:D2}' -f $row.OrderIndex)-$($row.Condition)"
+                        $rowIsWarmup = ConvertTo-StrictBoolean -Value $row.IsWarmup
+                        $scenarioRunIdentity = New-ScenarioRunIdentity `
+                            -Shape $shape.Key `
+                            -Repository $repository.Name `
+                            -Condition $row.Condition `
+                            -BlockNumber $blockNumber `
+                            -AttemptNumber $attempt `
+                            -OrderIndex ([int]$row.OrderIndex)
                         try {
                             $validation = @(
                                 & (Join-Path $PSScriptRoot 'Invoke-Scenario.ps1') `
@@ -437,6 +474,9 @@ try {
                                     -BlockNumber $blockNumber `
                                     -AttemptNumber $attempt `
                                     -OrderIndex $row.OrderIndex `
+                                    -AnalysisBlockNumber ([int]$row.AnalysisBlockNumber) `
+                                    -IsWarmup $rowIsWarmup `
+                                    -RunIdentity $scenarioRunIdentity `
                                     -ScenarioRoot $scenarioRoot
                             ) | Select-Object -Last 1
                             if ($validation.Disposition -eq 'InvalidRetryable') {
@@ -451,13 +491,33 @@ try {
                                 $abilityGateOutcomes.Add("$($row.Condition): $(@($validation.CampaignAbilityGateErrors) -join '; ')")
                                 break
                             }
+                            if ($validation.Disposition -eq 'NonRetryableHarnessFailure' -or
+                                -not (ConvertTo-StrictBoolean -Value $validation.RetryAllowed) -and
+                                $validation.Disposition -ne 'Valid') {
+                                $nonRetryableHarnessOutcomes.Add("$($row.Condition): non-retriable scenario outcome '$($validation.Disposition)'.")
+                                break
+                            }
                             if ($validation.Disposition -ne 'Valid') {
                                 $attemptErrors.Add("$($row.Condition): unknown disposition '$($validation.Disposition)'.")
                                 break
                             }
                         }
                         catch {
-                            $attemptErrors.Add("$($row.Condition): $($_.Exception.Message)")
+                            $terminalOutcome = Get-ScenarioTerminalOutcome -ScenarioRoot $scenarioRoot
+                            if ($null -ne $terminalOutcome -and
+                                $terminalOutcome.Disposition -eq 'CampaignAbilityGateFailure') {
+                                $abilityGateOutcomes.Add("$($row.Condition): $(@($terminalOutcome.Errors) -join '; ')")
+                            }
+                            elseif ($null -ne $terminalOutcome -and
+                                $terminalOutcome.Disposition -eq 'TestedConditionPolicyOutcome') {
+                                $policyOutcomes.Add("$($row.Condition): $(@($terminalOutcome.Errors) -join '; ')")
+                            }
+                            elseif ($null -ne $terminalOutcome) {
+                                $nonRetryableHarnessOutcomes.Add("$($row.Condition): $(@($terminalOutcome.Errors) -join '; ')")
+                            }
+                            else {
+                                $attemptErrors.Add("$($row.Condition): $($_.Exception.Message)")
+                            }
                             break
                         }
                         if ($campaign.Validity.CooldownSeconds -gt 0) {
@@ -469,6 +529,9 @@ try {
                     }
                     elseif ($policyOutcomes.Count -gt 0) {
                         'TestedConditionPolicyOutcome'
+                    }
+                    elseif ($nonRetryableHarnessOutcomes.Count -gt 0) {
+                        'NonRetryableHarnessFailure'
                     }
                     elseif ($attemptErrors.Count -gt 0) {
                         'InvalidRetryable'
@@ -482,18 +545,25 @@ try {
                         Repository = $repository.Name
                         BlockNumber = $blockNumber
                         AnalysisBlockNumber = $blockRows[0].AnalysisBlockNumber
-                        IsWarmup = [bool]$blockRows[0].IsWarmup
+                        IsWarmup = ConvertTo-StrictBoolean -Value $blockRows[0].IsWarmup
                         AttemptNumber = $attempt
+                        BlockRunIdentity = New-BlockRunIdentity `
+                            -Shape $shape.Key `
+                            -Repository $repository.Name `
+                            -BlockNumber $blockNumber `
+                            -AttemptNumber $attempt
                         Disposition = $disposition
                         Valid = $disposition -eq 'Valid'
                         Errors = $attemptErrors.ToArray()
                         TestedConditionPolicyOutcomes = $policyOutcomes.ToArray()
                         CampaignAbilityGateErrors = $abilityGateOutcomes.ToArray()
+                        NonRetryableHarnessErrors = $nonRetryableHarnessOutcomes.ToArray()
                     }
                     $attemptMarker = switch ($disposition) {
                         'Valid' { 'valid-attempt.json' }
                         'TestedConditionPolicyOutcome' { 'policy-outcome-attempt.json' }
                         'CampaignAbilityGateFailure' { 'ability-gate-attempt.json' }
+                        'NonRetryableHarnessFailure' { 'nonretriable-harness-attempt.json' }
                         default { 'invalid-attempt.json' }
                     }
                     Write-JsonAtomic -Path (Join-Path $attemptRoot $attemptMarker) -Value $attemptRecord -Depth 8
@@ -509,6 +579,10 @@ try {
                     if ($disposition -eq 'CampaignAbilityGateFailure') {
                         Write-JsonAtomic -Path (Join-Path $blockRoot 'block-ability-gate-failure.json') -Value $attemptRecord -Depth 8
                         throw "Sustained ability gate failed non-retriably: $($abilityGateOutcomes -join '; ')"
+                    }
+                    if ($disposition -eq 'NonRetryableHarnessFailure') {
+                        Write-JsonAtomic -Path (Join-Path $blockRoot 'block-nonretriable-harness-failure.json') -Value $attemptRecord -Depth 8
+                        throw "Scenario cleanup failed non-retriably: $($nonRetryableHarnessOutcomes -join '; ')"
                     }
                 }
                 if (-not $blockValid) {

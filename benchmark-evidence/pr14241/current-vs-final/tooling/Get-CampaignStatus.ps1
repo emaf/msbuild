@@ -14,13 +14,25 @@ if (-not (Test-Path -LiteralPath $launchPath -PathType Leaf)) {
 $launch = Get-Content -LiteralPath $launchPath -Raw | ConvertFrom-Json
 $alive = $false
 $identityMatches = $false
+$process = $null
 try {
     $process = Get-Process -Id ([int]$launch.ProcessId) -ErrorAction Stop
     $alive = -not $process.HasExited
-    $identityMatches = $process.StartTime.ToUniversalTime() -eq ([DateTime]$launch.ProcessStartUtc).ToUniversalTime()
+    $actualStart = [DateTimeOffset]::new($process.StartTime).ToUniversalTime()
+    $expectedStart = [DateTimeOffset]::Parse(
+        [string]$launch.ProcessStartUtc,
+        [Globalization.CultureInfo]::InvariantCulture,
+        [Globalization.DateTimeStyles]::AssumeUniversal -bor
+            [Globalization.DateTimeStyles]::AdjustToUniversal)
+    $identityMatches = $actualStart.UtcTicks -eq $expectedStart.UtcTicks
 }
 catch {
     $alive = $false
+}
+finally {
+    if ($null -ne $process) {
+        $process.Dispose()
+    }
 }
 $statusPath = Join-Path $LaunchRoot 'status.json'
 $status = if (Test-Path -LiteralPath $statusPath -PathType Leaf) {

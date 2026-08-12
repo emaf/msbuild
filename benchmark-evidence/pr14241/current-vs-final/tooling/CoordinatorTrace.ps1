@@ -1,6 +1,37 @@
 Set-StrictMode -Version 3.0
 $ErrorActionPreference = 'Stop'
 
+function ConvertTo-TraceUtcDateTimeOffset {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Value
+    )
+
+    if (Get-Command ConvertTo-UtcDateTimeOffset -ErrorAction SilentlyContinue) {
+        return ConvertTo-UtcDateTimeOffset -Value $Value
+    }
+    if ($Value -is [DateTimeOffset]) {
+        return ([DateTimeOffset]$Value).ToUniversalTime()
+    }
+    if ($Value -is [DateTime]) {
+        $dateTime = [DateTime]$Value
+        if ($dateTime.Kind -eq [DateTimeKind]::Unspecified) {
+            $dateTime = [DateTime]::SpecifyKind($dateTime, [DateTimeKind]::Utc)
+        }
+        return [DateTimeOffset]::new($dateTime).ToUniversalTime()
+    }
+    $parsed = [DateTimeOffset]::MinValue
+    if (-not [DateTimeOffset]::TryParse(
+        [string]$Value,
+        [Globalization.CultureInfo]::InvariantCulture,
+        [Globalization.DateTimeStyles]::AssumeUniversal -bor
+            [Globalization.DateTimeStyles]::AdjustToUniversal,
+        [ref]$parsed)) {
+        throw "Trace timestamp '$Value' is invalid."
+    }
+    return $parsed.ToUniversalTime()
+}
+
 function Get-TraceTimestampAndMessage {
     param(
         [Parameter(Mandatory)]
@@ -17,10 +48,7 @@ function Get-TraceTimestampAndMessage {
         return $null
     }
     [pscustomobject][ordered]@{
-        TimestampUtc = [DateTime]::Parse(
-            $Matches.timestamp,
-            [Globalization.CultureInfo]::InvariantCulture,
-            [Globalization.DateTimeStyles]::AssumeUniversal -bor [Globalization.DateTimeStyles]::AdjustToUniversal)
+        TimestampUtc = ConvertTo-TraceUtcDateTimeOffset -Value $Matches.timestamp
         Message = $Matches.message
         ThreadKey = $Matches.thread.Trim()
         SourcePath = $SourcePath
@@ -52,7 +80,7 @@ function Resolve-TraceRunIdentity {
         [int]$ProcessId,
 
         [Parameter(Mandatory)]
-        [DateTime]$TimestampUtc,
+        [DateTimeOffset]$TimestampUtc,
 
         [object[]]$RunRecords = @()
     )
@@ -68,12 +96,12 @@ function Resolve-TraceRunIdentity {
             if ([string]::IsNullOrWhiteSpace([string]$startValue)) {
                 continue
             }
-            $start = ([DateTime]$startValue).ToUniversalTime()
+            $start = ConvertTo-TraceUtcDateTimeOffset -Value $startValue
             $exit = if ([string]::IsNullOrWhiteSpace([string]$exitValue)) {
-                [DateTime]::MaxValue
+                [DateTimeOffset]::MaxValue
             }
             else {
-                ([DateTime]$exitValue).ToUniversalTime().AddSeconds(30)
+                (ConvertTo-TraceUtcDateTimeOffset -Value $exitValue).AddSeconds(30)
             }
             if ($TimestampUtc -ge $start.AddSeconds(-2) -and $TimestampUtc -le $exit) {
                 $runId = Get-RunProperty -Run $run -Names @('RunId', 'runId', 'Label', 'label')
@@ -164,14 +192,8 @@ function ConvertFrom-CoordinatorTrace {
     $timeline = [Collections.Generic.List[object]]::new()
     $states = @{}
     $generationByPid = @{}
-    $knownPids = [Collections.Generic.HashSet[int]]::new()
-    foreach ($run in $RunRecords) {
-        $rootProcessId = Get-RunProperty -Run $run -Names @('RootProcessId', 'rootProcessId')
-        if ($null -ne $rootProcessId) {
-            [void]$knownPids.Add([int]$rootProcessId)
-        }
-    }
     $pendingLegacyNestedByThread = @{}
+    $nestedProcessIds = [Collections.Generic.HashSet[int]]::new()
     $allocated = 0
     $queueDepth = 0
     $activeBuilds = 0
@@ -227,10 +249,15 @@ function ConvertFrom-CoordinatorTrace {
                 [bool]::Parse($nestedValue)
             }
             $eventType = if ($nested) { 'NestedConnected' } else { 'Connected' }
-            if (-not $nested) {
+            if ($nested) {
+                [void]$nestedProcessIds.Add($traceProcessId)
+            }
+            else {
+                [void]$nestedProcessIds.Remove($traceProcessId)
                 $resolved = Resolve-TraceRunIdentity -ProcessId $traceProcessId -TimestampUtc $raw.TimestampUtc -RunRecords $RunRecords
                 if ($RunRecords.Count -gt 0 -and $null -eq $resolved) {
                     $eventType = 'UnmatchedConnected'
+                    $errors.Add("Non-nested connection for PID $traceProcessId could not be resolved to a captured root process identity.")
                 }
                 else {
                     if ($null -eq $resolved) {
@@ -261,10 +288,13 @@ function ConvertFrom-CoordinatorTrace {
             $traceProcessId = [int]$Matches.pid
             $state = Get-LiveTraceState -States $states -ProcessId $traceProcessId
             if ($null -eq $state) {
-                if ($RunRecords.Count -eq 0 -or $knownPids.Contains($traceProcessId)) {
-                    $errors.Add("Queued PID $traceProcessId has no live root connection.")
+                if ($nestedProcessIds.Contains($traceProcessId)) {
+                    $eventType = 'NestedQueued'
                 }
-                $eventType = 'IgnoredQueued'
+                else {
+                    $errors.Add("Queued PID $traceProcessId has no live root connection.")
+                    $eventType = 'UnresolvedQueued'
+                }
             }
             elseif ($state.State -ne 'Connected') {
                 $errors.Add("PID $traceProcessId queued from impossible state '$($state.State)'.")
@@ -284,10 +314,13 @@ function ConvertFrom-CoordinatorTrace {
             $nodes = [int]$Matches.nodes
             $state = Get-LiveTraceState -States $states -ProcessId $traceProcessId
             if ($null -eq $state) {
-                if ($RunRecords.Count -eq 0 -or $knownPids.Contains($traceProcessId)) {
-                    $errors.Add("Immediate grant for PID $traceProcessId has no live root connection.")
+                if ($nestedProcessIds.Contains($traceProcessId)) {
+                    $eventType = 'NestedGrant'
                 }
-                $eventType = 'IgnoredGrant'
+                else {
+                    $errors.Add("Immediate grant for PID $traceProcessId has no live root connection.")
+                    $eventType = 'UnresolvedGrant'
+                }
             }
             elseif ($state.State -ne 'Connected') {
                 $errors.Add("Immediate grant for PID $traceProcessId came from '$($state.State)'.")
@@ -309,10 +342,13 @@ function ConvertFrom-CoordinatorTrace {
             $nodes = [int]$Matches.nodes
             $state = Get-LiveTraceState -States $states -ProcessId $traceProcessId
             if ($null -eq $state) {
-                if ($RunRecords.Count -eq 0 -or $knownPids.Contains($traceProcessId)) {
-                    $errors.Add("Deferred grant for PID $traceProcessId has no live root connection.")
+                if ($nestedProcessIds.Contains($traceProcessId)) {
+                    $eventType = 'NestedDeferredGrant'
                 }
-                $eventType = 'IgnoredDeferredGrant'
+                else {
+                    $errors.Add("Deferred grant for PID $traceProcessId has no live root connection.")
+                    $eventType = 'UnresolvedDeferredGrant'
+                }
             }
             elseif ($state.State -ne 'Queued') {
                 $errors.Add("Deferred grant for PID $traceProcessId came from '$($state.State)'.")
@@ -336,10 +372,13 @@ function ConvertFrom-CoordinatorTrace {
             $eventType = 'Released'
             $state = Get-LiveTraceState -States $states -ProcessId $traceProcessId
             if ($null -eq $state) {
-                if ($RunRecords.Count -eq 0 -or $knownPids.Contains($traceProcessId)) {
-                    $errors.Add("Release for PID $traceProcessId has no live root state.")
+                if ($nestedProcessIds.Contains($traceProcessId)) {
+                    $eventType = 'NestedReleased'
                 }
-                $eventType = 'IgnoredReleased'
+                else {
+                    $errors.Add("Release for PID $traceProcessId has no live root state.")
+                    $eventType = 'UnresolvedReleased'
+                }
             }
             else {
                 $identity = $state.IdentityKey
@@ -373,11 +412,12 @@ function ConvertFrom-CoordinatorTrace {
                 $state.State = 'Released'
                 $stateChanging = $true
             }
-            elseif ($RunRecords.Count -eq 0 -or $knownPids.Contains($traceProcessId)) {
-                $errors.Add("Disconnect for PID $traceProcessId has no live root state.")
+            elseif ($nestedProcessIds.Contains($traceProcessId)) {
+                $eventType = 'NestedDisconnected'
             }
             else {
-                $eventType = 'IgnoredDisconnected'
+                $errors.Add("Disconnect for PID $traceProcessId has no live root state.")
+                $eventType = 'UnresolvedDisconnected'
             }
         }
         elseif ($message -match '^Reclaiming grant from dead PID (?<pid>\d+)$') {
@@ -385,10 +425,13 @@ function ConvertFrom-CoordinatorTrace {
             $eventType = 'Reclaimed'
             $state = Get-LiveTraceState -States $states -ProcessId $traceProcessId
             if ($null -eq $state) {
-                if ($RunRecords.Count -eq 0 -or $knownPids.Contains($traceProcessId)) {
-                    $errors.Add("Reclaim for PID $traceProcessId has no live root state.")
+                if ($nestedProcessIds.Contains($traceProcessId)) {
+                    $eventType = 'NestedReclaimed'
                 }
-                $eventType = 'IgnoredReclaimed'
+                else {
+                    $errors.Add("Reclaim for PID $traceProcessId has no live root state.")
+                    $eventType = 'UnresolvedReclaimed'
+                }
             }
             else {
                 $identity = $state.IdentityKey
@@ -494,10 +537,10 @@ function Get-TraceWindowMetrics {
         [object[]]$Timeline,
 
         [Parameter(Mandatory)]
-        [DateTime]$StartUtc,
+        [DateTimeOffset]$StartUtc,
 
         [Parameter(Mandatory)]
-        [DateTime]$EndUtc,
+        [DateTimeOffset]$EndUtc,
 
         [int]$Budget = 16,
 
@@ -509,10 +552,10 @@ function Get-TraceWindowMetrics {
     if ($end -le $start) {
         throw 'Trace metric window end must be after start.'
     }
-    $ordered = @($Timeline | Sort-Object { [DateTime]$_.TimestampUtc }, Sequence)
+    $ordered = @($Timeline | Sort-Object { ConvertTo-TraceUtcDateTimeOffset -Value $_.TimestampUtc }, Sequence)
     $state = [pscustomobject]@{ QueueDepth = 0; ActiveBuilds = 0; AllocatedNodes = 0 }
     foreach ($row in $ordered) {
-        if (([DateTime]$row.TimestampUtc).ToUniversalTime() -le $start) {
+        if ((ConvertTo-TraceUtcDateTimeOffset -Value $row.TimestampUtc) -le $start) {
             $state = $row
         }
         else {
@@ -522,7 +565,7 @@ function Get-TraceWindowMetrics {
     $segments = [Collections.Generic.List[object]]::new()
     $cursor = $start
     foreach ($row in $ordered) {
-        $timestamp = ([DateTime]$row.TimestampUtc).ToUniversalTime()
+        $timestamp = ConvertTo-TraceUtcDateTimeOffset -Value $row.TimestampUtc
         if ($timestamp -le $start) {
             continue
         }
@@ -588,7 +631,7 @@ function Get-SemanticSaturationState {
         [object[]]$Timeline,
 
         [Parameter(Mandatory)]
-        [DateTime]$NowUtc,
+        [DateTimeOffset]$NowUtc,
 
         [Parameter(Mandatory)]
         [int]$ExpectedAllocation,
@@ -601,7 +644,7 @@ function Get-SemanticSaturationState {
     if ($HandoffGapToleranceSeconds -le 0) {
         throw 'Handoff gap tolerance must be positive.'
     }
-    $ordered = @($Timeline | Sort-Object { [DateTime]$_.TimestampUtc }, Sequence)
+    $ordered = @($Timeline | Sort-Object { ConvertTo-TraceUtcDateTimeOffset -Value $_.TimestampUtc }, Sequence)
     $continuousStart = $null
     $handoffStart = $null
     $handoffEligible = $false
@@ -609,7 +652,7 @@ function Get-SemanticSaturationState {
     $resetCount = 0
     $allowedHandoffEvents = @('Released', 'DeferredGranted')
     foreach ($row in $ordered) {
-        $timestamp = ([DateTime]$row.TimestampUtc).ToUniversalTime()
+        $timestamp = ConvertTo-TraceUtcDateTimeOffset -Value $row.TimestampUtc
         if ($timestamp -gt $NowUtc.ToUniversalTime()) {
             break
         }
@@ -676,7 +719,7 @@ function Get-SemanticSaturationState {
         $resetCount++
     }
     $eligibleLatest = @($ordered | Where-Object {
-        ([DateTime]$_.TimestampUtc).ToUniversalTime() -le $NowUtc.ToUniversalTime()
+        (ConvertTo-TraceUtcDateTimeOffset -Value $_.TimestampUtc) -le $NowUtc.ToUniversalTime()
     })
     $latest = if ($eligibleLatest.Count -eq 0) {
         [pscustomobject]@{ AllocatedNodes = 0; QueueDepth = 0 }
@@ -714,7 +757,7 @@ function Test-SteadyOnsetState {
         [pscustomobject]$Trace,
 
         [Parameter(Mandatory)]
-        [DateTime]$NowUtc,
+        [DateTimeOffset]$NowUtc,
 
         [Parameter(Mandatory)]
         [int]$ExpectedAllocation,

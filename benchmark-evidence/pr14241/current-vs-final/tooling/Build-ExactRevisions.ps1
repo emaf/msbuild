@@ -110,23 +110,15 @@ $roles = @(
     [pscustomobject]@{ Role = 'base'; Commit = $definition.Base.Commit },
     [pscustomobject]@{ Role = 'final'; Commit = $definition.Final.Commit }
 )
-$buildArguments = @(
-    '-configuration', 'Release',
-    '-msbuildEngine', 'dotnet',
-    '-verbosity', 'quiet',
-    '/p:CreateTlb=false',
-    '/p:RuntimeOutputTargetFrameworks=net11.0'
-)
+$buildArguments = @(Get-ExactBootstrapBuildArguments)
 $built = [ordered]@{}
 $reusedValidatedStages = $true
 foreach ($role in $roles) {
     $sourceWorktree = Join-Path $BuildWorktreeRoot "$($role.Role)-$($role.Commit.Substring(0, 12))"
     $stageCandidates = @(
-        Get-ChildItem -LiteralPath $BootstrapStagingRoot -Directory -Filter "$($role.Commit.Substring(0, 12))-*" -ErrorAction SilentlyContinue |
-            Where-Object {
-                (Test-Path -LiteralPath (Join-Path $_.FullName 'core') -PathType Container) -and
-                    (Test-Path -LiteralPath (Join-Path $_.FullName 'staging-metadata.json') -PathType Leaf)
-            }
+        Get-ImmutableBootstrapStageCandidates `
+            -StagingRoot $BootstrapStagingRoot `
+            -ExpectedCommit $role.Commit
     )
     if ($stageCandidates.Count -ne 1 -or
         -not (Test-Path -LiteralPath $sourceWorktree -PathType Container)) {

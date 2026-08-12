@@ -19,6 +19,9 @@ param(
     [int]$AttemptNumber,
     [Parameter(Mandatory)]
     [int]$OrderIndex,
+    [int]$AnalysisBlockNumber = 0,
+    [bool]$IsWarmup = $false,
+    [string]$RunIdentity,
     [Parameter(Mandatory)]
     [string]$ScenarioRoot
 )
@@ -26,6 +29,7 @@ param(
 Set-StrictMode -Version 3.0
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Scenario.Common.ps1')
+. (Join-Path $PSScriptRoot 'ControllerValidation.ps1')
 Assert-WindowsCampaignHost
 
 $campaign = Get-CampaignDefinition
@@ -35,6 +39,19 @@ if ($shapeDefinition.Conditions -notcontains $Condition) {
 }
 if (Test-Path -LiteralPath $ScenarioRoot) {
     throw "Scenario root '$ScenarioRoot' already exists."
+}
+$expectedRunIdentity = New-ScenarioRunIdentity `
+    -Shape $Shape `
+    -Repository $RepositoryName `
+    -Condition $Condition `
+    -BlockNumber $BlockNumber `
+    -AttemptNumber $AttemptNumber `
+    -OrderIndex $OrderIndex
+if ([string]::IsNullOrWhiteSpace($RunIdentity)) {
+    $RunIdentity = $expectedRunIdentity
+}
+elseif ($RunIdentity -ne $expectedRunIdentity) {
+    throw "Scenario run identity '$RunIdentity' does not match '$expectedRunIdentity'."
 }
 New-Item -ItemType Directory -Path $ScenarioRoot | Out-Null
 $monitorRoot = Join-Path $ScenarioRoot 'monitor'
@@ -95,7 +112,7 @@ function Add-ControllerEvent {
     )
 
     $entry = [ordered]@{
-        TimestampUtc = [DateTime]::UtcNow.ToString('O')
+        TimestampUtc = [DateTimeOffset]::UtcNow.ToString('O')
         Event = $Event
         RunId = if ($null -eq $Run) { $null } else { $Run.RunId }
         Worker = if ($null -eq $Run) { $null } else { $Run.Worker }
@@ -139,15 +156,18 @@ $injectedEnvironment = New-ConditionEnvironment `
 Assert-ConditionEnvironmentContract -Condition $Condition -Environment $normalEnvironment
 Assert-ConditionEnvironmentContract -Condition $Condition -Environment $injectedEnvironment -Injected
 $metadata = [ordered]@{
-    SchemaVersion = 1
-    StartedUtc = [DateTime]::UtcNow.ToString('O')
+    SchemaVersion = 2
+    StartedUtc = [DateTimeOffset]::UtcNow.ToString('O')
     Shape = $Shape
     Repository = $RepositoryName
     RepositoryCommit = $repository.Commit
     Condition = $Condition
     BlockNumber = $BlockNumber
+    AnalysisBlockNumber = $AnalysisBlockNumber
+    IsWarmup = $IsWarmup
     AttemptNumber = $AttemptNumber
     OrderIndex = $OrderIndex
+    RunIdentity = $RunIdentity
     BootstrapRole = $bootstrap.Role
     BootstrapCommit = $bootstrap.ExpectedCommit
     BootstrapProductVersion = $bootstrap.ProductVersion
@@ -183,7 +203,8 @@ $controller = [ordered]@{
     PolicyFailureRunIds = @()
 }
 $monitor = $null
-$scenarioError = $null
+$scenarioExceptions = [Collections.Generic.List[Exception]]::new()
+$terminalOutcome = $null
 try {
     $monitor = Start-ScenarioMonitor -MonitorRoot $monitorRoot
     if ($Shape -eq 'isolated') {
@@ -198,7 +219,7 @@ try {
                 -RelativePath $repository.TouchPath)
         }
     }
-    $scenarioStartedUtc = [DateTime]::UtcNow
+    $scenarioStartedUtc = [DateTimeOffset]::UtcNow
     $controller.ScenarioStartedUtc = $scenarioStartedUtc.ToString('O')
     Add-ControllerEvent -Event 'ScenarioStarted' -Run $null
 
@@ -229,8 +250,8 @@ try {
     elseif ($Shape -eq 'sustained') {
         $generation = [int[]]::new(19)
         $measuredCompletionIds = [Collections.Generic.List[string]]::new()
-        $lastProcessTreeSampleUtc = [DateTime]::MinValue
-        $lastTraceCheckUtc = [DateTime]::MinValue
+        $lastProcessTreeSampleUtc = [DateTimeOffset]::MinValue
+        $lastTraceCheckUtc = [DateTimeOffset]::MinValue
         $expectedAllocation = if ($Condition -in @('BASE', 'COMPAT')) { 16 } else { 12 }
         foreach ($worker in 1..18) {
             $generation[$worker]++
@@ -253,7 +274,7 @@ try {
         $stopReplacements = $false
         $injectedRun = $null
         while (-not $stopReplacements) {
-            $now = [DateTime]::UtcNow
+            $now = [DateTimeOffset]::UtcNow
             if (($now - $lastProcessTreeSampleUtc).TotalSeconds -ge 5) {
                 Update-ScenarioProcessTrees -Runs $allRuns.ToArray()
                 $lastProcessTreeSampleUtc = $now
@@ -322,7 +343,9 @@ try {
                 $counted = $false
                 if ($null -ne $controller.SteadyOnsetUtc -and
                     $run.Kind -eq 'normal' -and
-                    $run.ProcessExitUtc -ge ([DateTime]$controller.SteadyOnsetUtc) -and
+                    $run.Quiescent -and
+                    $run.ExitCode -eq 0 -and
+                    $run.ProcessExitUtc -ge (ConvertTo-UtcDateTimeOffset -Value $controller.SteadyOnsetUtc) -and
                     $measuredCompletionIds.Count -lt $campaign.Validity.SustainedEndingCompletion) {
                     $measuredCompletionIds.Add($run.RunId)
                     $controller.MeasuredNormalCompletions = $measuredCompletionIds.Count
@@ -356,9 +379,14 @@ try {
                     }
                     if ($measuredCompletionIds.Count -eq $campaign.Validity.SustainedEndingCompletion) {
                         $controller.SteadyEndUtc = $run.ProcessExitUtc.ToString('O')
-                        if (($run.ProcessExitUtc - ([DateTime]$controller.SteadyOnsetUtc)).TotalMinutes -gt
+                        if (($run.ProcessExitUtc - (ConvertTo-UtcDateTimeOffset -Value $controller.SteadyOnsetUtc)).TotalMinutes -gt
                             $campaign.Validity.SustainedTimeoutMinutes) {
                             $controller.TimedOut = $true
+                            $terminalOutcome = Write-ScenarioTerminalOutcome `
+                                -ScenarioRoot $ScenarioRoot `
+                                -OutcomeType 'SustainedCompletionTimeout' `
+                                -Disposition 'CampaignAbilityGateFailure' `
+                                -Errors @('Sustained ability gate exceeded 10 minutes between steady onset and the twelfth measured Normal completion.')
                         }
                         $stopReplacements = $true
                         Add-ControllerEvent -Event 'SteadyEnd' -Run $run -Data @{
@@ -400,14 +428,24 @@ try {
                 if ($null -eq $controller.SteadyOnsetUtc) {
                     if (($now - $scenarioStartedUtc).TotalMinutes -gt $campaign.Validity.SustainedTimeoutMinutes) {
                         $controller.TimedOut = $true
+                        $terminalOutcome = Write-ScenarioTerminalOutcome `
+                            -ScenarioRoot $ScenarioRoot `
+                            -OutcomeType 'SustainedOnsetTimeout' `
+                            -Disposition 'CampaignAbilityGateFailure' `
+                            -Errors @('Sustained ability gate did not establish steady onset within 10 minutes.')
                         $stopReplacements = $true
                         Add-ControllerEvent -Event 'OnsetTimeout' -Run $null
                     }
                 }
-                elseif (($now - ([DateTime]$controller.SteadyOnsetUtc)).TotalMinutes -gt
+                elseif (($now - (ConvertTo-UtcDateTimeOffset -Value $controller.SteadyOnsetUtc)).TotalMinutes -gt
                     $campaign.Validity.SustainedTimeoutMinutes) {
                     $controller.TimedOut = $true
                     $controller.SteadyEndUtc = $now.ToString('O')
+                    $terminalOutcome = Write-ScenarioTerminalOutcome `
+                        -ScenarioRoot $ScenarioRoot `
+                        -OutcomeType 'SustainedCompletionTimeout' `
+                        -Disposition 'CampaignAbilityGateFailure' `
+                        -Errors @('Sustained ability gate did not reach 12 measured Normal completions within 10 minutes after steady onset.')
                     $stopReplacements = $true
                     Add-ControllerEvent -Event 'SteadyTimeout' -Run $null
                 }
@@ -426,16 +464,97 @@ try {
     $metadata.Succeeded = $true
 }
 catch {
-    $scenarioError = $_.Exception.ToString()
-    $metadata['Error'] = $scenarioError
+    $scenarioExceptions.Add($_.Exception)
+    $metadata['Error'] = $_.Exception.ToString()
 }
 finally {
+    try {
+        $cleanup = Stop-UnfinishedScenarioBuilds -Runs $allRuns.ToArray()
+        $metadata['BuildCleanup'] = $cleanup
+        if (-not $cleanup.Succeeded) {
+            $cleanupException = [InvalidOperationException]::new(
+                "Scenario build cleanup failed: $($cleanup.Errors -join '; ')")
+            $scenarioExceptions.Add($cleanupException)
+            $terminalOutcome = Write-ScenarioCleanupTerminalOutcome `
+                -ScenarioRoot $ScenarioRoot `
+                -Cleanup $cleanup
+        }
+    }
+    catch {
+        $scenarioExceptions.Add($_.Exception)
+        $metadata['BuildCleanupError'] = $_.Exception.ToString()
+        $liveAfterCleanupError = @(
+            $allRuns |
+                Where-Object {
+                    $rootLive = Test-VerifiedProcessIdentity `
+                        -ProcessId $_.RootProcessId `
+                        -ProcessStartUtc $_.ProcessStartUtc
+                    $descendantLive = @(
+                        foreach ($identity in @($_.DescendantIdentities)) {
+                            $parts = [string]$identity -split '\|', 2
+                            if ($parts.Count -eq 2 -and
+                                -not [string]::IsNullOrWhiteSpace($parts[1]) -and
+                                (Test-VerifiedProcessIdentity `
+                                    -ProcessId ([int]$parts[0]) `
+                                    -ProcessStartUtc $parts[1])) {
+                                $identity
+                            }
+                        }
+                    ).Count -gt 0
+                    return $rootLive -or $descendantLive
+                } |
+                Select-Object -ExpandProperty RunId
+        )
+        $uncertainAfterCleanupError = @(
+            $allRuns |
+                Where-Object {
+                    -not $_.Completed -or $_.Quiescent -ne $true
+                } |
+                Select-Object -ExpandProperty RunId
+        )
+        $cleanupFailureErrors = [Collections.Generic.List[string]]::new()
+        $cleanupFailureErrors.Add("Scenario build cleanup threw: $($_.Exception.Message)")
+        if ($liveAfterCleanupError.Count -gt 0) {
+            $cleanupFailureErrors.Add(
+                "Build process identities remained live after cleanup failed: $($liveAfterCleanupError -join ', ').")
+        }
+        if ($uncertainAfterCleanupError.Count -gt 0) {
+            $cleanupFailureErrors.Add(
+                "Build quiescence remained uncertain after cleanup failed: $($uncertainAfterCleanupError -join ', ').")
+        }
+        $terminalOutcome = Write-ScenarioTerminalOutcome `
+            -ScenarioRoot $ScenarioRoot `
+            -OutcomeType 'BuildCleanupFailure' `
+            -Disposition 'NonRetryableHarnessFailure' `
+            -Errors $cleanupFailureErrors.ToArray()
+    }
+    try {
+        Save-LiveRuns -Runs $allRuns.ToArray()
+    }
+    catch {
+        $scenarioExceptions.Add($_.Exception)
+        $metadata['RunPersistenceError'] = $_.Exception.ToString()
+    }
     if ($null -ne $monitor) {
+        $monitorProcessId = $monitor.Process.Id
+        $monitorProcessStartUtc = $monitor.ProcessStartUtc
         try {
             Stop-ScenarioMonitor -Monitor $monitor
         }
         catch {
             $metadata['MonitorStopError'] = $_.Exception.ToString()
+            $scenarioExceptions.Add($_.Exception)
+            $monitorLive = Test-VerifiedProcessIdentity `
+                -ProcessId $monitorProcessId `
+                -ProcessStartUtc $monitorProcessStartUtc
+            $terminalOutcome = Write-ScenarioTerminalOutcome `
+                -ScenarioRoot $ScenarioRoot `
+                -OutcomeType 'MonitorCleanupFailure' `
+                -Disposition 'NonRetryableHarnessFailure' `
+                -Errors @(
+                    "Resource monitor cleanup failed: $($_.Exception.Message)",
+                    "Resource monitor remained live after cleanup: $monitorLive"
+                )
         }
     }
     try {
@@ -446,16 +565,28 @@ finally {
     }
     catch {
         $metadata['BuildServerShutdownError'] = $_.Exception.ToString()
+        $scenarioExceptions.Add($_.Exception)
     }
-    $metadata.CompletedUtc = [DateTime]::UtcNow.ToString('O')
-    Write-JsonAtomic -Path (Join-Path $ScenarioRoot 'scenario-metadata.json') -Value $metadata -Depth 10
-    Write-JsonAtomic -Path (Join-Path $ScenarioRoot 'controller-summary.json') -Value ([pscustomobject]$controller) -Depth 8
+    $terminalOutcome = Get-ScenarioTerminalOutcome -ScenarioRoot $ScenarioRoot
+    if ($null -ne $terminalOutcome) {
+        $metadata['TerminalOutcome'] = $terminalOutcome
+    }
+    if ($scenarioExceptions.Count -gt 0 -or $null -ne $terminalOutcome) {
+        $metadata.Succeeded = $false
+    }
+    $metadata.CompletedUtc = [DateTimeOffset]::UtcNow.ToString('O')
+    try {
+        Write-JsonAtomic -Path (Join-Path $ScenarioRoot 'scenario-metadata.json') -Value $metadata -Depth 10
+        Write-JsonAtomic -Path (Join-Path $ScenarioRoot 'controller-summary.json') -Value ([pscustomobject]$controller) -Depth 8
+    }
+    catch {
+        $scenarioExceptions.Add($_.Exception)
+    }
 }
-if ($null -ne $scenarioError) {
-    throw $scenarioError
-}
-if ($metadata.Contains('MonitorStopError')) {
-    throw $metadata['MonitorStopError']
+if ($scenarioExceptions.Count -gt 0) {
+    throw [AggregateException]::new(
+        'Scenario execution, cleanup, monitoring, or build-server shutdown failed.',
+        [Exception[]]$scenarioExceptions.ToArray())
 }
 
 $runRecords = @($allRuns | ForEach-Object { ConvertTo-RunRecord -Run $_ })
@@ -563,8 +694,13 @@ if ($harnessErrors.Count -eq 0 -and $traceFiles.Count -eq 1) {
     }
 }
 
-$scenarioStart = ([DateTime]$controller.ScenarioStartedUtc).ToUniversalTime()
-$scenarioEnd = @($runRecords | ForEach-Object { ([DateTime]$_.ProcessExitUtc).ToUniversalTime() } | Sort-Object | Select-Object -Last 1)[0]
+$scenarioStart = ConvertTo-UtcDateTimeOffset -Value $controller.ScenarioStartedUtc
+$scenarioEnd = @(
+    $runRecords |
+        ForEach-Object { ConvertTo-UtcDateTimeOffset -Value $_.ProcessExitUtc } |
+        Sort-Object |
+        Select-Object -Last 1
+)[0]
 $wallSeconds = ($scenarioEnd - $scenarioStart).TotalSeconds
 $resource = Get-ScenarioResourceMetrics `
     -MonitorRoot $monitorRoot `
@@ -603,13 +739,16 @@ foreach ($worktree in $repository.Worktrees) {
 }
 
 $metrics = [ordered]@{
-    SchemaVersion = 1
+    SchemaVersion = 2
     Shape = $Shape
     Repository = $RepositoryName
     Condition = $Condition
     BlockNumber = $BlockNumber
+    AnalysisBlockNumber = $AnalysisBlockNumber
+    IsWarmup = $IsWarmup
     AttemptNumber = $AttemptNumber
     OrderIndex = $OrderIndex
+    RunIdentity = $RunIdentity
     ScenarioStartUtc = $scenarioStart.ToString('O')
     ScenarioEndUtc = $scenarioEnd.ToString('O')
     TotalWallSeconds = $wallSeconds
@@ -640,8 +779,31 @@ if ($Shape -eq 'isolated') {
     }
 }
 elseif ($Shape -eq 'sustained') {
+    $controllerEvents = @(
+        Get-Content -LiteralPath (Join-Path $ScenarioRoot 'controller-events.jsonl') |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+            ForEach-Object { $_ | ConvertFrom-Json }
+    )
+    $controllerValidation = Test-SustainedControllerEvents `
+        -Events $controllerEvents `
+        -InitialWorkers $campaign.Validity.SustainedWorkers `
+        -InjectionCompletion $campaign.Validity.SustainedInjectionCompletion `
+        -EndingCompletion $campaign.Validity.SustainedEndingCompletion
+    if (-not $controllerValidation.Valid) {
+        foreach ($message in $controllerValidation.Errors) {
+            $harnessErrors.Add($message)
+        }
+    }
     if ($controller.TimedOut) {
-        $abilityGateErrors.Add("Sustained ability gate failed: the controller did not reach 12 measured Normal completions within 10 minutes after onset.")
+        if ($null -ne $terminalOutcome -and
+            $terminalOutcome.Disposition -eq 'CampaignAbilityGateFailure') {
+            foreach ($message in @($terminalOutcome.Errors)) {
+                $abilityGateErrors.Add([string]$message)
+            }
+        }
+        else {
+            $abilityGateErrors.Add("Sustained ability gate failed: the controller did not reach 12 measured Normal completions within 10 minutes after onset.")
+        }
     }
     if ($controller.WorktreeOverlap) {
         $harnessErrors.Add('Sustained controller detected worktree overlap or incomplete quiescence.')
@@ -653,13 +815,13 @@ elseif ($Shape -eq 'sustained') {
         $externalErrors.Add('Sustained controller did not establish a complete steady window.')
     }
     elseif ($null -ne $trace) {
-        $steadyStart = ([DateTime]$controller.SteadyOnsetUtc).ToUniversalTime()
-        $steadyEnd = ([DateTime]$controller.SteadyEndUtc).ToUniversalTime()
+        $steadyStart = ConvertTo-UtcDateTimeOffset -Value $controller.SteadyOnsetUtc
+        $steadyEnd = ConvertTo-UtcDateTimeOffset -Value $controller.SteadyEndUtc
         $injectionUtc = if ($null -eq $controller.InjectionStartedUtc) {
             $null
         }
         else {
-            ([DateTime]$controller.InjectionStartedUtc).ToUniversalTime()
+            ConvertTo-UtcDateTimeOffset -Value $controller.InjectionStartedUtc
         }
         $reserved = if ($Condition -in @('FINAL-N', 'FINAL-H')) { 4 } else { 0 }
         $window = Get-TraceWindowMetrics `
@@ -684,8 +846,8 @@ elseif ($Shape -eq 'sustained') {
                     Where-Object {
                         $_.Event -in @('Granted', 'DeferredGranted') -and
                             $_.Nodes -eq 8 -and
-                            ([DateTime]$_.TimestampUtc) -ge $steadyStart -and
-                            ([DateTime]$_.TimestampUtc) -le $steadyEnd -and
+                            (ConvertTo-UtcDateTimeOffset -Value $_.TimestampUtc) -ge $steadyStart -and
+                            (ConvertTo-UtcDateTimeOffset -Value $_.TimestampUtc) -le $steadyEnd -and
                             $_.QueueDepthBefore -le 1 -and
                             $_.QueueDepth -eq 0
                     }
@@ -700,8 +862,8 @@ elseif ($Shape -eq 'sustained') {
                 $runRecords |
                     Where-Object {
                         $_.Kind -eq 'normal' -and
-                            ([DateTime]$_.ProcessExitUtc) -ge $steadyStart -and
-                            ([DateTime]$_.ProcessExitUtc) -le $steadyEnd
+                            (ConvertTo-UtcDateTimeOffset -Value $_.ProcessExitUtc) -ge $steadyStart -and
+                            (ConvertTo-UtcDateTimeOffset -Value $_.ProcessExitUtc) -le $steadyEnd
                     }
             )
             if ($completedInWindow.Count -ne $campaign.Validity.SustainedEndingCompletion) {
@@ -715,8 +877,8 @@ elseif ($Shape -eq 'sustained') {
                 $runRecords |
                     Where-Object {
                         $_.Kind -eq 'normal' -and
-                            ([DateTime]$_.ProcessStartUtc) -le $steadyEnd -and
-                            ([DateTime]$_.ProcessExitUtc) -gt $steadyEnd
+                            (ConvertTo-UtcDateTimeOffset -Value $_.ProcessStartUtc) -le $steadyEnd -and
+                            (ConvertTo-UtcDateTimeOffset -Value $_.ProcessExitUtc) -gt $steadyEnd
                     }
             )
             $steadyResource = Get-ScenarioResourceMetrics `
@@ -758,7 +920,10 @@ elseif ($Shape -eq 'sustained') {
 }
 Write-JsonAtomic -Path (Join-Path $ScenarioRoot 'scenario-metrics.json') -Value ([pscustomobject]$metrics) -Depth 12
 
-$disposition = if ($abilityGateErrors.Count -gt 0) {
+$disposition = if ($null -ne $terminalOutcome) {
+    [string]$terminalOutcome.Disposition
+}
+elseif ($abilityGateErrors.Count -gt 0) {
     'CampaignAbilityGateFailure'
 }
 elseif ($harnessErrors.Count -gt 0 -or $externalErrors.Count -gt 0) {
@@ -771,16 +936,19 @@ else {
     'Valid'
 }
 $validation = [pscustomobject][ordered]@{
-    SchemaVersion = 1
-    CompletedUtc = [DateTime]::UtcNow.ToString('O')
+    SchemaVersion = 2
+    CompletedUtc = [DateTimeOffset]::UtcNow.ToString('O')
     Shape = $Shape
     Repository = $RepositoryName
     Condition = $Condition
     BlockNumber = $BlockNumber
+    AnalysisBlockNumber = $AnalysisBlockNumber
+    IsWarmup = $IsWarmup
     AttemptNumber = $AttemptNumber
     OrderIndex = $OrderIndex
+    RunIdentity = $RunIdentity
     ValidForAnalysis = $disposition -eq 'Valid'
-    RetryAllowed = $disposition -eq 'InvalidRetryable'
+    RetryAllowed = $disposition -eq 'InvalidRetryable' -and $null -eq $terminalOutcome
     Disposition = $disposition
     Warnings = $warnings.ToArray()
     HarnessErrors = $harnessErrors.ToArray()
