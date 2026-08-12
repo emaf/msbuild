@@ -60,6 +60,10 @@ All measured shapes use representative propagated projects:
   `src\Aspire.Hosting\DistributedApplication.cs`, always with
   `/p:InstallBrowsersForPlaywright=false`.
 
+Preparation uses dedicated pinned source clones under
+`C:\perf\repos\current-vs-final\` so historical benchmark worktree
+registrations in the shared repository clones are neither removed nor reused.
+
 This limited project deviation exists to control reviewer and runtime cost.
 Historical full-solution and node-count matrices remain supporting evidence
 only and are never pooled with this campaign.

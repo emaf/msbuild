@@ -2212,8 +2212,10 @@ while (-not [IO.File]::Exists('$($lateScenarioGatePath.Replace("'", "''"))')) {
     Assert-Equal -Actual @($campaign.Shapes).Count -Expected 2 -Message 'Contemporaneous campaign has exactly two shapes'
     Assert-Equal -Actual (@($campaign.Shapes.Key) -join '|') -Expected 'isolated|sustained' -Message 'Only isolated and sustained shapes are callable'
     Assert-Equal -Actual (Get-RepositoryDefinition -Name roslyn).BuildPath -Expected 'src\Compilers\CSharp\Portable\Microsoft.CodeAnalysis.CSharp.csproj' -Message 'Roslyn project workload is exact'
+    Assert-Equal -Actual (Get-RepositoryDefinition -Name roslyn).Root -Expected 'C:\perf\repos\current-vs-final\roslyn' -Message 'Roslyn uses a dedicated source clone isolated from historical worktree registrations'
     Assert-Equal -Actual (Get-RepositoryDefinition -Name roslyn).TouchPath -Expected 'src\Compilers\CSharp\Portable\CSharpCompilationOptions.cs' -Message 'Roslyn propagated input is exact'
     Assert-Equal -Actual (Get-RepositoryDefinition -Name aspire).BuildPath -Expected 'src\Aspire.Hosting\Aspire.Hosting.csproj' -Message 'Aspire project workload is exact'
+    Assert-Equal -Actual (Get-RepositoryDefinition -Name aspire).Root -Expected 'C:\perf\repos\current-vs-final\aspire' -Message 'Aspire uses a dedicated source clone isolated from historical worktree registrations'
     Assert-True -Condition $campaign.WorkloadDeviation.Contains('historical full-solution', [StringComparison]::OrdinalIgnoreCase) -Message 'Reports predeclare historical full-solution evidence as supporting only'
     $passingDiskProjection = Get-MeasuredWorktreeDiskProjection `
         -Repository fixture `

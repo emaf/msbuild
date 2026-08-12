@@ -784,7 +784,7 @@ function Get-CampaignDefinition {
             [pscustomobject][ordered]@{
                 Name = 'roslyn'
                 Repository = 'https://github.com/dotnet/roslyn'
-                Root = 'C:\perf\repos\roslyn'
+                Root = 'C:\perf\repos\current-vs-final\roslyn'
                 Commit = 'bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b'
                 WorkRoot = 'C:\w\cvf\r'
                 BuildPath = 'src\Compilers\CSharp\Portable\Microsoft.CodeAnalysis.CSharp.csproj'
@@ -794,7 +794,7 @@ function Get-CampaignDefinition {
             [pscustomobject][ordered]@{
                 Name = 'aspire'
                 Repository = 'https://github.com/dotnet/aspire'
-                Root = 'C:\perf\repos\aspire'
+                Root = 'C:\perf\repos\current-vs-final\aspire'
                 Commit = '110a63da8357af437a00d9efc5887ffdcbdfbb3c'
                 WorkRoot = 'C:\w\cvf\a'
                 BuildPath = 'src\Aspire.Hosting\Aspire.Hosting.csproj'
