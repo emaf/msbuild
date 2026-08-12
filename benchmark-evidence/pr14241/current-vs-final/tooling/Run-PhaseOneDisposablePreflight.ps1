@@ -238,8 +238,9 @@ function Get-PhaseOneExistingPreflightEvidence {
             $result.TraceSummary.Consistent -eq $true) `
             "Existing preflight result '$($result.Name)' did not pass strict quiescent trace validation."
         Assert-PhaseOneValue (
-            (@($result.ActualGrants) -join ',') -eq
-            (@($result.ExpectedGrants) -join ',')) `
+            (@($result.ActualGrants | Sort-Object) -join ',') -eq
+            (@($result.ExpectedGrants | Sort-Object) -join ',') -and
+            @($result.GrantEvidence).Count -eq @($result.Runs).Count) `
             "Existing preflight result '$($result.Name)' did not replay its exact grants."
     }
 

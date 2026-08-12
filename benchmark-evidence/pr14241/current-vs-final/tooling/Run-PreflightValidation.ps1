@@ -193,7 +193,7 @@ function Invoke-SyntheticScenario {
             -WorkRoot (Join-Path $OutputRoot '_tooling') `
             -JournalPath $journal
     )
-    $actualGrants = @(
+    $grantEvidence = @(
         foreach ($run in $runRecords) {
             $replay = $replays |
                 Where-Object { [IO.Path]::GetFullPath($_.Path) -eq [IO.Path]::GetFullPath($run.Binlog) } |
@@ -201,11 +201,17 @@ function Invoke-SyntheticScenario {
             if ($null -eq $replay -or @($replay.Grants).Count -ne 1) {
                 throw "$Name/$($run.RunId) does not have exactly one replayed grant."
             }
-            [int]$replay.Grants[0].Nodes
+            [pscustomobject][ordered]@{
+                RunId = $run.RunId
+                Nodes = [int]$replay.Grants[0].Nodes
+            }
         }
     )
-    if (($actualGrants -join ',') -ne ($ExpectedGrants -join ',')) {
-        throw "$Name grants '$($actualGrants -join ',')' did not match '$($ExpectedGrants -join ',')'."
+    $actualGrants = @($grantEvidence.Nodes)
+    $actualGrantMultiset = @($actualGrants | Sort-Object)
+    $expectedGrantMultiset = @($ExpectedGrants | Sort-Object)
+    if (($actualGrantMultiset -join ',') -ne ($expectedGrantMultiset -join ',')) {
+        throw "$Name grant multiset '$($actualGrantMultiset -join ',')' did not match '$($expectedGrantMultiset -join ',')'."
     }
     $record = [pscustomobject][ordered]@{
         Name = $Name
@@ -214,6 +220,7 @@ function Invoke-SyntheticScenario {
         Condition = $Condition
         ExpectedGrants = $ExpectedGrants
         ActualGrants = $actualGrants
+        GrantEvidence = $grantEvidence
         DeferredGrantOccurred = $trace.DeferredGrantOccurred
         Runs = $runRecords
         TraceSummary = [pscustomobject]@{

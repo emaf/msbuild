@@ -208,47 +208,25 @@ function Get-VerifiedProcessIdentityStatus {
     $expected = ConvertTo-UtcDateTimeOffset -Value $ProcessStartUtc
     $process = $null
     try {
-        try {
-            $process = if ($null -eq $ProcessQuery) {
-                [Diagnostics.Process]::GetProcessById($ProcessId)
+        if ($null -eq $ProcessQuery) {
+            try {
+                $cimProcess = Get-CimInstance `
+                    Win32_Process `
+                    -Filter "ProcessId = $ProcessId" `
+                    -OperationTimeoutSec 5 `
+                    -ErrorAction Stop
             }
-            else {
-                & $ProcessQuery $ProcessId
+            catch {
+                return [pscustomobject][ordered]@{
+                    Status = 'QueryFailed'
+                    Live = $null
+                    ProcessId = $ProcessId
+                    ExpectedStartUtc = $expected.ToString('O')
+                    ActualStartUtc = $null
+                    Error = $_.Exception.ToString()
+                }
             }
-        }
-        catch [ArgumentException] {
-            return [pscustomobject][ordered]@{
-                Status = 'ConfirmedAbsent'
-                Live = $false
-                ProcessId = $ProcessId
-                ExpectedStartUtc = $expected.ToString('O')
-                ActualStartUtc = $null
-                Error = $null
-            }
-        }
-        catch {
-            return [pscustomobject][ordered]@{
-                Status = 'QueryFailed'
-                Live = $null
-                ProcessId = $ProcessId
-                ExpectedStartUtc = $expected.ToString('O')
-                ActualStartUtc = $null
-                Error = $_.Exception.ToString()
-            }
-        }
-        if ($null -eq $process) {
-            return [pscustomobject][ordered]@{
-                Status = 'QueryFailed'
-                Live = $null
-                ProcessId = $ProcessId
-                ExpectedStartUtc = $expected.ToString('O')
-                ActualStartUtc = $null
-                Error = 'The process query returned null.'
-            }
-        }
-
-        try {
-            if ($process.HasExited) {
+            if ($null -eq $cimProcess) {
                 return [pscustomobject][ordered]@{
                     Status = 'ConfirmedAbsent'
                     Live = $false
@@ -258,16 +236,74 @@ function Get-VerifiedProcessIdentityStatus {
                     Error = $null
                 }
             }
-            $actual = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+            if ($null -eq $cimProcess.CreationDate) {
+                return [pscustomobject][ordered]@{
+                    Status = 'QueryFailed'
+                    Live = $null
+                    ProcessId = $ProcessId
+                    ExpectedStartUtc = $expected.ToString('O')
+                    ActualStartUtc = $null
+                    Error = 'Win32_Process did not provide CreationDate.'
+                }
+            }
+            $actual = ConvertTo-UtcDateTimeOffset -Value $cimProcess.CreationDate
         }
-        catch {
-            return [pscustomobject][ordered]@{
-                Status = 'QueryFailed'
-                Live = $null
-                ProcessId = $ProcessId
-                ExpectedStartUtc = $expected.ToString('O')
-                ActualStartUtc = $null
-                Error = $_.Exception.ToString()
+        else {
+            try {
+                $process = & $ProcessQuery $ProcessId
+            }
+            catch [ArgumentException] {
+                return [pscustomobject][ordered]@{
+                    Status = 'ConfirmedAbsent'
+                    Live = $false
+                    ProcessId = $ProcessId
+                    ExpectedStartUtc = $expected.ToString('O')
+                    ActualStartUtc = $null
+                    Error = $null
+                }
+            }
+            catch {
+                return [pscustomobject][ordered]@{
+                    Status = 'QueryFailed'
+                    Live = $null
+                    ProcessId = $ProcessId
+                    ExpectedStartUtc = $expected.ToString('O')
+                    ActualStartUtc = $null
+                    Error = $_.Exception.ToString()
+                }
+            }
+            if ($null -eq $process) {
+                return [pscustomobject][ordered]@{
+                    Status = 'QueryFailed'
+                    Live = $null
+                    ProcessId = $ProcessId
+                    ExpectedStartUtc = $expected.ToString('O')
+                    ActualStartUtc = $null
+                    Error = 'The process query returned null.'
+                }
+            }
+            try {
+                if ($process.HasExited) {
+                    return [pscustomobject][ordered]@{
+                        Status = 'ConfirmedAbsent'
+                        Live = $false
+                        ProcessId = $ProcessId
+                        ExpectedStartUtc = $expected.ToString('O')
+                        ActualStartUtc = $null
+                        Error = $null
+                    }
+                }
+                $actual = ConvertTo-UtcDateTimeOffset -Value $process.StartTime
+            }
+            catch {
+                return [pscustomobject][ordered]@{
+                    Status = 'QueryFailed'
+                    Live = $null
+                    ProcessId = $ProcessId
+                    ExpectedStartUtc = $expected.ToString('O')
+                    ActualStartUtc = $null
+                    Error = $_.Exception.ToString()
+                }
             }
         }
 

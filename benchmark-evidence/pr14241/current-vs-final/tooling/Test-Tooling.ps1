@@ -1798,6 +1798,14 @@ while (-not [IO.File]::Exists('$($lateScenarioGatePath.Replace("'", "''"))')) {
         -ProcessId 2147483646 `
         -ProcessStartUtc ([DateTimeOffset]::UtcNow)
     Assert-Equal -Actual $absentStatus.Status -Expected 'ConfirmedAbsent' -Message 'Missing PID is distinguished as confirmed absent'
+    $shortExitedProcess = Start-TestPowerShellProcess -Script 'exit 0'
+    $shortExitedStart = ConvertTo-UtcDateTimeOffset -Value $shortExitedProcess.StartTime
+    [void]$shortExitedProcess.WaitForExit(5000)
+    $shortExitedStatus = Get-VerifiedProcessIdentityStatus `
+        -ProcessId $shortExitedProcess.Id `
+        -ProcessStartUtc $shortExitedStart
+    Assert-Equal -Actual $shortExitedStatus.Status -Expected 'ConfirmedAbsent' -Message 'Naturally exited process is confirmed absent without reading a stale managed StartTime'
+    $shortExitedProcess.Dispose()
     $queryFailureStatus = Get-VerifiedProcessIdentityStatus `
         -ProcessId 42 `
         -ProcessStartUtc ([DateTimeOffset]::UtcNow) `
