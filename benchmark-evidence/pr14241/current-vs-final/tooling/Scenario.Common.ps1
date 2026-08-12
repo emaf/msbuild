@@ -1634,6 +1634,8 @@ function Close-ScenarioRunTrackingJob {
     $Run.CurrentJobProcessIds = [int[]]@()
     $Run.CurrentNonCoordinatorJobProcessIds = [int[]]@()
     $Run.CurrentCoordinatorJobProcessIds = [int[]]@()
+    $Run.CurrentCoordinatorRootJobProcessIds = [int[]]@()
+    $Run.CurrentCoordinatorInfrastructureJobProcessIds = [int[]]@()
 }
 
 function Get-ScenarioProcessRow {
@@ -1679,6 +1681,201 @@ function Get-ScenarioProcessRow {
     throw "PID $ProcessId remained in tracking job '$($Run.TrackingJobName)' but Win32_Process returned no metadata."
 }
 
+function Test-ScenarioCoordinatorProcessRow {
+    param(
+        [Parameter(Mandatory)]
+        [object]$ProcessRow,
+
+        [Parameter(Mandatory)]
+        [string]$Context
+    )
+
+    $nameProperty = $ProcessRow.PSObject.Properties['Name']
+    if ($null -eq $nameProperty -or
+        [string]::IsNullOrWhiteSpace([string]$nameProperty.Value)) {
+        throw "$Context has no process name for Coordinator classification."
+    }
+    $name = [string]$nameProperty.Value
+    $commandLineProperty = $ProcessRow.PSObject.Properties['CommandLine']
+    $commandLine = if ($null -eq $commandLineProperty) {
+        $null
+    }
+    else {
+        [string]$commandLineProperty.Value
+    }
+    if ([string]::Equals(
+        $name,
+        'dotnet.exe',
+        [StringComparison]::OrdinalIgnoreCase) -and
+        [string]::IsNullOrWhiteSpace($commandLine)) {
+        throw "$Context is dotnet.exe but has no command line for Coordinator classification."
+    }
+    return [bool](Test-MSBuildCoordinatorProcess `
+        -Name $name `
+        -CommandLine $commandLine)
+}
+
+function Resolve-ScenarioJobMemberClassifications {
+    param(
+        [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
+        [int[]]$ProcessIds,
+
+        [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
+        [object[]]$ProcessRows,
+
+        [string]$Context = 'scenario tracking job'
+    )
+
+    $jobProcessIds = [Collections.Generic.HashSet[int]]::new()
+    foreach ($processId in @($ProcessIds)) {
+        if ($processId -le 0) {
+            throw "$Context contains invalid PID '$processId'."
+        }
+        if (-not $jobProcessIds.Add([int]$processId)) {
+            throw "$Context contains duplicate PID '$processId'."
+        }
+    }
+
+    $metadataByProcessId = @{}
+    $coordinatorRootIds = [Collections.Generic.HashSet[int]]::new()
+    foreach ($row in @($ProcessRows)) {
+        if ($null -eq $row) {
+            throw "$Context contains null process metadata."
+        }
+        $processIdProperty = $row.PSObject.Properties['ProcessId']
+        if ($null -eq $processIdProperty -or
+            $null -eq $processIdProperty.Value) {
+            throw "$Context contains process metadata without ProcessId."
+        }
+        try {
+            $processId = [int]$processIdProperty.Value
+        }
+        catch {
+            throw "$Context contains an invalid process metadata PID '$($processIdProperty.Value)'."
+        }
+        if (-not $jobProcessIds.Contains($processId)) {
+            throw "$Context returned metadata for non-member PID $processId."
+        }
+        if ($metadataByProcessId.ContainsKey($processId)) {
+            throw "$Context returned duplicate metadata for PID $processId."
+        }
+
+        $parentProperty = $row.PSObject.Properties['ParentProcessId']
+        if ($null -eq $parentProperty -or $null -eq $parentProperty.Value) {
+            throw "$Context PID $processId has no ParentProcessId for ancestry classification."
+        }
+        try {
+            $parentProcessId = [int]$parentProperty.Value
+        }
+        catch {
+            throw "$Context PID $processId has invalid ParentProcessId '$($parentProperty.Value)'."
+        }
+        if ($parentProcessId -lt 0) {
+            throw "$Context PID $processId has invalid ParentProcessId '$parentProcessId'."
+        }
+
+        $coordinatorRoot = Test-ScenarioCoordinatorProcessRow `
+            -ProcessRow $row `
+            -Context "$Context PID $processId"
+        $metadataByProcessId[$processId] = [pscustomobject]@{
+            ProcessId = $processId
+            ParentProcessId = $parentProcessId
+            ProcessRow = $row
+            CoordinatorRoot = [bool]$coordinatorRoot
+        }
+        if ($coordinatorRoot) {
+            [void]$coordinatorRootIds.Add($processId)
+        }
+    }
+    foreach ($processId in $jobProcessIds) {
+        if (-not $metadataByProcessId.ContainsKey($processId)) {
+            throw "$Context has no process metadata for member PID $processId."
+        }
+    }
+
+    foreach ($processId in @($ProcessIds)) {
+        $metadata = $metadataByProcessId[[int]$processId]
+        $classification = if ($metadata.CoordinatorRoot) {
+            'CoordinatorRoot'
+        }
+        else {
+            $visited = [Collections.Generic.HashSet[int]]::new()
+            $cursor = [int]$processId
+            $resolved = $null
+            while ($null -eq $resolved) {
+                if (-not $visited.Add($cursor)) {
+                    throw "$Context contains a parent cycle reaching PID $cursor from PID $processId."
+                }
+                if (-not $metadataByProcessId.ContainsKey($cursor)) {
+                    throw "$Context lacks ancestry metadata for member PID $cursor."
+                }
+                $parentProcessId =
+                    [int]$metadataByProcessId[$cursor].ParentProcessId
+                if ($coordinatorRootIds.Contains($parentProcessId)) {
+                    $resolved = 'CoordinatorInfrastructure'
+                    continue
+                }
+                if (-not $jobProcessIds.Contains($parentProcessId)) {
+                    $resolved = 'Client'
+                    continue
+                }
+                $cursor = $parentProcessId
+            }
+            $resolved
+        }
+
+        [pscustomobject][ordered]@{
+            ProcessId = [int]$processId
+            ParentProcessId = [int]$metadata.ParentProcessId
+            Classification = $classification
+            ProcessRow = $metadata.ProcessRow
+        }
+    }
+}
+
+function Get-ScenarioProcessStartUtc {
+    param(
+        [Parameter(Mandatory)]
+        [pscustomobject]$Run,
+
+        [Parameter(Mandatory)]
+        [int]$ProcessId,
+
+        [Parameter(Mandatory)]
+        [object]$ProcessRow
+    )
+
+    if ($ProcessId -eq $Run.RootProcessId) {
+        return ConvertTo-UtcDateTimeOffset -Value $Run.ProcessStartUtc
+    }
+
+    $creationDateProperty = $ProcessRow.PSObject.Properties['CreationDate']
+    if ($null -ne $creationDateProperty -and
+        $null -ne $creationDateProperty.Value) {
+        return ConvertTo-UtcDateTimeOffset -Value $creationDateProperty.Value
+    }
+
+    $queriedProcess = $null
+    try {
+        $queriedProcess = [Diagnostics.Process]::GetProcessById($ProcessId)
+        return ConvertTo-UtcDateTimeOffset -Value $queriedProcess.StartTime
+    }
+    catch {
+        $currentIds = @(Get-ScenarioRunJobProcessIds -Run $Run)
+        if ($currentIds -notcontains $ProcessId) {
+            return $null
+        }
+        throw "PID $ProcessId remained in tracking job '$($Run.TrackingJobName)' but its exact start identity could not be captured: $($_.Exception.Message)"
+    }
+    finally {
+        if ($null -ne $queriedProcess) {
+            $queriedProcess.Dispose()
+        }
+    }
+}
+
 function Register-ScenarioJobMember {
     param(
         [Parameter(Mandatory)]
@@ -1688,79 +1885,44 @@ function Register-ScenarioJobMember {
         [int]$ProcessId,
 
         [Parameter(Mandatory)]
-        [hashtable]$ByProcessId
+        [object]$ProcessRow,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('Client', 'CoordinatorRoot', 'CoordinatorInfrastructure')]
+        [string]$Classification
     )
 
-    if ($ProcessId -eq $Run.RootProcessId) {
-        $rootIdentity =
-            "$ProcessId|$((ConvertTo-UtcDateTimeOffset -Value $Run.ProcessStartUtc).ToString('O'))"
-        [void]$Run.JobMemberIdentities.Add($rootIdentity)
-        return [pscustomobject]@{
-            ProcessId = $ProcessId
-            Identity = $rootIdentity
-            Coordinator = $false
-        }
-    }
-
-    $row = Get-ScenarioProcessRow `
+    $start = Get-ScenarioProcessStartUtc `
+        -Run $Run `
         -ProcessId $ProcessId `
-        -ByProcessId $ByProcessId `
-        -Run $Run
-    if ($null -eq $row) {
+        -ProcessRow $ProcessRow
+    if ($null -eq $start) {
         return $null
-    }
-
-    $creationDateProperty = $row.PSObject.Properties['CreationDate']
-    $start = if ($null -ne $creationDateProperty -and
-        $null -ne $creationDateProperty.Value) {
-        ConvertTo-UtcDateTimeOffset -Value $creationDateProperty.Value
-    }
-    else {
-        $queriedProcess = $null
-        try {
-            $queriedProcess = [Diagnostics.Process]::GetProcessById($ProcessId)
-            ConvertTo-UtcDateTimeOffset -Value $queriedProcess.StartTime
-        }
-        catch [ArgumentException] {
-            $currentIds = @(Get-ScenarioRunJobProcessIds -Run $Run)
-            if ($currentIds -notcontains $ProcessId) {
-                return $null
-            }
-            throw "PID $ProcessId remained in tracking job '$($Run.TrackingJobName)' but exited during start-identity capture."
-        }
-        finally {
-            if ($null -ne $queriedProcess) {
-                $queriedProcess.Dispose()
-            }
-        }
     }
     $identity = "$ProcessId|$($start.ToString('O'))"
     [void]$Run.JobMemberIdentities.Add($identity)
 
-    $nameProperty = $row.PSObject.Properties['Name']
-    $commandLineProperty = $row.PSObject.Properties['CommandLine']
-    $name = if ($null -eq $nameProperty) { '' } else { [string]$nameProperty.Value }
-    $commandLine =
-        if ($null -eq $commandLineProperty) { $null } else { [string]$commandLineProperty.Value }
-    if ([string]::Equals(
-        $name,
-        'dotnet.exe',
-        [StringComparison]::OrdinalIgnoreCase) -and
-        [string]::IsNullOrWhiteSpace($commandLine)) {
-        throw "PID $ProcessId in tracking job '$($Run.TrackingJobName)' is dotnet.exe but has no command line for Coordinator classification."
-    }
-    $coordinator = Test-MSBuildCoordinatorProcess `
-        -Name $name `
-        -CommandLine $commandLine
+    $coordinator = $Classification -ne 'Client'
     if ($coordinator) {
         [void]$Run.CoordinatorIdentities.Add($identity)
+        foreach ($descendantIdentity in @($Run.DescendantIdentities)) {
+            if ([string]$descendantIdentity -like "$ProcessId|*") {
+                [void]$Run.DescendantIdentities.Remove(
+                    [string]$descendantIdentity)
+            }
+        }
         [void](Register-ProcessIdentity `
             -ProcessId $ProcessId `
             -ProcessStartUtc $start `
-            -Kind 'scenario-coordinator' `
+            -Kind $(if ($Classification -eq 'CoordinatorRoot') {
+                'scenario-coordinator'
+            }
+            else {
+                'scenario-coordinator-infrastructure'
+            }) `
             -Source $Run.RunId)
     }
-    else {
+    elseif ($ProcessId -ne $Run.RootProcessId) {
         [void]$Run.DescendantIdentities.Add($identity)
         [void](Register-ProcessIdentity `
             -ProcessId $ProcessId `
@@ -1773,6 +1935,7 @@ function Register-ScenarioJobMember {
         ProcessId = $ProcessId
         Identity = $identity
         Coordinator = $coordinator
+        Classification = $Classification
     }
 }
 
@@ -1800,35 +1963,96 @@ function Update-ScenarioJobMembership {
     try {
         foreach ($censusAttempt in 1..16) {
             $processIds = @(Get-ScenarioRunJobProcessIds -Run $Run)
-            $nonCoordinatorIds = [Collections.Generic.List[int]]::new()
-            $coordinatorIds = [Collections.Generic.List[int]]::new()
+            $processRows = [Collections.Generic.List[object]]::new()
+            $metadataChanged = $false
             foreach ($processId in $processIds) {
+                $row = Get-ScenarioProcessRow `
+                    -ProcessId ([int]$processId) `
+                    -ByProcessId $ByProcessId `
+                    -Run $Run
+                if ($null -eq $row) {
+                    $metadataChanged = $true
+                    break
+                }
+                $processRows.Add($row)
+            }
+            if ($metadataChanged) {
+                Start-Sleep -Milliseconds 10
+                continue
+            }
+
+            $metadataConfirmedProcessIds =
+                @(Get-ScenarioRunJobProcessIds -Run $Run)
+            if (($processIds -join ',') -ne
+                ($metadataConfirmedProcessIds -join ',')) {
+                Start-Sleep -Milliseconds 10
+                continue
+            }
+            $classifications = @(
+                Resolve-ScenarioJobMemberClassifications `
+                    -ProcessIds ([int[]]@($processIds)) `
+                    -ProcessRows $processRows.ToArray() `
+                    -Context "tracking job '$($Run.TrackingJobName)'"
+            )
+            $confirmedProcessIds = @(Get-ScenarioRunJobProcessIds -Run $Run)
+            if (($processIds -join ',') -ne
+                ($confirmedProcessIds -join ',')) {
+                Start-Sleep -Milliseconds 10
+                continue
+            }
+
+            $members = [Collections.Generic.List[object]]::new()
+            $registrationChanged = $false
+            foreach ($classification in $classifications) {
                 $member = Register-ScenarioJobMember `
                     -Run $Run `
-                    -ProcessId ([int]$processId) `
-                    -ByProcessId $ByProcessId
+                    -ProcessId ([int]$classification.ProcessId) `
+                    -ProcessRow $classification.ProcessRow `
+                    -Classification ([string]$classification.Classification)
                 if ($null -eq $member) {
-                    continue
+                    $registrationChanged = $true
+                    break
                 }
-                if ($member.Coordinator) {
-                    $coordinatorIds.Add([int]$processId)
-                }
-                else {
-                    $nonCoordinatorIds.Add([int]$processId)
-                }
+                $members.Add($member)
             }
-            $confirmedProcessIds =
-                @(Get-ScenarioRunJobProcessIds -Run $Run)
-            if (($processIds -join ',') -eq
-                ($confirmedProcessIds -join ',')) {
+            if ($registrationChanged) {
+                Start-Sleep -Milliseconds 10
+                continue
+            }
+
+            $finalProcessIds = @(Get-ScenarioRunJobProcessIds -Run $Run)
+            if (($processIds -join ',') -eq ($finalProcessIds -join ',')) {
+                $nonCoordinatorIds = @(
+                    $members |
+                        Where-Object Classification -eq 'Client' |
+                        Select-Object -ExpandProperty ProcessId
+                )
+                $coordinatorRootIds = @(
+                    $members |
+                        Where-Object Classification -eq 'CoordinatorRoot' |
+                        Select-Object -ExpandProperty ProcessId
+                )
+                $coordinatorInfrastructureIds = @(
+                    $members |
+                        Where-Object Classification -eq 'CoordinatorInfrastructure' |
+                        Select-Object -ExpandProperty ProcessId
+                )
                 $Run.CurrentJobProcessIds =
-                    [int[]]@($confirmedProcessIds)
+                    [int[]]@($finalProcessIds)
                 $Run.CurrentNonCoordinatorJobProcessIds =
                     [int[]]@($nonCoordinatorIds)
                 $Run.CurrentCoordinatorJobProcessIds =
-                    [int[]]@($coordinatorIds)
+                    [int[]]@(
+                        @($coordinatorRootIds) +
+                            @($coordinatorInfrastructureIds)
+                    )
+                $Run.CurrentCoordinatorRootJobProcessIds =
+                    [int[]]@($coordinatorRootIds)
+                $Run.CurrentCoordinatorInfrastructureJobProcessIds =
+                    [int[]]@($coordinatorInfrastructureIds)
                 return
             }
+            Start-Sleep -Milliseconds 10
         }
         throw "Tracking job membership for '$($Run.RunId)' did not stabilize during census."
     }
@@ -2042,6 +2266,8 @@ function Start-ScenarioBuild {
             CurrentJobProcessIds = [int[]]@($process.Id)
             CurrentNonCoordinatorJobProcessIds = [int[]]@($process.Id)
             CurrentCoordinatorJobProcessIds = [int[]]@()
+            CurrentCoordinatorRootJobProcessIds = [int[]]@()
+            CurrentCoordinatorInfrastructureJobProcessIds = [int[]]@()
             TrackingJobRequired = $true
             TrackingJob = $trackingJob
             TrackingJobName = $trackingJob.Name
@@ -2175,6 +2401,44 @@ function Update-ScenarioProcessTrees {
         Update-ScenarioJobMembership `
             -Run $run `
             -ByProcessId $byPid
+        if ($null -eq $run.PSObject.Properties['CoordinatorIdentities']) {
+            $run | Add-Member `
+                -NotePropertyName CoordinatorIdentities `
+                -NotePropertyValue (
+                    [Collections.Generic.HashSet[string]]::new(
+                        [StringComparer]::Ordinal))
+        }
+        $currentCoordinatorJobIds =
+            [Collections.Generic.HashSet[int]]::new()
+        $currentCoordinatorRootJobIds =
+            [Collections.Generic.HashSet[int]]::new()
+        $currentCoordinatorInfrastructureJobIds =
+            [Collections.Generic.HashSet[int]]::new()
+        foreach ($propertyAndSet in @(
+            [pscustomobject]@{
+                Name = 'CurrentCoordinatorJobProcessIds'
+                Set = $currentCoordinatorJobIds
+            },
+            [pscustomobject]@{
+                Name = 'CurrentCoordinatorRootJobProcessIds'
+                Set = $currentCoordinatorRootJobIds
+            },
+            [pscustomobject]@{
+                Name = 'CurrentCoordinatorInfrastructureJobProcessIds'
+                Set = $currentCoordinatorInfrastructureJobIds
+            }
+        )) {
+            $property = $run.PSObject.Properties[$propertyAndSet.Name]
+            if ($null -ne $property) {
+                foreach ($processId in @($property.Value)) {
+                    [void]$propertyAndSet.Set.Add([int]$processId)
+                }
+            }
+        }
+        $coordinatorTreeIds = [Collections.Generic.HashSet[int]]::new()
+        foreach ($processId in $currentCoordinatorJobIds) {
+            [void]$coordinatorTreeIds.Add($processId)
+        }
         $queue = [Collections.Generic.Queue[int]]::new()
         $seen = [Collections.Generic.HashSet[int]]::new()
         $queue.Enqueue($run.RootProcessId)
@@ -2190,27 +2454,64 @@ function Update-ScenarioProcessTrees {
                 }
                 $queue.Enqueue($child)
                 $process = $byPid[$child]
+                $knownCoordinatorJobMember =
+                    $currentCoordinatorJobIds.Contains($child)
+                $coordinatorRoot =
+                    $currentCoordinatorRootJobIds.Contains($child)
+                if (-not $coordinatorRoot) {
+                    $coordinatorRoot = Test-ScenarioCoordinatorProcessRow `
+                        -ProcessRow $process `
+                        -Context "scenario ancestry PID $child"
+                }
+                $coordinatorInfrastructure =
+                    -not $coordinatorRoot -and (
+                        $currentCoordinatorInfrastructureJobIds.Contains(
+                            $child) -or
+                        $coordinatorTreeIds.Contains($parent) -or
+                        ($knownCoordinatorJobMember -and
+                            -not $currentCoordinatorRootJobIds.Contains(
+                                $child))
+                    )
+                if ($coordinatorRoot -or $coordinatorInfrastructure) {
+                    [void]$coordinatorTreeIds.Add($child)
+                    foreach ($descendantIdentity in @(
+                        $run.DescendantIdentities
+                    )) {
+                        if ([string]$descendantIdentity -like "$child|*") {
+                            [void]$run.DescendantIdentities.Remove(
+                                [string]$descendantIdentity)
+                        }
+                    }
+                    if ($knownCoordinatorJobMember) {
+                        continue
+                    }
+                    $start = Get-ScenarioProcessStartUtc `
+                        -Run $run `
+                        -ProcessId $child `
+                        -ProcessRow $process
+                    if ($null -eq $start) {
+                        continue
+                    }
+                    $identity = "$child|$($start.ToString('O'))"
+                    [void]$run.CoordinatorIdentities.Add($identity)
+                    [void](Register-ProcessIdentity `
+                        -ProcessId $child `
+                        -ProcessStartUtc $start `
+                        -Kind $(if ($coordinatorRoot) {
+                            'scenario-coordinator'
+                        }
+                        else {
+                            'scenario-coordinator-infrastructure'
+                        }) `
+                        -Source $run.RunId)
+                    continue
+                }
+
                 $created = if ($null -eq $process.CreationDate) {
                     ''
                 }
                 else {
                     (ConvertTo-UtcDateTimeOffset -Value $process.CreationDate).ToString('O')
-                }
-                if (Test-MSBuildCoordinatorProcess `
-                    -Name ([string]$process.Name) `
-                    -CommandLine ([string]$process.CommandLine)) {
-                    [void](Register-ProcessIdentity `
-                        -ProcessId $child `
-                        -ProcessStartUtc $created `
-                        -Kind 'scenario-coordinator' `
-                        -Source $run.RunId `
-                        -IdentityCaptureError $(if ([string]::IsNullOrWhiteSpace($created)) {
-                            'Win32_Process did not provide the Coordinator CreationDate.'
-                        }
-                        else {
-                            $null
-                        }))
-                    continue
                 }
                 [void]$run.DescendantIdentities.Add("$child|$created")
                 [void](Register-ProcessIdentity `
@@ -2240,7 +2541,18 @@ function Test-RunDescendantsExited {
         @($currentMemberProperty.Value).Count -gt 0) {
         return $false
     }
+    $coordinatorIdentityProperty =
+        $Run.PSObject.Properties['CoordinatorIdentities']
+    $coordinatorIdentities = if ($null -eq $coordinatorIdentityProperty) {
+        @()
+    }
+    else {
+        @($coordinatorIdentityProperty.Value)
+    }
     foreach ($identity in $Run.DescendantIdentities) {
+        if ($coordinatorIdentities -contains $identity) {
+            continue
+        }
         $parts = $identity -split '\|', 2
         if ($parts.Count -ne 2 -or [string]::IsNullOrWhiteSpace($parts[1])) {
             return $false

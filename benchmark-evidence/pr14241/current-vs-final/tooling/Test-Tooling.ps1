@@ -896,6 +896,173 @@ finally {
         ).Count `
         -Expected 2 `
         -Message 'Both Coordinator host forms receive separate exact global registry identities'
+
+    $jobMembershipFixture = Get-Content -LiteralPath (
+        Join-Path $PSScriptRoot 'fixtures\coordinator-job-membership.json'
+    ) -Raw | ConvertFrom-Json
+    $jobMembershipClassifications = @(
+        Resolve-ScenarioJobMemberClassifications `
+            -ProcessIds ([int[]]@($jobMembershipFixture.jobProcessIds)) `
+            -ProcessRows @($jobMembershipFixture.processes) `
+            -Context 'synthetic Coordinator job fixture'
+    )
+    foreach ($classificationExpectation in @(
+        [pscustomobject]@{
+            Classification = 'CoordinatorRoot'
+            Expected = @($jobMembershipFixture.expected.coordinatorRoots)
+            Message = 'DLL-hosted Coordinator is the only strict Coordinator root'
+        },
+        [pscustomobject]@{
+            Classification = 'CoordinatorInfrastructure'
+            Expected = @(
+                $jobMembershipFixture.expected.coordinatorInfrastructure
+            )
+            Message = 'Coordinator worker and grandchild are transitive infrastructure'
+        },
+        [pscustomobject]@{
+            Classification = 'Client'
+            Expected = @($jobMembershipFixture.expected.nonCoordinator)
+            Message = 'Client root and Coordinator-like client sibling remain non-Coordinator'
+        }
+    )) {
+        $actualProcessIds = @(
+            $jobMembershipClassifications |
+                Where-Object Classification -eq (
+                    $classificationExpectation.Classification
+                ) |
+                Select-Object -ExpandProperty ProcessId
+        )
+        Assert-Equal `
+            -Actual ($actualProcessIds -join ',') `
+            -Expected (@($classificationExpectation.Expected) -join ',') `
+            -Message $classificationExpectation.Message
+    }
+
+    $missingParentRows = @(
+        foreach ($processRow in @($jobMembershipFixture.processes)) {
+            if ([int]$processRow.ProcessId -eq 1900000102) {
+                [pscustomobject]@{
+                    ProcessId = $processRow.ProcessId
+                    Name = $processRow.Name
+                    CreationDate = $processRow.CreationDate
+                    CommandLine = $processRow.CommandLine
+                }
+            }
+            else {
+                $processRow
+            }
+        }
+    )
+    $missingParentFailure = $null
+    try {
+        [void]@(Resolve-ScenarioJobMemberClassifications `
+            -ProcessIds ([int[]]@($jobMembershipFixture.jobProcessIds)) `
+            -ProcessRows $missingParentRows `
+            -Context 'missing-parent fixture')
+    }
+    catch {
+        $missingParentFailure = $_.Exception.Message
+    }
+    Assert-True `
+        -Condition (
+            -not [string]::IsNullOrWhiteSpace($missingParentFailure) -and
+            $missingParentFailure.Contains(
+                'has no ParentProcessId',
+                [StringComparison]::Ordinal)) `
+        -Message 'Job classification fails closed when parent metadata is absent'
+
+    $missingProcessFailure = $null
+    try {
+        [void]@(Resolve-ScenarioJobMemberClassifications `
+            -ProcessIds ([int[]]@($jobMembershipFixture.jobProcessIds)) `
+            -ProcessRows @(
+                $jobMembershipFixture.processes |
+                    Where-Object ProcessId -ne 1900000103
+            ) `
+            -Context 'missing-process fixture')
+    }
+    catch {
+        $missingProcessFailure = $_.Exception.Message
+    }
+    Assert-True `
+        -Condition (
+            -not [string]::IsNullOrWhiteSpace($missingProcessFailure) -and
+            $missingProcessFailure.Contains(
+                'has no process metadata for member PID 1900000103',
+                [StringComparison]::Ordinal)) `
+        -Message 'Job classification fails closed when member metadata is absent'
+
+    $jobFixtureRun = [pscustomobject]@{
+        RunId = 'coordinator-job-membership'
+        RootProcessId = [int]$jobMembershipFixture.rootProcessId
+        ProcessStartUtc = ConvertTo-UtcDateTimeOffset `
+            -Value $jobMembershipFixture.processes[0].CreationDate
+        TrackingJobName = 'synthetic-coordinator-job'
+        JobCensusFailed = $false
+        DescendantIdentities =
+            [Collections.Generic.HashSet[string]]::new(
+                [StringComparer]::Ordinal)
+        CoordinatorIdentities =
+            [Collections.Generic.HashSet[string]]::new(
+                [StringComparer]::Ordinal)
+        JobMemberIdentities =
+            [Collections.Generic.HashSet[string]]::new(
+                [StringComparer]::Ordinal)
+        CurrentNonCoordinatorJobProcessIds = [int[]]@()
+        CurrentCoordinatorJobProcessIds = [int[]]@(
+            $jobMembershipFixture.expected.coordinatorRoots
+            $jobMembershipFixture.expected.coordinatorInfrastructure
+        )
+    }
+    $registryCountBeforeJobFixture = @(Get-ToolingProcessRegistry).Count
+    foreach ($classification in $jobMembershipClassifications) {
+        [void](Register-ScenarioJobMember `
+            -Run $jobFixtureRun `
+            -ProcessId ([int]$classification.ProcessId) `
+            -ProcessRow $classification.ProcessRow `
+            -Classification $classification.Classification)
+    }
+    Assert-Equal `
+        -Actual $jobFixtureRun.JobMemberIdentities.Count `
+        -Expected 5 `
+        -Message 'Every stable job member retains an exact identity'
+    Assert-Equal `
+        -Actual $jobFixtureRun.CoordinatorIdentities.Count `
+        -Expected 3 `
+        -Message 'Coordinator roots and infrastructure share the global Coordinator identity set'
+    Assert-Equal `
+        -Actual $jobFixtureRun.DescendantIdentities.Count `
+        -Expected 1 `
+        -Message 'Only the unrelated client sibling remains a per-run descendant'
+    $jobFixtureRegistryEntries = @(
+        Get-ToolingProcessRegistry |
+            Select-Object -Skip $registryCountBeforeJobFixture
+    )
+    Assert-Equal `
+        -Actual @(
+            $jobFixtureRegistryEntries |
+                Where-Object Kind -eq 'scenario-coordinator'
+        ).Count `
+        -Expected 1 `
+        -Message 'Coordinator root receives its distinct global registry kind'
+    Assert-Equal `
+        -Actual @(
+            $jobFixtureRegistryEntries |
+                Where-Object Kind -eq 'scenario-coordinator-infrastructure'
+        ).Count `
+        -Expected 2 `
+        -Message 'Coordinator worker subtree receives its distinct global registry kind'
+    Assert-True `
+        -Condition (@(
+            $jobFixtureRegistryEntries |
+                Where-Object Kind -like 'scenario-coordinator*' |
+                Where-Object { -not $_.VerifiedStartIdentity }
+        ).Count -eq 0) `
+        -Message 'Coordinator roots and infrastructure are globally registered by exact PID/start identity'
+    Assert-True `
+        -Condition (Test-RunDescendantsExited -Run $jobFixtureRun) `
+        -Message 'Live-set Coordinator infrastructure does not block client quiescence'
+
     $exactBuildArguments = @(Get-ExactBootstrapBuildArguments)
     Assert-Equal -Actual ($exactBuildArguments -join '|') -Expected '-configuration|Release|-msbuildEngine|dotnet|-verbosity|quiet|/p:CreateTlb=false|/p:RuntimeOutputTargetFrameworks=net11.0' -Message 'Exact builds use the validated repository-supported dotnet command'
 
@@ -1699,6 +1866,8 @@ while (-not [IO.File]::Exists('$($lateScenarioGatePath.Replace("'", "''"))')) {
             CurrentNonCoordinatorJobProcessIds =
                 [int[]]@($lateScenarioProcess.Id)
             CurrentCoordinatorJobProcessIds = [int[]]@()
+            CurrentCoordinatorRootJobProcessIds = [int[]]@()
+            CurrentCoordinatorInfrastructureJobProcessIds = [int[]]@()
             TrackingJobRequired = $true
             TrackingJob = $lateScenarioJob
             TrackingJobName = $lateScenarioJob.Name

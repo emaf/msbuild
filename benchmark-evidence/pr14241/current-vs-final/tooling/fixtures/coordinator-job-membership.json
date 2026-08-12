@@ -1,0 +1,60 @@
+{
+  "rootProcessId": 1900000100,
+  "jobProcessIds": [
+    1900000100,
+    1900000101,
+    1900000102,
+    1900000103,
+    1900000104
+  ],
+  "processes": [
+    {
+      "ProcessId": 1900000100,
+      "ParentProcessId": 0,
+      "Name": "dotnet.exe",
+      "CreationDate": "2026-08-12T12:00:00.0000000+00:00",
+      "CommandLine": "\"C:\\bootstrap\\dotnet.exe\" \"C:\\sdk\\MSBuild.dll\" client.proj"
+    },
+    {
+      "ProcessId": 1900000101,
+      "ParentProcessId": 1900000100,
+      "Name": "dotnet.exe",
+      "CreationDate": "2026-08-12T12:00:00.0100000+00:00",
+      "CommandLine": "\"C:\\bootstrap\\dotnet.exe\" \"C:\\sdk\\MSBuild.Coordinator.dll\" pipe"
+    },
+    {
+      "ProcessId": 1900000102,
+      "ParentProcessId": 1900000101,
+      "Name": "dotnet.exe",
+      "CreationDate": "2026-08-12T12:00:00.0200000+00:00",
+      "CommandLine": "\"C:\\bootstrap\\dotnet.exe\" \"C:\\sdk\\MSBuild.dll\" /nodemode:1"
+    },
+    {
+      "ProcessId": 1900000103,
+      "ParentProcessId": 1900000102,
+      "Name": "VBCSCompiler.exe",
+      "CreationDate": "2026-08-12T12:00:00.0300000+00:00",
+      "CommandLine": "\"C:\\sdk\\VBCSCompiler.exe\" -pipename:fixture"
+    },
+    {
+      "ProcessId": 1900000104,
+      "ParentProcessId": 1900000100,
+      "Name": "dotnet.exe",
+      "CreationDate": "2026-08-12T12:00:00.0400000+00:00",
+      "CommandLine": "\"C:\\bootstrap\\dotnet.exe\" \"C:\\sdk\\MSBuild.dll\" /p:Label=MSBuild.Coordinator.dll"
+    }
+  ],
+  "expected": {
+    "coordinatorRoots": [
+      1900000101
+    ],
+    "coordinatorInfrastructure": [
+      1900000102,
+      1900000103
+    ],
+    "nonCoordinator": [
+      1900000100,
+      1900000104
+    ]
+  }
+}
