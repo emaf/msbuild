@@ -1,0 +1,8 @@
+{
+  "InitialWorkers": 18,
+  "MeasuredCompletions": 12,
+  "InjectionAfterCompletion": 6,
+  "CompletionWorkerOrder": [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+  ]
+}

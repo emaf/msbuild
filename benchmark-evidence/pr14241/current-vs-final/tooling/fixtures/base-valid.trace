@@ -1,0 +1,14 @@
+TID 1                    2026-08-12T01:00:00.0000000Z +    0.00ms: CoordinatorServer: Accept loop started on pipe 'fixture' (budget=16)
+TID 2                    2026-08-12T01:00:01.0000000Z + 1000.00ms: CoordinatorServer: Client connected (PID 201, ConnectionId aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, requested 16 nodes)
+TID 2                    2026-08-12T01:00:01.1000000Z +  100.00ms: CoordinatorServer: Granted 16 nodes to PID 201
+TID 3                    2026-08-12T01:00:01.2000000Z +  100.00ms: CoordinatorServer: Client requested to join grant aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa for 16 nodes
+TID 3                    2026-08-12T01:00:01.3000000Z +  100.00ms: CoordinatorServer: Client connected (PID 202, ConnectionId bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb, requested 16 nodes)
+TID 3                    2026-08-12T01:00:01.4000000Z +  100.00ms: CoordinatorServer: Nested client joined grant aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa with 16 node(s)
+TID 3                    2026-08-12T01:00:01.5000000Z +  100.00ms: CoordinatorServer: Granted 16 nodes to PID 202
+TID 4                    2026-08-12T01:00:02.0000000Z +  500.00ms: CoordinatorServer: Client connected (PID 203, ConnectionId cccccccc-cccc-cccc-cccc-cccccccccccc, requested 16 nodes)
+TID 4                    2026-08-12T01:00:02.1000000Z +  100.00ms: CoordinatorServer: PID 203 queued (no nodes available)
+TID 5                    2026-08-12T01:00:03.0000000Z +  900.00ms: CoordinatorServer: PID 202 released grant
+TID 5                    2026-08-12T01:00:04.0000000Z + 1000.00ms: CoordinatorServer: PID 201 released grant
+TID 5                    2026-08-12T01:00:04.1000000Z +  100.00ms: CoordinatorServer: Draining wait queue, 1 build(s) to notify
+TID 5                    2026-08-12T01:00:04.2000000Z +  100.00ms: CoordinatorServer: Granting 16 deferred nodes to PID 203
+TID 6                    2026-08-12T01:00:05.0000000Z +  800.00ms: CoordinatorServer: PID 203 released grant

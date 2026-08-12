@@ -1,0 +1,30 @@
+TID 1                    2026-08-12T06:00:00.0000000Z +    0.00ms: CoordinatorServer: Accept loop started on pipe 'fixture-churn' (budget=16, high-priority reserved nodes=4, max nodes per build=4, max nodes per build when idle=8, priority aging threshold=3)
+TID 2                    2026-08-12T06:00:00.5000000Z +  500.00ms: CoordinatorServer: Client connected (PID 301, ConnectionId 30100000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 2                    2026-08-12T06:00:00.6000000Z +  100.00ms: CoordinatorServer: Granted 8 nodes to PID 301
+TID 3                    2026-08-12T06:00:01.0000000Z +  400.00ms: CoordinatorServer: Client connected (PID 302, ConnectionId 30200000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 3                    2026-08-12T06:00:01.1000000Z +  100.00ms: CoordinatorServer: Granted 4 nodes to PID 302
+TID 4                    2026-08-12T06:00:02.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 303, ConnectionId 30300000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 4                    2026-08-12T06:00:02.1000000Z +  100.00ms: CoordinatorServer: PID 303 queued (no nodes available)
+TID 5                    2026-08-12T06:00:03.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 304, ConnectionId 30400000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 5                    2026-08-12T06:00:03.1000000Z +  100.00ms: CoordinatorServer: PID 304 queued (no nodes available)
+TID 6                    2026-08-12T06:00:04.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 305, ConnectionId 30500000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 6                    2026-08-12T06:00:04.1000000Z +  100.00ms: CoordinatorServer: PID 305 queued (no nodes available)
+TID 7                    2026-08-12T06:00:05.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 306, ConnectionId 30600000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 7                    2026-08-12T06:00:05.1000000Z +  100.00ms: CoordinatorServer: PID 306 queued (no nodes available)
+TID 8                    2026-08-12T06:00:06.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 307, ConnectionId 30700000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 8                    2026-08-12T06:00:06.1000000Z +  100.00ms: CoordinatorServer: PID 307 queued (no nodes available)
+TID 9                    2026-08-12T06:00:07.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 308, ConnectionId 30800000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 9                    2026-08-12T06:00:07.1000000Z +  100.00ms: CoordinatorServer: PID 308 queued (no nodes available)
+TID 10                   2026-08-12T06:00:08.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 309, ConnectionId 30900000-0000-0000-0000-000000000000, requested 16 nodes, priority Normal, nested=False)
+TID 10                   2026-08-12T06:00:08.1000000Z +  100.00ms: CoordinatorServer: PID 309 queued (no nodes available)
+TID 11                   2026-08-12T06:00:10.0000000Z + 1900.00ms: CoordinatorServer: PID 302 released grant
+TID 11                   2026-08-12T06:00:10.2000000Z +  200.00ms: CoordinatorServer: Granting 4 deferred nodes to PID 303
+TID 12                   2026-08-12T06:00:20.0000000Z + 9800.00ms: CoordinatorServer: PID 301 released grant
+TID 12                   2026-08-12T06:00:20.1500000Z +  150.00ms: CoordinatorServer: Granting 4 deferred nodes to PID 304
+TID 12                   2026-08-12T06:00:20.3000000Z +  150.00ms: CoordinatorServer: Granting 4 deferred nodes to PID 305
+TID 13                   2026-08-12T06:00:30.0000000Z + 9700.00ms: CoordinatorServer: PID 303 released grant
+TID 13                   2026-08-12T06:00:30.2000000Z +  200.00ms: CoordinatorServer: Granting 4 deferred nodes to PID 306
+TID 14                   2026-08-12T06:00:40.0000000Z + 9800.00ms: CoordinatorServer: PID 304 released grant
+TID 14                   2026-08-12T06:00:41.5000000Z + 1500.00ms: CoordinatorServer: Granting 4 deferred nodes to PID 307
+TID 15                   2026-08-12T06:00:50.0000000Z + 8500.00ms: CoordinatorServer: PID 305 released grant
+TID 15                   2026-08-12T06:00:50.2000000Z +  200.00ms: CoordinatorServer: Granting 4 deferred nodes to PID 308

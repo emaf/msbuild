@@ -1,0 +1,12 @@
+TID 1                    2026-08-12T00:00:00.0000000Z +    0.00ms: CoordinatorServer: Accept loop started on pipe 'fixture' (budget=16, high-priority reserved nodes=4, max nodes per build=4, max nodes per build when idle=8, priority aging threshold=3)
+TID 2                    2026-08-12T00:00:01.0000000Z + 1000.00ms: CoordinatorServer: Client connected (PID 101, ConnectionId aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, requested 16 nodes, priority Normal, nested=False)
+TID 2                    2026-08-12T00:00:01.1000000Z +  100.00ms: CoordinatorServer: Granted 8 nodes to PID 101
+TID 3                    2026-08-12T00:00:02.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 102, ConnectionId bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb, requested 16 nodes, priority Normal, nested=False)
+TID 3                    2026-08-12T00:00:02.1000000Z +  100.00ms: CoordinatorServer: Granted 4 nodes to PID 102
+TID 4                    2026-08-12T00:00:03.0000000Z +  900.00ms: CoordinatorServer: Client connected (PID 103, ConnectionId cccccccc-cccc-cccc-cccc-cccccccccccc, requested 16 nodes, priority Normal, nested=False)
+TID 4                    2026-08-12T00:00:03.1000000Z +  100.00ms: CoordinatorServer: PID 103 queued (no nodes available)
+TID 5                    2026-08-12T00:00:04.0000000Z +  900.00ms: CoordinatorServer: PID 102 released grant
+TID 5                    2026-08-12T00:00:04.1000000Z +  100.00ms: CoordinatorServer: Draining wait queue, 1 build(s) to notify
+TID 5                    2026-08-12T00:00:04.2000000Z +  100.00ms: CoordinatorServer: Granting 4 deferred nodes to PID 103
+TID 6                    2026-08-12T00:00:05.0000000Z +  800.00ms: CoordinatorServer: PID 101 released grant
+TID 6                    2026-08-12T00:00:06.0000000Z + 1000.00ms: CoordinatorServer: PID 103 released grant
