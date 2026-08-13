@@ -1093,6 +1093,25 @@ finally {
     Assert-True `
         -Condition (Test-RunDescendantsExited -Run $jobFixtureRun) `
         -Message 'Live-set Coordinator infrastructure does not block client quiescence'
+    $staleIdentitySet =
+        [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    [void]$staleIdentitySet.Add(
+        "$PID|$((Get-Process -Id $PID).StartTime.ToUniversalTime().ToString('O'))")
+    $staleEvidenceRun = [pscustomobject]@{
+        RunId = 'preserved-stale-pilot-evidence'
+        RootProcessId = 40000
+        ProcessStartUtc = [DateTimeOffset]'2026-08-13T00:58:15Z'
+        JobCensusFailed = $false
+        CurrentNonCoordinatorJobProcessIds = [int[]]@()
+        DescendantIdentities = $staleIdentitySet
+    }
+    Assert-True `
+        -Condition (Test-RunDescendantsExited -Run $staleEvidenceRun) `
+        -Message 'Current empty Job Object membership overrides a historical live/reused PID identity'
+    Assert-Equal `
+        -Actual $staleEvidenceRun.DescendantIdentities.Count `
+        -Expected 0 `
+        -Message 'Historical descendant identities are pruned after current membership drains'
 
     $exactBuildArguments = @(Get-ExactBootstrapBuildArguments)
     Assert-Equal -Actual ($exactBuildArguments -join '|') -Expected '-configuration|Release|-msbuildEngine|dotnet|-verbosity|quiet|/p:CreateTlb=false|/p:RuntimeOutputTargetFrameworks=net11.0' -Message 'Exact builds use the validated repository-supported dotnet command'

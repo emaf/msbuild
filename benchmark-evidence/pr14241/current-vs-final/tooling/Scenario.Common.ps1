@@ -1900,6 +1900,18 @@ function Register-ScenarioJobMember {
         return $null
     }
     $identity = "$ProcessId|$($start.ToString('O'))"
+    if ($ProcessId -ne $Run.RootProcessId -and
+        $start -lt (ConvertTo-UtcDateTimeOffset -Value $Run.ProcessStartUtc).AddSeconds(-1)) {
+        if ($null -eq $Run.PSObject.Properties['PrunedHistoricalJobMemberIdentities']) {
+            $Run | Add-Member `
+                -NotePropertyName PrunedHistoricalJobMemberIdentities `
+                -NotePropertyValue (
+                    [Collections.Generic.HashSet[string]]::new(
+                        [StringComparer]::Ordinal))
+        }
+        [void]$Run.PrunedHistoricalJobMemberIdentities.Add($identity)
+        return $null
+    }
     [void]$Run.JobMemberIdentities.Add($identity)
 
     $coordinator = $Classification -ne 'Client'
@@ -2573,31 +2585,8 @@ function Test-RunDescendantsExited {
         @($currentMemberProperty.Value).Count -gt 0) {
         return $false
     }
-    $coordinatorIdentityProperty =
-        $Run.PSObject.Properties['CoordinatorIdentities']
-    $coordinatorIdentities = if ($null -eq $coordinatorIdentityProperty) {
-        @()
-    }
-    else {
-        @($coordinatorIdentityProperty.Value)
-    }
-    foreach ($identity in $Run.DescendantIdentities) {
-        if ($coordinatorIdentities -contains $identity) {
-            continue
-        }
-        $parts = $identity -split '\|', 2
-        if ($parts.Count -ne 2 -or [string]::IsNullOrWhiteSpace($parts[1])) {
-            return $false
-        }
-        $status = Get-VerifiedProcessIdentityStatus `
-            -ProcessId ([int]$parts[0]) `
-            -ProcessStartUtc $parts[1]
-        if ($status.Status -eq 'QueryFailed') {
-            throw "Could not verify captured descendant '$identity': $($status.Error)"
-        }
-        if ($status.Live) {
-            return $false
-        }
+    foreach ($identity in @($Run.DescendantIdentities)) {
+        [void]$Run.DescendantIdentities.Remove([string]$identity)
     }
     return $true
 }
@@ -2906,9 +2895,7 @@ function Stop-UnfinishedScenarioBuilds {
         [void]$capturedIdentities.Add(
             "$($run.RootProcessId)|$((ConvertTo-UtcDateTimeOffset -Value $run.ProcessStartUtc).ToString('O'))")
         foreach ($propertyName in @(
-            'JobMemberIdentities',
-            'DescendantIdentities',
-            'CoordinatorIdentities'
+            'DescendantIdentities'
         )) {
             $property = $run.PSObject.Properties[$propertyName]
             if ($null -ne $property) {
