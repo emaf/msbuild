@@ -2345,6 +2345,42 @@ function Start-ScenarioBuild {
     }
 }
 
+function Get-ScenarioProcessMetadataSnapshot {
+    param(
+        [ValidateRange(1, 10)]
+        [int]$MaximumAttempts = 5,
+
+        [ValidateRange(10, 5000)]
+        [int]$RetryDelayMilliseconds = 100,
+
+        [scriptblock]$ProcessQuery
+    )
+
+    $errors = [Collections.Generic.List[Exception]]::new()
+    for ($attempt = 1; $attempt -le $MaximumAttempts; $attempt++) {
+        try {
+            if ($null -ne $ProcessQuery) {
+                return @(& $ProcessQuery)
+            }
+            return @(
+                Get-CimInstance `
+                    Win32_Process `
+                    -OperationTimeoutSec 5 `
+                    -ErrorAction Stop
+            )
+        }
+        catch {
+            $errors.Add($_.Exception)
+            if ($attempt -lt $MaximumAttempts) {
+                Start-Sleep -Milliseconds ($RetryDelayMilliseconds * $attempt)
+            }
+        }
+    }
+    throw [AggregateException]::new(
+        "Process metadata census failed after $MaximumAttempts bounded attempts.",
+        [Exception[]]$errors.ToArray())
+}
+
 function Update-ScenarioProcessTrees {
     param(
         [Parameter(Mandatory)]
@@ -2368,12 +2404,7 @@ function Update-ScenarioProcessTrees {
             @($Processes)
         }
         else {
-            @(
-                Get-CimInstance `
-                    Win32_Process `
-                    -OperationTimeoutSec 5 `
-                    -ErrorAction Stop
-            )
+            @(Get-ScenarioProcessMetadataSnapshot)
         }
     }
     catch {
@@ -2383,6 +2414,7 @@ function Update-ScenarioProcessTrees {
                     -Run $run `
                     -Message "Process metadata census failed for '$($run.RunId)': $($_.Exception.Message)"
             }
+
         }
         throw
     }
@@ -2586,13 +2618,9 @@ function Complete-ExitedScenarioBuild {
         $Run.Process.WaitForExit()
         $Run.ProcessExitUtc = ConvertTo-UtcDateTimeOffset -Value $Run.Process.ExitTime
         $Run.ExitCode = $Run.Process.ExitCode
-        # The job census is authoritative; ancestry sampling remains defense in depth.
-        foreach ($captureAttempt in 1..10) {
-            Update-ScenarioProcessTrees -Runs @($Run)
-            if ($captureAttempt -lt 10) {
-                Start-Sleep -Milliseconds 100
-            }
-        }
+        # One retry-bounded metadata snapshot classifies current job membership.
+        # The Job Object remains authoritative while we wait for those members.
+        Update-ScenarioProcessTrees -Runs @($Run)
         if (-not $Run.StdoutTask.Wait([TimeSpan]::FromSeconds($QuiescenceTimeoutSeconds)) -or
             -not $Run.StderrTask.Wait([TimeSpan]::FromSeconds($QuiescenceTimeoutSeconds))) {
             $Run.Quiescent = $false
@@ -2607,8 +2635,12 @@ function Complete-ExitedScenarioBuild {
                 $Run.StderrTask.GetAwaiter().GetResult(),
                 [Text.UTF8Encoding]::new($false))
             $timer = [Diagnostics.Stopwatch]::StartNew()
+            $nextMetadataCensusSeconds = 0.0
             do {
-                Update-ScenarioProcessTrees -Runs @($Run)
+                if ($timer.Elapsed.TotalSeconds -ge $nextMetadataCensusSeconds) {
+                    Update-ScenarioProcessTrees -Runs @($Run)
+                    $nextMetadataCensusSeconds = $timer.Elapsed.TotalSeconds + 1.0
+                }
                 $descendantsExited = Test-RunDescendantsExited -Run $Run
                 if ($descendantsExited -or
                     $timer.Elapsed.TotalSeconds -gt $QuiescenceTimeoutSeconds) {

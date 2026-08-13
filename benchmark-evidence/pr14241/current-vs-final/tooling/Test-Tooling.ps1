@@ -774,6 +774,37 @@ finally {
             -Expected $coordinatorCase.Expected `
             -Message "Process classification handles $($coordinatorCase.Description)"
     }
+    $script:scenarioSnapshotAttempts = 0
+    $scenarioSnapshot = @(
+        Get-ScenarioProcessMetadataSnapshot `
+            -MaximumAttempts 3 `
+            -RetryDelayMilliseconds 10 `
+            -ProcessQuery {
+                $script:scenarioSnapshotAttempts++
+                if ($script:scenarioSnapshotAttempts -lt 3) {
+                    throw 'synthetic transient CIM failure'
+                }
+                [pscustomobject]@{
+                    ProcessId = 123
+                    ParentProcessId = 1
+                    Name = 'fixture.exe'
+                }
+            }
+    )
+    Assert-Equal -Actual $script:scenarioSnapshotAttempts -Expected 3 -Message 'Scenario metadata census retries transient query failures within its bound'
+    Assert-Equal -Actual $scenarioSnapshot.Count -Expected 1 -Message 'Scenario metadata census returns the successful retry snapshot'
+    $snapshotFailureObserved = $false
+    try {
+        [void](Get-ScenarioProcessMetadataSnapshot `
+            -MaximumAttempts 2 `
+            -RetryDelayMilliseconds 10 `
+            -ProcessQuery { throw 'persistent synthetic CIM failure' })
+    }
+    catch {
+        $snapshotFailureObserved =
+            $_.Exception.Message -match 'failed after 2 bounded attempts'
+    }
+    Assert-True -Condition $snapshotFailureObserved -Message 'Scenario metadata census fails closed after bounded retries'
     $scenarioCommonText =
         Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Scenario.Common.ps1') -Raw
     Assert-True `
