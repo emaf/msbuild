@@ -1,0 +1,33 @@
+{
+  "Valid": true,
+  "Errors": [],
+  "PrimaryOrderDiagnostics": {
+    "PositionCounts": {
+      "COMPAT": [
+        2,
+        2,
+        2
+      ],
+      "FINAL-N": [
+        2,
+        2,
+        2
+      ],
+      "BASE": [
+        2,
+        2,
+        2
+      ]
+    },
+    "CarryoverCounts": {
+      "COMPAT->BASE": 2,
+      "FINAL-N->BASE": 2,
+      "BASE->COMPAT": 2,
+      "COMPAT->FINAL-N": 2,
+      "BASE->FINAL-N": 2,
+      "FINAL-N->COMPAT": 2
+    },
+    "PositionImbalance": 0.0,
+    "CarryoverImbalance": 0.0
+  }
+}

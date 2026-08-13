@@ -2,6 +2,9 @@
 
 Start with [`validated-report.md`](validated-report.md).
 
+New contemporaneous isolated current-vs-final evidence:
+[`current-vs-final/isolated/validated-report.md`](current-vs-final/isolated/validated-report.md).
+
 - Recompute all requested comparisons:
   `pwsh ./scripts/Recompute-PortableComparisons.ps1`
 - Verify included files:

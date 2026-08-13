@@ -1,0 +1,26 @@
+{
+  "SchemaVersion": 1,
+  "Base": {
+    "Commit": "ff5b281f0c5828dec0d092fcd1b682019de7d1ca",
+    "ProductVersion": "18.11.0-dev.26411.1+ff5b281f0c5828dec0d092fcd1b682019de7d1ca",
+    "MSBuildDllSha256": "29F1590DEC9CFD9CB479401245209E08177841DDBD9A86DAB017D8AAC8CB5AC4"
+  },
+  "Final": {
+    "Commit": "9aa319701cc70713e5f017a1a8e0cc88b1813ae1",
+    "ProductVersion": "18.11.0-dev.26411.1+9aa319701cc70713e5f017a1a8e0cc88b1813ae1",
+    "MSBuildDllSha256": "FA5DB8DE22C2794D75DDC0AEE611AA91F7E41B92F0058AF109AF461BF93FB58E"
+  },
+  "DotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18",
+  "Repositories": [
+    {
+      "Name": "roslyn",
+      "Commit": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+      "Project": "src\\Compilers\\CSharp\\Portable\\Microsoft.CodeAnalysis.CSharp.csproj"
+    },
+    {
+      "Name": "aspire",
+      "Commit": "110a63da8357af437a00d9efc5887ffdcbdfbb3c",
+      "Project": "src\\Aspire.Hosting\\Aspire.Hosting.csproj"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+"Repository","BlockNumber","AttemptNumber","Reason"
+"aspire","3","1","Machine did not meet the recorded idle gate within 300 seconds. See 'C:\perf\results\current-vs-final-isolated-20260812-215216\aspire\block-003\attempt-01\idle-gate.csv'."
+"aspire","3","2","Machine did not meet the recorded idle gate within 300 seconds. See 'C:\perf\results\current-vs-final-isolated-20260812-215216\aspire\block-003\attempt-02\idle-gate.csv'."
+"aspire","4","1","Machine did not meet the recorded idle gate within 300 seconds. See 'C:\perf\results\current-vs-final-isolated-20260812-215216\aspire\block-004\attempt-01\idle-gate.csv'."
+"aspire","4","2","Machine did not meet the recorded idle gate within 300 seconds. See 'C:\perf\results\current-vs-final-isolated-20260812-215216\aspire\block-004\attempt-02\idle-gate.csv'."
+"aspire","5","1","Machine did not meet the recorded idle gate within 300 seconds. See 'C:\perf\results\current-vs-final-isolated-20260812-215216\aspire\block-005\attempt-01\idle-gate.csv'."
+"aspire","7","1","Machine did not meet the recorded idle gate within 300 seconds. See 'C:\perf\results\current-vs-final-isolated-20260812-215216\aspire\block-007\attempt-01\idle-gate.csv'."
