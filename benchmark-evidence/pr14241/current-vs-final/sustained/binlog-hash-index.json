@@ -1,0 +1,4802 @@
+[
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/injected-g1/build.binlog",
+    "Bytes": 456573,
+    "Sha256": "990F8206DFCF4920E9391BF84B3A4943FC55F1BFCC8C9E771F0C6D0253B30D23"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal1-g1/build.binlog",
+    "Bytes": 459657,
+    "Sha256": "ED2D6E4D09C90B4C12BCE28104C98FB6626179EB3F4EE4E80EF71340B3FF86E9"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal1-g2/build.binlog",
+    "Bytes": 463580,
+    "Sha256": "8BA328401CF968A4C1D9BF558AD83EBAE41B3943E6AE439F3E1D2F04B2FCAC45"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal1-g3/build.binlog",
+    "Bytes": 460575,
+    "Sha256": "C2906EDACCD807A31592D4BC95B6B769D8500B3756CD37BAA08658E9BBBD9214"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal2-g1/build.binlog",
+    "Bytes": 464274,
+    "Sha256": "BE2BBA7F6B4606DF8980FAD9066D6DED0075510FCEEEA03BB75F3F21A3357C31"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal2-g2/build.binlog",
+    "Bytes": 459910,
+    "Sha256": "4992547EE884B8D4B6DC126BC22F04E5F2DB161C253FD85CAEAC90CA0B2EAF1B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal2-g3/build.binlog",
+    "Bytes": 460104,
+    "Sha256": "86FB2F96A0D258E6E60974AAE3584ACB757EA5F5A60C0BF2F98FCAB2C9327BE7"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal3-g1/build.binlog",
+    "Bytes": 459794,
+    "Sha256": "0C313A30C01376F403A2AA2CCE9D9F7295CCC38BC445F8604AF52168AC29B913"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal3-g2/build.binlog",
+    "Bytes": 459121,
+    "Sha256": "9DA24EE49A8BC7F60332BE64640EF682F515B21B1FFBFC7DA9EFFDC58EE53A15"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal3-g3/build.binlog",
+    "Bytes": 462037,
+    "Sha256": "5891F1C253E0D791A80184ED0A9D0B106921928D38D4D95C8AED210AB836FC6E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal4-g1/build.binlog",
+    "Bytes": 461502,
+    "Sha256": "62771AF2D2CD0B0B4309FD29351EA2D18E1C74C1513281FE48A1E057D6934A05"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal4-g2/build.binlog",
+    "Bytes": 460805,
+    "Sha256": "43106C1B79C0722D2005C5E7B997D116823F727AF749586D03AD2C6BFBE17A94"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal4-g3/build.binlog",
+    "Bytes": 461593,
+    "Sha256": "D68641F2B8780480DD9B82F5C3CE57FD9D60658218EBA51761567561C388D7E4"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal5-g1/build.binlog",
+    "Bytes": 456462,
+    "Sha256": "64464B5BB0B846DCE886968AC1E6CD58E0281B4FEA1D4E3EDE601607744A2996"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal5-g2/build.binlog",
+    "Bytes": 459514,
+    "Sha256": "EFDA2F2054374CA4FE1F9E0F82325BFE3EB80E77B02221A5BFAF42F710B24D9A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal5-g3/build.binlog",
+    "Bytes": 456942,
+    "Sha256": "51B17863B5AA7A1B9FDC7DF2A964543425934DD4D718CDD8B5155C124E21FFE7"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal6-g1/build.binlog",
+    "Bytes": 460177,
+    "Sha256": "F2CC4F00CCBA763284669DC5D1A582E668770903C423955EFB846E0BA38F1409"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal6-g2/build.binlog",
+    "Bytes": 456872,
+    "Sha256": "BCBB0B046F3E8465631092F79ECC1D692A0877CA2159F86B019D7DD7D1FEB3BE"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal6-g3/build.binlog",
+    "Bytes": 458179,
+    "Sha256": "4A1C5E50CD994CC5369E451AD6E446F747BC02C35CFACBFC7F565DBF8124E4FA"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal7-g1/build.binlog",
+    "Bytes": 460074,
+    "Sha256": "3A399F65AF20B40AFBB08161320E24E8D6914EAEE1DFE3287992EF65697E9B66"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal7-g2/build.binlog",
+    "Bytes": 459944,
+    "Sha256": "DC208E544FB56581DADDF7ADB7417A67E2CC3211D864A2E00DE672DF7C7D86C7"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal7-g3/build.binlog",
+    "Bytes": 463168,
+    "Sha256": "1F5FC0959CE3C6C57BB837F71EAD443FA3F113A1FE1E5179A1A3A57F965142CF"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal8-g1/build.binlog",
+    "Bytes": 454920,
+    "Sha256": "16B4EFD7BE4DB5FFBADAC139DF98626C665B9CE4A02134CD1C83F1FE70061D2B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-1/BASE/normal8-g2/build.binlog",
+    "Bytes": 457579,
+    "Sha256": "A09A232CBB6C26A60EDAFA549C0FB5AA5B75FFA82436B3467C42ECDCD0434704"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/injected-g1/build.binlog",
+    "Bytes": 460593,
+    "Sha256": "36DEB7E067F8B6B85793ECFCA31441588C9F095F161389F2D3AF03663B757B76"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal1-g1/build.binlog",
+    "Bytes": 460829,
+    "Sha256": "20C60A56F4FD4A28FBF06883BDDFADE614E72F3399A7F51E6515E972E40F263C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal1-g2/build.binlog",
+    "Bytes": 460030,
+    "Sha256": "F580A5D02DFB393E568F3C81CD3425175CF3E51C129AA1E45F8F1BD170FAA421"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal1-g3/build.binlog",
+    "Bytes": 461578,
+    "Sha256": "77595DECFC2E3D08A085666D4D40A79B6EC7FF2EC7FB90F789C75625232F309A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal2-g1/build.binlog",
+    "Bytes": 462327,
+    "Sha256": "59854D916250FF8EB1DB0065CB7CBD1E5F3B7C61DDA62ED2A0CE4D6B44980D2E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal2-g2/build.binlog",
+    "Bytes": 459189,
+    "Sha256": "B54E9B36F314666A3C94BD6602650FAE8C98914679389D45DFAFCC468AEE2658"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal2-g3/build.binlog",
+    "Bytes": 460692,
+    "Sha256": "6BCEF27404077D5B25D0EFA38D3108F2F02D56AC060455D9447EFDEED107688F"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal3-g1/build.binlog",
+    "Bytes": 461464,
+    "Sha256": "6C36B58A5EE77857EE3E2DBAA5D8A526490352C652E39AFD382EF0BB13182EE7"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal3-g2/build.binlog",
+    "Bytes": 459430,
+    "Sha256": "C6A40A87D93C52B6A6BB9507C6B04B2F5FAB03B2EE8367B5AF7ED1F1BE12E671"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal3-g3/build.binlog",
+    "Bytes": 460354,
+    "Sha256": "3053F89C0554D6BF8336B838705241E42764AC5649B99E3C60559397745B2BC8"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal4-g1/build.binlog",
+    "Bytes": 463176,
+    "Sha256": "9B76BC2E06D82105CE4A4712DB378BEE5F2A39C588484867A2D541239A3A45D9"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal4-g2/build.binlog",
+    "Bytes": 458126,
+    "Sha256": "2356802C3F75C7DF0AEC91AE686BA5436FF7C32F0288B51A9C0B10FB0B04AD41"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal4-g3/build.binlog",
+    "Bytes": 459860,
+    "Sha256": "7FE6D4CE979456CD63B95DBFA6E245F5193656E3D3C3A44CE8147C507295A5BE"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal5-g1/build.binlog",
+    "Bytes": 456740,
+    "Sha256": "3736AEE803F2F15EE621E513802C415A20BF629FE47F2906B453B6992ABBC1A9"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal5-g2/build.binlog",
+    "Bytes": 460201,
+    "Sha256": "29735111A0F93BA7BDED940F47CFC178678267AC85068D909F7FA4DF330A8285"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal5-g3/build.binlog",
+    "Bytes": 459605,
+    "Sha256": "6D652B81F0A41E2858FE9193E8154E7FBDA5075A7F2A09A81D017A474431F24D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal6-g1/build.binlog",
+    "Bytes": 458438,
+    "Sha256": "E7E5D47119135EA4C1806113F384D22E2189F37D239E2CD212649D70486110D3"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal6-g2/build.binlog",
+    "Bytes": 460136,
+    "Sha256": "6E7AD20B809CD238801FAE3EF451A8D3995E6E13BD6901ED71DB0511E3FD54E2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal7-g1/build.binlog",
+    "Bytes": 459010,
+    "Sha256": "E31D95CE4AE11802A44D59D4EA98A8B63873F1AB3230EC12929B14216A928F73"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal7-g2/build.binlog",
+    "Bytes": 462282,
+    "Sha256": "0D5B4FCD19CAC359B6D9194D880F7522A05BCD45D84AD7E697B45DF41D0DAAFB"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal8-g1/build.binlog",
+    "Bytes": 459502,
+    "Sha256": "1761F5720050E8E89C366E52BBB5BF79ACF1DC7635729F7FC3B7669BBA8FD8A7"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-1/FINAL-N/normal8-g2/build.binlog",
+    "Bytes": 459505,
+    "Sha256": "54864E940477883A1CC20CCEF7DC709D1BBB05D434D5CA906C5CE60FDAE68BBE"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/injected-g1/build.binlog",
+    "Bytes": 460771,
+    "Sha256": "3E0D72CCE157C041A17AE772040A237FEFE881A452F38DDE1B79F9D9C025E88E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal1-g1/build.binlog",
+    "Bytes": 461256,
+    "Sha256": "E171969AD78650513EA43DE381722F0D7AEDAB4F08FF01165EF041711B82F468"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal1-g2/build.binlog",
+    "Bytes": 458866,
+    "Sha256": "6E29EB0ED8ED7A4C7A521377E413B8246EAD236BFBCCC1E13A566862FA5662DF"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal1-g3/build.binlog",
+    "Bytes": 459964,
+    "Sha256": "BAB9A7E12EFA3DAA4CDA2CF6C892A6CA04AB6190B2D85FA6EDDF244D27E29670"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal2-g1/build.binlog",
+    "Bytes": 460951,
+    "Sha256": "6228C5A801FCB58878DC78770CF6C35C53441F7E1784B301A8A01DB06F45EC40"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal2-g2/build.binlog",
+    "Bytes": 460662,
+    "Sha256": "14723F3FDF2C788152211A5064BBA8A5143DBEE133AED761B30F755413903A6D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal2-g3/build.binlog",
+    "Bytes": 460698,
+    "Sha256": "768AD497A8551B515E3CAA2D0B16A0F019AE955E1EC0F5FB1A373BCFF9509F60"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal3-g1/build.binlog",
+    "Bytes": 462188,
+    "Sha256": "9151534212A92AFA3FF4A84056924782394E8E10C9D115DD1F7C00DA3AB6FA26"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal3-g2/build.binlog",
+    "Bytes": 459752,
+    "Sha256": "E68A66A5ECD94C15DAEB739C2B997892E4BD014AC6EB1DD675CA7D6A6C32761B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal3-g3/build.binlog",
+    "Bytes": 460038,
+    "Sha256": "A611F38AD99A016E873571AF4F989C13C1460D97BC16C41307F8F5DE6D6E6E93"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal4-g1/build.binlog",
+    "Bytes": 460359,
+    "Sha256": "CA8A3489A80A9EB1D3C3D9F9D16BBAF4B1856274920FBE676628F46782DD68A5"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal4-g2/build.binlog",
+    "Bytes": 460815,
+    "Sha256": "C30F349759770798A00DF5CDFFC3EEBD8FED150F4351FE3D50B5C44DF76199E0"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal5-g1/build.binlog",
+    "Bytes": 458060,
+    "Sha256": "4245ED9D1133101A90BD6353CC5D6E16788A07E02D9D1A1C4C87E5A8C4D0B912"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal5-g2/build.binlog",
+    "Bytes": 460515,
+    "Sha256": "27F1E0C46C5501C07836F4D85D46777A20608A6B77CBB8AB2F510424B2AC78B1"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal6-g1/build.binlog",
+    "Bytes": 460489,
+    "Sha256": "8BA16BB9F9B514505F7619C79E3C08CA95D0759ED5776C1B32C971A5E5A8E6FB"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal6-g2/build.binlog",
+    "Bytes": 462994,
+    "Sha256": "727E4EB83C217AA7CF6851BCDC786B8EAD852EAFEB7ADC84C6DE86CFC05C789C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal7-g1/build.binlog",
+    "Bytes": 462042,
+    "Sha256": "616814B45B23F9574ED4132E0AD7405598D8EE13BFA3752C1DEB949E7ED8D507"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal7-g2/build.binlog",
+    "Bytes": 461391,
+    "Sha256": "A9EF61B8E26BFA68D98C333B4B645B6E815ABB010DA51E4B5AF44D737F039393"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal8-g1/build.binlog",
+    "Bytes": 458208,
+    "Sha256": "285152E17C1180D14A02D3EC98403853B18854601EED7FA1345AF3ED1AEC010B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-1/FINAL-H/normal8-g2/build.binlog",
+    "Bytes": 459606,
+    "Sha256": "A7462DFE8CED466BDC97BD3F182DFCC77F9802F14371E8CB5CF88D70CE5A7790"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/injected-g1/build.binlog",
+    "Bytes": 458715,
+    "Sha256": "D0BED4355FC686602AF979823EA9DFA427E0FCC6FC9863C914C75C3F5E800DB5"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal1-g1/build.binlog",
+    "Bytes": 460433,
+    "Sha256": "86A3CB5E005B75716F7C15A85B98E085154F8917DCF44B2F0C031E33534320C2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal1-g2/build.binlog",
+    "Bytes": 461248,
+    "Sha256": "DCE64CC2B18DC9FC5D6AC17F389556AC67BF1E24B29DC498C9B1CB74FA55EAB5"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal1-g3/build.binlog",
+    "Bytes": 459667,
+    "Sha256": "F3833BAC1AC2E2D8482C7D7EB83E59A5A1B9E06A79ACD9612E6515DE3D3A8B6F"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal2-g1/build.binlog",
+    "Bytes": 460577,
+    "Sha256": "DC3752D734FF7571350281FFAF5E4C5E48CF5835EF73CA284C3955A08D520F15"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal2-g2/build.binlog",
+    "Bytes": 462411,
+    "Sha256": "E24CC37988BA9730500AD81991E974357477E1E8BC8A926CE5D2304F52EC8971"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal2-g3/build.binlog",
+    "Bytes": 461278,
+    "Sha256": "EBC5D152C64AD4D8B34D9E99C2862DA755C827720FD001B667FF17934C0C8994"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal3-g1/build.binlog",
+    "Bytes": 460605,
+    "Sha256": "87ACFE960A9C1677A86B5B11166D709B604AC96754A477EEAB320F3F4278CA1B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal3-g2/build.binlog",
+    "Bytes": 460939,
+    "Sha256": "DA10D9B2097493A51FA59D8990428873ABF9D96D408065780F14A560E51204C2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal3-g3/build.binlog",
+    "Bytes": 462916,
+    "Sha256": "BD912E0C9F5FEBF9A101F4C6713B3B946FD65182AB041BEE559E99C79B4BF596"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal4-g1/build.binlog",
+    "Bytes": 460360,
+    "Sha256": "FD8CA56A5FFC8208F53A113259FFF6DD06D8B6CC6990C7DC18FFFA9603EDE95C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal4-g2/build.binlog",
+    "Bytes": 460454,
+    "Sha256": "ABEFF6D5DBD91172A12517571F2AE73B0845453BDB07F18D68A3E6832540612E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal4-g3/build.binlog",
+    "Bytes": 462192,
+    "Sha256": "AEB3201587E5299F1F18490FBB52483986DED873EAC1AAEF2080AF0A1DCE57A9"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal5-g1/build.binlog",
+    "Bytes": 463126,
+    "Sha256": "872D8704650F349D6412CF96313E6289426D786D901A393D770AD68612CA5F36"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal5-g2/build.binlog",
+    "Bytes": 458294,
+    "Sha256": "63B7C4E71F5BAE8010AB1E01C72A6266CD6478010C5B12B166D185C244087E4A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal5-g3/build.binlog",
+    "Bytes": 460122,
+    "Sha256": "C6AAC15E74A4DE84437509120EC5F45FEE7F4B4D20F8F4E76649915979608DC1"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal6-g1/build.binlog",
+    "Bytes": 457868,
+    "Sha256": "CAE5E3748F5FFDA71FDDFDD1232D8EE020C15C23B6E3C32063A7B32142480CED"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal6-g2/build.binlog",
+    "Bytes": 466530,
+    "Sha256": "6E5E9D80612A708DB6139E2E5D953195D1E010335D324E8079B402F4F1A18A0E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal7-g1/build.binlog",
+    "Bytes": 462294,
+    "Sha256": "A048BC21B8003CDE8F6783A0FC03A4253E16829216632F831149A65091927F30"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal7-g2/build.binlog",
+    "Bytes": 459937,
+    "Sha256": "5F36F954367E5C1BD3783AA9FFE66FE9BBF6E76FF74423850CBD3686C5696E85"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal8-g1/build.binlog",
+    "Bytes": 459292,
+    "Sha256": "C2C643622503298BD2C289A9C98221474C62A95D8D0B778768DD2C7A3E6D38CD"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-2/FINAL-N/normal8-g2/build.binlog",
+    "Bytes": 460030,
+    "Sha256": "41E8303A72DFE181C7BA9D5399718DF746A1576B84477D2320D95FD49D83BC1A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/injected-g1/build.binlog",
+    "Bytes": 456692,
+    "Sha256": "1F95F394F51F8ADB092AD3717146031F1E4F2798A87F538B78135932F8F92FFC"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal1-g1/build.binlog",
+    "Bytes": 460321,
+    "Sha256": "812274173C66F163DA37CC11D7C19449A0D2500C5CC2A0D3036DF5D2E4DB281A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal1-g2/build.binlog",
+    "Bytes": 460416,
+    "Sha256": "B867E9001188D51EB29D011CE7C4ECDAB40743BC1B64CD03F96F47687C58B083"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal1-g3/build.binlog",
+    "Bytes": 460586,
+    "Sha256": "50F7CDB4313C4B5A650B1B8778281726A1F4BA99555C8B0509F4F679337D1F7D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal2-g1/build.binlog",
+    "Bytes": 459914,
+    "Sha256": "6AC1FAAEA415F50C36329FC7874EB4456A3A850975A2011FD9FF7D289C9733A0"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal2-g2/build.binlog",
+    "Bytes": 460141,
+    "Sha256": "8F59890B2A9499654115498C9F4085D0A90EFDAB2639FD240EE932487F341A49"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal2-g3/build.binlog",
+    "Bytes": 460412,
+    "Sha256": "0164DD437F9219EDA5616FD3A0A72A2E1C98DF91395D0A9E01EB84CBBBF66646"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal3-g1/build.binlog",
+    "Bytes": 462315,
+    "Sha256": "5B5338CDE806C25E5B39D0EEAE9D855F7CC34B67ED246E472528C97A89435BD5"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal3-g2/build.binlog",
+    "Bytes": 461042,
+    "Sha256": "8CE8636FD93EB962AB1A94543D80AA928CE8943D721EB54353700B190EC910F9"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal3-g3/build.binlog",
+    "Bytes": 458985,
+    "Sha256": "B86D74F12B15E0025F62C8A52825AD1826084BCF6C0491ECF6AAC345C52D0F0A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal4-g1/build.binlog",
+    "Bytes": 454408,
+    "Sha256": "246FE1759581F6EFCFA1540D80A78A0AA392041C38BD835F7E2C3C289D05E9F0"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal4-g2/build.binlog",
+    "Bytes": 465901,
+    "Sha256": "75FC263F165D71B94C882ED5A4E64BF7DF2F5067FE65D8438FE3102A4F1AE6FE"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal5-g1/build.binlog",
+    "Bytes": 460775,
+    "Sha256": "80B625EEFD7853B99F1CF3A47300420DE4B117620AAA9E54A312071A38C11E29"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal5-g2/build.binlog",
+    "Bytes": 458851,
+    "Sha256": "EA09B87254370047C41E4D68CEB8B1214CFA9DD2A44BCA353957704063E0DFFA"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal5-g3/build.binlog",
+    "Bytes": 460600,
+    "Sha256": "E7293B34E6440BC78746F3454C2E3B17BA34BA04FE37A4E710E13C51E5EA5E1E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal6-g1/build.binlog",
+    "Bytes": 460373,
+    "Sha256": "2A2432403155F3E969CD373DC9A1BBCE9FC12E313C943F814E3B04FA3B3EDAA2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal6-g2/build.binlog",
+    "Bytes": 460645,
+    "Sha256": "8330C2C58602DB78E3E1130052570EADDA3FF967319EA6100EF710DC0CE2675F"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal7-g1/build.binlog",
+    "Bytes": 460294,
+    "Sha256": "8CA3986277DB09F168F41851C29CB2824728D4048D8F4C373C248F69E17CC37C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal7-g2/build.binlog",
+    "Bytes": 460063,
+    "Sha256": "7FD73731476E910F6A69460F890374898B3A7F34677B9C532109E66C568A7A62"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal8-g1/build.binlog",
+    "Bytes": 460000,
+    "Sha256": "69D4546C6874E50D269B451ED93805C92B9578615EF2B5F45AC97C136368C759"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-2/FINAL-H/normal8-g2/build.binlog",
+    "Bytes": 457127,
+    "Sha256": "FA9018690185930B49AB34FE7946D8A905D3C671D63D821D10E2EB4FE23D6278"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/injected-g1/build.binlog",
+    "Bytes": 456925,
+    "Sha256": "4EF066FD0EE471CD9AD4CB5E37BBCC9D842C168FF805CEA9EEDA59BC794C0AD2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal1-g1/build.binlog",
+    "Bytes": 462583,
+    "Sha256": "051AA612BEE08F4A131EA2F82EF0B8CBBBC20C0CFEE0351716F0FE34CFE9AD4A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal1-g2/build.binlog",
+    "Bytes": 458427,
+    "Sha256": "DFCE01B3CFBE870B5F300F7674A60D9B07D70CF82D169A294B26E3F6C032C9C3"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal1-g3/build.binlog",
+    "Bytes": 460461,
+    "Sha256": "6559C1D108803D16505F6FAB1CB4D5E0F3B23621E6BEAEC7A86094E0F34A1E1F"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal2-g1/build.binlog",
+    "Bytes": 454589,
+    "Sha256": "C12FD1D2B6F95022108E7043C02060F9F8E8B1C94D10812F0A4310A915ECFAD4"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal2-g2/build.binlog",
+    "Bytes": 457207,
+    "Sha256": "1FEEDA7F6DDB873A4118B9B0D6F48C034AB17B6F19D1DFF78CFF15B1DDFF120E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal3-g1/build.binlog",
+    "Bytes": 458445,
+    "Sha256": "FF3914D19881F2363B2BEE39EF4C097CD02DA665F426BD2CBAB23B257006EBD0"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal3-g2/build.binlog",
+    "Bytes": 458873,
+    "Sha256": "B56F8ED2EDFC08954B6C5789FA1CE71DF6EDEDB6D508DAEF089556080800B7E6"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal3-g3/build.binlog",
+    "Bytes": 461142,
+    "Sha256": "3AA5FBB409C52CFB05689B67C67048A156739CC21A481F018CD648040D24FF3A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal4-g1/build.binlog",
+    "Bytes": 459969,
+    "Sha256": "6AB13D4066A6BD0A38CE0425C7AAD0F8167E475EC51E70A59D53EAA439BB2805"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal4-g2/build.binlog",
+    "Bytes": 461936,
+    "Sha256": "CC3333516DB35DA83681E3CFDA37F2CE86B9BDD55ACA9663B18172FC9859F9FB"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal4-g3/build.binlog",
+    "Bytes": 459190,
+    "Sha256": "44A8A2CB58814B6F558B8F5842AF8C8AE0BF5558D049C5CF6A4DBF1D0BF540AE"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal5-g1/build.binlog",
+    "Bytes": 454088,
+    "Sha256": "F47FD937D3E6F50F5C87586071F65D897B6D90C95BAC13FCC4AB14505D2B8C9F"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal5-g2/build.binlog",
+    "Bytes": 463143,
+    "Sha256": "D38D62F18B7FDE8DE3AB2E2DF0A3BD8D9462A9D27970A2CB12A0826DD0F0EE14"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal5-g3/build.binlog",
+    "Bytes": 457631,
+    "Sha256": "01EE2E3460EE6777C134BE9C950B724C79389C979C37CCC31B073491283DE1F2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal6-g1/build.binlog",
+    "Bytes": 460138,
+    "Sha256": "8BF10FB6ECF53B82510F90047DB574D9965DAFB322FAC2A11C87559655F1D854"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal6-g2/build.binlog",
+    "Bytes": 460325,
+    "Sha256": "7A3D4DE96E337E2A75B51C1385FAE7CDFC8E5CDFA53E654EBCBC4F94DBA7BAB4"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal6-g3/build.binlog",
+    "Bytes": 460036,
+    "Sha256": "E07BEAAB487C7D6158C01EF1676EB1A904E6B6DB9EEDFE019E9790C148DB15A0"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal7-g1/build.binlog",
+    "Bytes": 459731,
+    "Sha256": "826392488F908E8BF26924757F95CEC376BD1F6DED7DB2350DCD082A42E91FB8"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal7-g2/build.binlog",
+    "Bytes": 455484,
+    "Sha256": "F02BB35308DF433673A1AE6060BA835931AC85ECDD8A0C7F5FB1CFACD8B20684"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal7-g3/build.binlog",
+    "Bytes": 457234,
+    "Sha256": "466C369872C52ACF76C3BA676D6A3C1C93727FB7B1DCF5B61571E34C3061BB1F"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal8-g1/build.binlog",
+    "Bytes": 462763,
+    "Sha256": "7CD426663A98000A41582CCB6DD85074E668A20CDD8824FA84A8D93CF2585E58"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal8-g2/build.binlog",
+    "Bytes": 458771,
+    "Sha256": "59CCCDD2A798529E262289B377E466D3B3C56491EBACAC5FC328799247B724FC"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-2/BASE/normal8-g3/build.binlog",
+    "Bytes": 457181,
+    "Sha256": "C134473739CA6CA648D078F2355F91CFAE911969E84D28B44A2A6549D26D5D36"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/injected-g1/build.binlog",
+    "Bytes": 461270,
+    "Sha256": "0CCBD60AAA9B10CB91402C24F5D45EE7DBB9634C659A6DB7A094FF55A6AE04FC"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal1-g1/build.binlog",
+    "Bytes": 460404,
+    "Sha256": "984B22354D5E6FE3EB1FD5CF668E659F307591D77FE1677569FF3A95814DBDEA"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal1-g2/build.binlog",
+    "Bytes": 459893,
+    "Sha256": "7BF85B6C1618A62C074E479B5310201C9D7D83AF9F71AEC7152751991F2566FF"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal1-g3/build.binlog",
+    "Bytes": 459646,
+    "Sha256": "FE59375217D191A5C53E79012551B42BF6E7FB3B01AF72780788F6075C8C3044"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal2-g1/build.binlog",
+    "Bytes": 459778,
+    "Sha256": "796EC855E4294011A65884E65F8F134B5E478A4320669A85DC3855EE00F3A39D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal2-g2/build.binlog",
+    "Bytes": 462041,
+    "Sha256": "7F06E46729C0F74DBF903EFDBB491AB6E5FE58EE4636171BF157A0252C74DB59"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal2-g3/build.binlog",
+    "Bytes": 459912,
+    "Sha256": "6EDD305F5C256B49C286FA17D4AA77B20B39E119C792C4E4DD90DEA0595009C2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal3-g1/build.binlog",
+    "Bytes": 458885,
+    "Sha256": "FD7D3CD1183C8BF19791E99B4D21F6ADD6173E2A2EF7E5D485C3025DA6E33634"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal3-g2/build.binlog",
+    "Bytes": 460349,
+    "Sha256": "A369B4B9489B5F69CC8573C77E1584639537AD5D7C1A0AF878DBEB4928159BFD"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal3-g3/build.binlog",
+    "Bytes": 459797,
+    "Sha256": "0461EB553DD38AD607966031984FCF7FF0906B4C2E34B7FC5E866D57AD50C180"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal4-g1/build.binlog",
+    "Bytes": 460587,
+    "Sha256": "FA3B05E6D291ABA18E2C4D2CBFEDF2E2C1C7DCC11725CE0C2042D8A2BFA35E06"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal4-g2/build.binlog",
+    "Bytes": 460232,
+    "Sha256": "33FB69822763FE4E136D0C5A4F49020FC6B73B0EAAE8ED8E29B2F09575A9024E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal5-g1/build.binlog",
+    "Bytes": 464858,
+    "Sha256": "5964B31643798070F03AD1804DBF54D88637CBFBD27A5A73E8A1BF4F3D2DA43E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal5-g2/build.binlog",
+    "Bytes": 460918,
+    "Sha256": "13B2F028952ACF44F502E21D576753C8F9F32E15C9BE5D6F513AC75546DB0B8C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal6-g1/build.binlog",
+    "Bytes": 458148,
+    "Sha256": "90C04B1A9B54ED43E2E488D919E9EA4D6637452CA50DD47EA878914DFC9CC730"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal6-g2/build.binlog",
+    "Bytes": 461388,
+    "Sha256": "4FC5C06604C4C796C80486EFA65B5DAB00A4CE289232D81163ECBECF6526EB57"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal7-g1/build.binlog",
+    "Bytes": 463091,
+    "Sha256": "C84045343EDD0B1A792F6FDABF2EB25E91EC7D19CECDA440004650D32A7FDACA"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal7-g2/build.binlog",
+    "Bytes": 462905,
+    "Sha256": "B3104569F549918DB4BD755E018017A3571101463DF668FF6C1C21DDCD2CAA5E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal7-g3/build.binlog",
+    "Bytes": 458118,
+    "Sha256": "FD79540A252C265817E1B94D8DEEF956FEFDB5DAE1C95C6E1EDFF163A2872848"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal8-g1/build.binlog",
+    "Bytes": 457987,
+    "Sha256": "AC577C5970C2B9495452A64671C8AD930B95DF6C138476C6BC10E6DDC2282B51"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "roslyn/block-3/FINAL-H/normal8-g2/build.binlog",
+    "Bytes": 460681,
+    "Sha256": "5BA79C3CC22DD8F3595759187D820128CB488F50DF9294C08ACF3719B1A0880C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/injected-g1/build.binlog",
+    "Bytes": 457418,
+    "Sha256": "77EB61414EE842F0924DA4AB494BD3606897C53943A69188BC1676DD37ADF74B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal1-g1/build.binlog",
+    "Bytes": 460893,
+    "Sha256": "4ACCD0746E565182E637A03E0443202FF5759F11AE9E79099678E7DBA9DAF1CD"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal1-g2/build.binlog",
+    "Bytes": 460890,
+    "Sha256": "103FEB0BF6CB67D7AA40F4AAC5081B63A1A3ACBB1FEDB83F163E34ACB4D1793E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal1-g3/build.binlog",
+    "Bytes": 461547,
+    "Sha256": "663E3F0B5F492902008826B0C74E11ACE0D682D718F4D09F4D2C178D997BC2D5"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal2-g1/build.binlog",
+    "Bytes": 459225,
+    "Sha256": "7460978CDAB9933FBD678BA44E819B06B965EF2DA3C072D70F688B882522BD5A"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal2-g2/build.binlog",
+    "Bytes": 462833,
+    "Sha256": "26C63976CF9B51BDD6289AA483CE812EEDD2448348AD5430D66F684A93E3C87C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal2-g3/build.binlog",
+    "Bytes": 456591,
+    "Sha256": "EE35E4FBCBD4FA8BCBD21361C79293575688BD8E4AC6D1AADB53422CC7CE61A7"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal3-g1/build.binlog",
+    "Bytes": 464380,
+    "Sha256": "72545316DCCC7D9068965001EDD4C210A8FC6BE6E58369F1ACB365C03BD4B5ED"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal3-g2/build.binlog",
+    "Bytes": 459195,
+    "Sha256": "3AEC2BA15D3FFC4A9B0507589F992C1FAB01BF1C6DA3EB93CFD131BA0E4F2855"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal3-g3/build.binlog",
+    "Bytes": 456802,
+    "Sha256": "CAE5C8D83F99757338FEBD74BD4DFB9183F1A591EBD1A74CFDB6788CAF64BDBD"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal4-g1/build.binlog",
+    "Bytes": 454687,
+    "Sha256": "32B05FE79764C1AAF775582F0186ECB5E98D86C34E4350A9F26105F5B23B448B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal4-g2/build.binlog",
+    "Bytes": 457635,
+    "Sha256": "728A30859EF9180941A22DABC2A093591E7F1289000F8A2E48130E70BBA612BC"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal5-g1/build.binlog",
+    "Bytes": 457418,
+    "Sha256": "2955C933A001678AFC7BD3E2A1992B93518B44E00A034F4EFFCC9E9E27CE2F2C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal5-g2/build.binlog",
+    "Bytes": 458999,
+    "Sha256": "44B56D4297425756E12C1A7B7B73926EFFC8B8D12E27241A1C2FC7607F8ED15D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal5-g3/build.binlog",
+    "Bytes": 459302,
+    "Sha256": "632C2BB9798CF77271F1EBA7FEEBEE9145E3DB6E61ABF965D82E4200D3DA3D6D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal6-g1/build.binlog",
+    "Bytes": 459054,
+    "Sha256": "EBBD416D05B0826F2C5C0579D4BFB9994E74402A59E979F5EFAF304EC7ED81A9"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal6-g2/build.binlog",
+    "Bytes": 462438,
+    "Sha256": "0D1C6C76427BCAC84F8C4072BF010C6658992CB90FA13A3699DCAD811ACDBD49"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal6-g3/build.binlog",
+    "Bytes": 457041,
+    "Sha256": "822C482742B175D61B822E81FD21C8CD27FBF21B824A76859FECF8184F5BF6A7"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal7-g1/build.binlog",
+    "Bytes": 461519,
+    "Sha256": "53533498E5004532327B1130E7029D497FB2A6F4C29024CF65DD3E7AFD987124"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal7-g2/build.binlog",
+    "Bytes": 459652,
+    "Sha256": "5D955539BF6E438D3F1429B101E9486C20334A3D7302D50EB843A5C788A7EA68"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal7-g3/build.binlog",
+    "Bytes": 459683,
+    "Sha256": "C41C0E52537598953B0631FE406048DFC5CBDAA2F516DDCD17BF8323A045B9B4"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal8-g1/build.binlog",
+    "Bytes": 460795,
+    "Sha256": "62E117275C250841D0362DE24FDD41BC918512FF52441526E3AF1EFE5FED0698"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal8-g2/build.binlog",
+    "Bytes": 456979,
+    "Sha256": "F4A3802115D02721755DAD243B6115F7CA0C04CA689382730BF8779DA50977B8"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "roslyn/block-3/BASE/normal8-g3/build.binlog",
+    "Bytes": 460499,
+    "Sha256": "824F1F7C2F8A9CB7DD26728CD666B9F080FD2AE95A4843752646DD90C268B3FC"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/injected-g1/build.binlog",
+    "Bytes": 463302,
+    "Sha256": "F1BA776A0EAA75BBF3B298AB49331E13D0302CDAC1D6DE367A0625CFA8D373E2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal1-g1/build.binlog",
+    "Bytes": 460693,
+    "Sha256": "4B7C4E574962EC23099941EE002248A3AB26EB81FBC45B7FEA2D3504C1B814CE"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal1-g2/build.binlog",
+    "Bytes": 457767,
+    "Sha256": "0DA4E17268184D4882909ACE189DD46EA3428327B5E1D71829AB286CF530352B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal1-g3/build.binlog",
+    "Bytes": 460098,
+    "Sha256": "3F9C7D5C7433D1434D4F7789561B1454CE87DE4C74A2270A98CD50E59C0FA57D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal2-g1/build.binlog",
+    "Bytes": 460748,
+    "Sha256": "12D0F2BD902838DA60865EB434C42A90D9F680329AC7384AE18FEACE8C2FA48C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal2-g2/build.binlog",
+    "Bytes": 459378,
+    "Sha256": "E6DC2DFDFFB94FC614F96199842B0DBBE42CBA7FA2B9C01890390B98B0C0A81B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal2-g3/build.binlog",
+    "Bytes": 462495,
+    "Sha256": "43AD3C48F48CCF412BEC9942BDE8565AF25F26D61D66309DD0F970293AE74B9C"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal3-g1/build.binlog",
+    "Bytes": 460044,
+    "Sha256": "6AB8DB25CABC798D01B300C6C81D75063E550516592A90421D50CE9005A5F159"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal3-g2/build.binlog",
+    "Bytes": 462128,
+    "Sha256": "5A52A4D3856D688A390BAFC7FE012E11F7C6CE6DC61F0FDE1DDDF181C6CA2329"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal3-g3/build.binlog",
+    "Bytes": 457870,
+    "Sha256": "6F871BDFDBF61FA421C05539840C79E4B05DE0D5ABD6F381BAC43EB2E39B9C59"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal4-g1/build.binlog",
+    "Bytes": 462240,
+    "Sha256": "5A782E0B8AC52780C32B27B7B47E5F66F93013F795605DF2A5EBC88AABBF462E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal4-g2/build.binlog",
+    "Bytes": 459986,
+    "Sha256": "4C4D5ED64EFF35C3003118D9CD76190A0542A989BDA5C3D72A530D7158443240"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal4-g3/build.binlog",
+    "Bytes": 459525,
+    "Sha256": "8CD686F02B7658F6173374AD3582212273AE0169E7C84A696B7288CE52D5468B"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal5-g1/build.binlog",
+    "Bytes": 460402,
+    "Sha256": "1A14BB0ECBFFB53DDB3AE3E06AB5F9D98255D37D127DFED20A47F82EF8D037E2"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal5-g2/build.binlog",
+    "Bytes": 459746,
+    "Sha256": "7FE398CDDD0663FEF741D93801472E96C43B8C777530703207606FA0ECF2F017"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal5-g3/build.binlog",
+    "Bytes": 460805,
+    "Sha256": "A86262993371428CA54C5BF5D924F660B7C9BBD8A7BED4EDFBFBA0BCC0F307BF"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal6-g1/build.binlog",
+    "Bytes": 457803,
+    "Sha256": "2931843E5D20095A46261D680952B073D78D817213B90B4FF4C0115C5222BD31"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal6-g2/build.binlog",
+    "Bytes": 459886,
+    "Sha256": "B2A241F437E9C46614210DCC592841E46A7B287AEF721F769DBB9F0B2D741343"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal7-g1/build.binlog",
+    "Bytes": 458353,
+    "Sha256": "EEB5CA9521F030A963E8F4FDA4BB602FCF839AED8F78B9CC537F5B9E868A4212"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal7-g2/build.binlog",
+    "Bytes": 460426,
+    "Sha256": "9990D03A0E8C58D45EF56C2DAB50D70129A80227A0E15D311713FEC3FD48092D"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal8-g1/build.binlog",
+    "Bytes": 461377,
+    "Sha256": "4F32FEA621FF95CD829A78A2027D0A89A4C2627976492C19F62D7AF3A0ECC95E"
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "roslyn/block-3/FINAL-N/normal8-g2/build.binlog",
+    "Bytes": 460912,
+    "Sha256": "2A3089097BAFE042CD6CB06B43193BA6A3906DD07C8B9E680B9747A668E6671F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/injected-g1/build.binlog",
+    "Bytes": 232496,
+    "Sha256": "16AF433591F5452F98F4BF2DAC3CBEEF335B001ED6107D4AA0A4B02B3E544A5C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal1-g1/build.binlog",
+    "Bytes": 231883,
+    "Sha256": "37649A9B6670B6EB9A06A25999ACE0ED2EABC2B895ADD6B5ABE5B959B6A5C879"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal1-g2/build.binlog",
+    "Bytes": 232253,
+    "Sha256": "A3C7AAAD1E8431DE151455A1EE1EAE5316513D7B67A1677F9A829B2C49A35B94"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal1-g3/build.binlog",
+    "Bytes": 232379,
+    "Sha256": "D3A044BCBD8D27285371E8D8AA4C93B8B524D19CB53C1AE51F2564B5D3710253"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal1-g4/build.binlog",
+    "Bytes": 232385,
+    "Sha256": "8235CFFD3340ED83A1882B49E994FC9E8455D0625467ADE2B906586200E78AEB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal1-g5/build.binlog",
+    "Bytes": 232314,
+    "Sha256": "CA158FA1F509AB4AFA34C5B0006C573A142D91CB00E2285FE323629206DE0BB9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal1-g6/build.binlog",
+    "Bytes": 232622,
+    "Sha256": "E3F7F956E7701F004100CA99E97C6D33B17865D6B474E2D2B3F16C3E73B9F8E2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal2-g1/build.binlog",
+    "Bytes": 232362,
+    "Sha256": "4DA967367D531ECA4F8952452124D44BAE7DBC146EC7B9DEAF43DD914D3B47BC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal2-g2/build.binlog",
+    "Bytes": 232619,
+    "Sha256": "6190065DEE8056705F5DA6638A03B708E8748D8DBCE61C53ECB60583BFFDC382"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal2-g3/build.binlog",
+    "Bytes": 232613,
+    "Sha256": "6F5B1A65712AF906A48CC53E2CC52E42C109958E2E6136DE6FDFC9E0F7FDCB0F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal2-g4/build.binlog",
+    "Bytes": 232307,
+    "Sha256": "0B44215564ADBEC9B610D29A47CC4A5F73D75FD47076C829D0311B6594759ECD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal2-g5/build.binlog",
+    "Bytes": 232400,
+    "Sha256": "8F1F20F98478E9F48DD103018F00FAFF34FF42B9C20AA53BB3E233D82CB81B32"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal2-g6/build.binlog",
+    "Bytes": 232108,
+    "Sha256": "F6331D667FAA6DED0FC278A795852C3A086FAAB29E1F7D77921F1760A3093A3C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal3-g1/build.binlog",
+    "Bytes": 232532,
+    "Sha256": "6A35937805549882C2C350AB7D7EE3AC94A1FB9A1837C95623CE7B8FCC01E728"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal3-g2/build.binlog",
+    "Bytes": 232209,
+    "Sha256": "D418528C0B63316F90ECDF1C0F383429364DCDD73C366B440C13041CD484C64B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal3-g3/build.binlog",
+    "Bytes": 232398,
+    "Sha256": "79A33CAAA2318F2ED9A3457D2FB7BDD47311F9573E61A10929675370394F9509"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal3-g4/build.binlog",
+    "Bytes": 232767,
+    "Sha256": "CBE58E332F3F4445785094D393F5ED7FD453030A14E90F86D4833B1777299447"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal3-g5/build.binlog",
+    "Bytes": 232454,
+    "Sha256": "8F749ABDD7E3B090D73268F58E7D099D9C9EE7F729043AD970D773F1CD5C2D2F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal3-g6/build.binlog",
+    "Bytes": 232256,
+    "Sha256": "D0F3547F4A9445E9810A4EB41634496D31C3D0527AA02969A68133FB10ED3CC4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal3-g7/build.binlog",
+    "Bytes": 232636,
+    "Sha256": "4904270AACEC00D11306D8F0EA364A5FA025382DD5CE0308C40832DE32CA244A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal4-g1/build.binlog",
+    "Bytes": 232352,
+    "Sha256": "6741317D98214663A6F4055DD4610A269703F570A193D1C0059C8527F0C186C8"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal4-g2/build.binlog",
+    "Bytes": 232422,
+    "Sha256": "4044908248E8D1ABE22CD4205D2468456420DECA985089C7321E22DBB9926635"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal4-g3/build.binlog",
+    "Bytes": 232464,
+    "Sha256": "7D3EC758165B16000ABF98C374217AB28E783D42199C86F6E29EBC4DBBCC5598"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal4-g4/build.binlog",
+    "Bytes": 232510,
+    "Sha256": "2AA88AF593D0E2D8A8CB2CC55678E91223D4E6167FC41B927BDC585C25D0AD10"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal4-g5/build.binlog",
+    "Bytes": 232193,
+    "Sha256": "3B9342A1BFB5150FD37A4CDDEA3B4639A057521EBEA8CB4E654BD78C79C9C9A0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal4-g6/build.binlog",
+    "Bytes": 232731,
+    "Sha256": "EF01F9E1A6AF80924C5E34673C83019DF7C94774E8D9EF185EBE56A34AC2BAFE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal5-g1/build.binlog",
+    "Bytes": 232502,
+    "Sha256": "F7A162E9EB931A23D7E0551A6FCCB50B7DAAD4620E8CF80382C41CB690DE779F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal5-g2/build.binlog",
+    "Bytes": 232430,
+    "Sha256": "1DD1EEFDA2793D72924BB90EBC10978EEEFD8D2EE44A29B1D2D4DF6E0DB44044"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal5-g3/build.binlog",
+    "Bytes": 232500,
+    "Sha256": "3D00A77160D1DEDE929F9AF91FE2BB80374038BBC101AA60E37B0735C0D2F860"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal5-g4/build.binlog",
+    "Bytes": 232296,
+    "Sha256": "5F0A908DEE19A39C96BEAED835DE8F737E6F58E8CB707D6ADB80F881993E399D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal5-g5/build.binlog",
+    "Bytes": 232257,
+    "Sha256": "8FDE524A6FAC9B459499946097CC8F96B48AE886322940A7F451FAE470B8789F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal5-g6/build.binlog",
+    "Bytes": 232433,
+    "Sha256": "14CB2C093AA7069A337AB5228E8964D704B771A80C14D4BC09B1C26AF44B4609"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal6-g1/build.binlog",
+    "Bytes": 232436,
+    "Sha256": "9C7E549143E010C8AF5AE4C8D7089AF7E2AF012BB55E95B3833481C0B815BDD9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal6-g2/build.binlog",
+    "Bytes": 232392,
+    "Sha256": "69DCA7DB40489D1FE3662EEF45A231DFC562E3102738FF112066A3FB2093CB92"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal6-g3/build.binlog",
+    "Bytes": 232493,
+    "Sha256": "B1AC8AC29C159AD40078CB33DA74B19275177EFC656EF6E5E22654CCFC1E52DC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal6-g4/build.binlog",
+    "Bytes": 232339,
+    "Sha256": "C258803D2E22D912B8935D54165CCEE42A4FB5DC6121CF717E1FD2D547279C61"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal6-g5/build.binlog",
+    "Bytes": 232607,
+    "Sha256": "4EDBF9605EBC3E278EDDC2B6964E5E1D69AD8EB9B4446C888CA0F33D4ADB0D99"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal7-g1/build.binlog",
+    "Bytes": 232375,
+    "Sha256": "22F16727927116C64481D602BC843AAFA84CCCCBCF9CCAB679EBD46826303B4F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal7-g2/build.binlog",
+    "Bytes": 232404,
+    "Sha256": "70971A178E6797A974FD95C0884B90436BCAF12AAC607651231FEDDD902D1B05"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal7-g3/build.binlog",
+    "Bytes": 232150,
+    "Sha256": "31964AA3122602A986EC162158ED55C7BA4991733F1DD84020CA5D7C7E5385A4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal7-g4/build.binlog",
+    "Bytes": 232471,
+    "Sha256": "3AD8889001D0CA0728F2BD836FE5D20CBAAC0B87B1565D3BC6FD659EFF1C08A4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal7-g5/build.binlog",
+    "Bytes": 232252,
+    "Sha256": "D2CFCEF71FA1DE3FA6877F02E540C71691B14DA0EFD4AC7AE6077D25DAD36AB0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal7-g6/build.binlog",
+    "Bytes": 232548,
+    "Sha256": "E39D5BD6B810881B20E0442131C4D79F7EFC5346B1B9AD567B84D784996DACAF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal8-g1/build.binlog",
+    "Bytes": 232364,
+    "Sha256": "BB0CF1E39E278A7A0148F610D3BC90044C3CB0784D4C9F673C4E4C55168E465E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal8-g2/build.binlog",
+    "Bytes": 232394,
+    "Sha256": "BE3F62294CCCCEA070FD560CA9725719957F508550DA40A5B4B2387E2B579C2C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal8-g3/build.binlog",
+    "Bytes": 232502,
+    "Sha256": "88E180CBFD07EF6BD7B78FD2EAB8957CB857E6D34A98697E55BD7B7D2E802553"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal8-g4/build.binlog",
+    "Bytes": 232188,
+    "Sha256": "8333CB967C4D1265890BD70076C607E152E3B9E20814EC25EC0B38CA733060F4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal8-g5/build.binlog",
+    "Bytes": 232284,
+    "Sha256": "B90831909729A6138A437F3CEC249328B0EDE5CD6DF398143BCD923BE361C4AD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal8-g6/build.binlog",
+    "Bytes": 231990,
+    "Sha256": "DA7CE79989DAE53E5B9678643C62DE38858E0246A405F97C46AD2F5CBE6A9101"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-1/BASE/normal8-g7/build.binlog",
+    "Bytes": 232295,
+    "Sha256": "8B05C391941852D8D0117FEC902861168836EB06B3F8C350FCD75B9FABDDB58E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/injected-g1/build.binlog",
+    "Bytes": 232540,
+    "Sha256": "EE845874D988597704E83579C718969FC60B64AE845050B562F15DC8FC096D11"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal1-g1/build.binlog",
+    "Bytes": 232417,
+    "Sha256": "B800E5884ACD65EB83E21EAB029617D309A89D1C00033BC892AC3F770BA7338E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal1-g2/build.binlog",
+    "Bytes": 232088,
+    "Sha256": "0B555844D156E4DA553D6FED2573251989074C11654E80D423ACFA07B824A56F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal1-g3/build.binlog",
+    "Bytes": 232358,
+    "Sha256": "075309F951AAD5FBCAEA19DF25023E67EF0DC300657A4C3EF0E3CBC52D5BDAEC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal1-g4/build.binlog",
+    "Bytes": 232230,
+    "Sha256": "5AC247F510453815C655574901B4C283D5B1863D07213E0AC28B40928C89F0B3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal1-g5/build.binlog",
+    "Bytes": 232161,
+    "Sha256": "318787F7566B4F7A32A7527F8EF74D1504A4B80D2B00C8BF37CF8EF8154AC3A2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal1-g6/build.binlog",
+    "Bytes": 232332,
+    "Sha256": "81678ED7C7FA8A430F549D11C2D71AB172DD76FC49FC9A0BAC8EDFD3CEA19BC3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal2-g1/build.binlog",
+    "Bytes": 232339,
+    "Sha256": "16BD4DA18727F81813297B6D0D83676F6E14C5C5D37F5ED4582443584A1EC810"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal2-g2/build.binlog",
+    "Bytes": 232115,
+    "Sha256": "DF4220EABC61DAD9E3F0BB1620878AE7F8F48BAD5A5D0569103E1376DDF43412"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal2-g3/build.binlog",
+    "Bytes": 232234,
+    "Sha256": "55418006D425075FF551F12E35F2F740D0B800EBC51F6247293468B1D4F893A4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal2-g4/build.binlog",
+    "Bytes": 232443,
+    "Sha256": "B3F881DE32817C7F763B26B4B657C2E5673B4E9A06DC6B1FA1AE6143BEA09B63"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal2-g5/build.binlog",
+    "Bytes": 232199,
+    "Sha256": "2CAB61494330CA331575117898E36572FA9314C1DE29A6EB1D6D9F66C02EBF25"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal3-g1/build.binlog",
+    "Bytes": 232349,
+    "Sha256": "5EB60DFA8CAD461B1AC44D02B82DEEAFC5B83A5725F0073F199E315A7B065DB2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal3-g2/build.binlog",
+    "Bytes": 232077,
+    "Sha256": "4635F70EDAA6CE3E53741F8EAD214C6A43DE54E2F8D84B39944D0F1756EA4F6A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal3-g3/build.binlog",
+    "Bytes": 232292,
+    "Sha256": "8C7D6464583693A97869219DD5FE5A462CE78D9F72198804F7EAD78CE63B51FD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal3-g4/build.binlog",
+    "Bytes": 232109,
+    "Sha256": "C141EEF9E396CB66DE1D1D455B04F0116ED0DAAF11DDC74FD5003328C7EE6F94"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal3-g5/build.binlog",
+    "Bytes": 232252,
+    "Sha256": "C8942EAD08EC422BBCBD043414682FEDBB77E26ABC28816C299356C50C93CE44"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal4-g1/build.binlog",
+    "Bytes": 232224,
+    "Sha256": "718EB035EB024F9CB2D928A7D23EFCEA108F2F2C8EED8447244652ABE4868384"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal4-g2/build.binlog",
+    "Bytes": 232239,
+    "Sha256": "C31562D8AA5043BD28FB38A38290198872AADD848C701B7815E8E9DFE1AAF534"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal4-g3/build.binlog",
+    "Bytes": 232098,
+    "Sha256": "DA3E2748A56656D30937963676752EA74F48ED848D78D27B28DA3D89B76C269B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal4-g4/build.binlog",
+    "Bytes": 232217,
+    "Sha256": "FA13A42BED01B39E495D84039821E8B849568B4CEA62C53A1C7F735D4F20F92A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal4-g5/build.binlog",
+    "Bytes": 232173,
+    "Sha256": "71458464DB6C611C4CC58AB4BE771B1C976B2DEEA4930CC6D16F29967D6A0434"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal5-g1/build.binlog",
+    "Bytes": 232205,
+    "Sha256": "837832D054FD4AD2027EC83D65893F6E2DD759E338342F6E8E68EC104456AAD9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal5-g2/build.binlog",
+    "Bytes": 232392,
+    "Sha256": "8C4616A264543978C000363C58DDF596148AFCE5CC5DA7A65B4D14072B705A07"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal5-g3/build.binlog",
+    "Bytes": 232346,
+    "Sha256": "47FE5403BCD1ECA2DD531A363F46BE101A328909530ABC74A78BB39EDE9976D6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal5-g4/build.binlog",
+    "Bytes": 232078,
+    "Sha256": "8BD0791EC9BBCD8B78A594854B1DD25E553AB6332446C151E759069F2E2F46F6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal5-g5/build.binlog",
+    "Bytes": 232211,
+    "Sha256": "3ED56D2BCF1E68ED9D0B424251BFF0AE3BCA14AC567148A20523BB104706268A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal6-g1/build.binlog",
+    "Bytes": 232188,
+    "Sha256": "9AF2FF1D3D000E99CAA80D346E123DE5D73B18B0E5B25D4E5AA07C5CD9D2C60E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal6-g2/build.binlog",
+    "Bytes": 232290,
+    "Sha256": "5A4A429AC7F128089217F79247F4DA775DA26A2369EF2C30E5A1D92DF6D02C19"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal6-g3/build.binlog",
+    "Bytes": 232252,
+    "Sha256": "5E8776DCEA3AC4B64FD69F6A49C0B9A6AB487C27953E932F236D6DEA90E6CEFD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal6-g4/build.binlog",
+    "Bytes": 232441,
+    "Sha256": "B071EE8DBFB0195F62878A3D1AE833B84279010CE3618A1DFB9D1AD79A9C1C3A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal6-g5/build.binlog",
+    "Bytes": 232417,
+    "Sha256": "73BD471B0C31865ABACC27294762838B20895A428ED43E21791E142E4F6A8909"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal6-g6/build.binlog",
+    "Bytes": 232391,
+    "Sha256": "1AC0A8197BC8D9277ACD4055C7A95FBE0696B21F210BC7C51E266886AAED63BF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal7-g1/build.binlog",
+    "Bytes": 232178,
+    "Sha256": "123BA168C54AB742EE6910A4BE7014343D22919C879CD2E9F670AB66ED5C001A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal7-g2/build.binlog",
+    "Bytes": 232174,
+    "Sha256": "823111E8462DBB5FFC0C1E1154E1B9C902839058146D16CBB9CECEA7462181C3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal7-g3/build.binlog",
+    "Bytes": 232086,
+    "Sha256": "FDC89B9B7AE68C5EE9C05B7B88CB8E510EE8BC5ED8270FCDE4329888F3F10859"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal7-g4/build.binlog",
+    "Bytes": 232313,
+    "Sha256": "D54C7AFD259C5A672F8DD1F4898D2BAE94D94A055C960C3776CCD3D3BE4C4B80"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal7-g5/build.binlog",
+    "Bytes": 232074,
+    "Sha256": "DC41326724DBE19997DD12BD1B0218C0800C65384EB9F4F63ACE03A29CB19626"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal8-g1/build.binlog",
+    "Bytes": 232172,
+    "Sha256": "B04B1EAF5067C8B15BC5C0C474E4A0AF8113546B98EA0D0A9FDDB47CDC30A770"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal8-g2/build.binlog",
+    "Bytes": 232205,
+    "Sha256": "47BCF67E132227C5D38F6A33FF5C625020E51B6843D92390ACDB04AE271B71D2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal8-g3/build.binlog",
+    "Bytes": 232132,
+    "Sha256": "92C60509BE3F892F4044AF2327A75F423B6BB280A58C7D8411A8E7359EAB1883"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal8-g4/build.binlog",
+    "Bytes": 232436,
+    "Sha256": "04BF9C45E02D1A3C5CFBC540DA7E5D2136AF573640DA9DC22F3E3EFCD42D92B1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-1/FINAL-N/normal8-g5/build.binlog",
+    "Bytes": 232434,
+    "Sha256": "8192891218748E80BC6087F3BD247F865063E2A8B1E713C4B7032F5FB21EB3E4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/injected-g1/build.binlog",
+    "Bytes": 232541,
+    "Sha256": "3830227A421B34A2A477D03AC01EE5122AA15611902E530A424787EF580A0DA6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal1-g1/build.binlog",
+    "Bytes": 231965,
+    "Sha256": "C8FBDF2BEC52A78349F05082011649FC597C495E7221C54CE5B70E73FFD109B9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal1-g2/build.binlog",
+    "Bytes": 232160,
+    "Sha256": "55EB187EDB7E93C02138BDC38E44CF54531FAAD62DDB6C4566CB0FB267903A95"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal1-g3/build.binlog",
+    "Bytes": 232220,
+    "Sha256": "E9F64C130CF021E5377CB2C95D561F4AC88317C4DEB6081F562BBB344DDE95AC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal1-g4/build.binlog",
+    "Bytes": 232314,
+    "Sha256": "8FC97C436057C7B5FE6B2295385C844073432803132A3A92BCA5313694B83A9B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal1-g5/build.binlog",
+    "Bytes": 232139,
+    "Sha256": "FDE0F38CFC6714EA69E472C7E9BC962AE6570F29B126C2EA7CC271E704ACDBF8"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal1-g6/build.binlog",
+    "Bytes": 232312,
+    "Sha256": "432F03CC160D88328BAE62FBB7B77E50C26A85677EBD63FDD4621506D3EAEDF4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal2-g1/build.binlog",
+    "Bytes": 232092,
+    "Sha256": "602B7B35F77615705A2C98FCBA7E369ACB129B9BA99A76DBE7E0F4CDD1FC91D3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal2-g2/build.binlog",
+    "Bytes": 232440,
+    "Sha256": "EB76B2296F48695FE13B8F51CE07DC2DAD5000CA2C7687166ADD8E128A7D25B5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal2-g3/build.binlog",
+    "Bytes": 232215,
+    "Sha256": "D1E739493A21F669832121FDB442E71BA5BCECE3282D7A0DE5B2237E0A1F363C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal2-g4/build.binlog",
+    "Bytes": 232283,
+    "Sha256": "2E32FBBA2D7CF684663A4B50028D7F2F48833CD92AD1566B2BCFBA6137567806"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal2-g5/build.binlog",
+    "Bytes": 232098,
+    "Sha256": "43CFC85631E9922AA2F93135D1F3FB7798170096536C3DC2B2B515DA30C7A9FB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal2-g6/build.binlog",
+    "Bytes": 232082,
+    "Sha256": "EA33FACC011252F51801B74F2610AC9B545BB414E118DB8E6C991ED26FE42DFE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal3-g1/build.binlog",
+    "Bytes": 232335,
+    "Sha256": "8819482C0E5A66EF15C2C4BA8EB360F6BB18D49C07DA2095C8B2B27F28430CA5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal3-g2/build.binlog",
+    "Bytes": 232153,
+    "Sha256": "EAEEF6D5036BDAEADEE7EACE704C8306578BE4963A837ABE463896949B539D47"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal3-g3/build.binlog",
+    "Bytes": 232459,
+    "Sha256": "B54E175306377AED8B1C5B92C4BCB77F679F7776B9C5350F10F70A82A5AD2D5D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal3-g4/build.binlog",
+    "Bytes": 232332,
+    "Sha256": "0F2356CEAF594AFCA5C41C4A670E0D370621A9644C7B878C35AA06D5A3281997"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal3-g5/build.binlog",
+    "Bytes": 232217,
+    "Sha256": "B3191DD41D4B28E56768A23F82DBA5CAFD6233929B3BD204FF9F1EF4B587FC9E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal4-g1/build.binlog",
+    "Bytes": 232048,
+    "Sha256": "47E714161E22367EA561C1BB1246FB885A81D3DFD51018049DE677AAE918FFA3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal4-g2/build.binlog",
+    "Bytes": 232399,
+    "Sha256": "2DF6EC45CF6A347F3DDBCA7B38F34139EAE9E782E732FC7DC0AB7494F9864FAE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal4-g3/build.binlog",
+    "Bytes": 232338,
+    "Sha256": "09CCAEAF026AB068BCEC2A3B4178C852684AB8744F99C10552436782FCC6D91D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal4-g4/build.binlog",
+    "Bytes": 232170,
+    "Sha256": "1FFDA83058A570943A7EE20B47120C03C60DA2D93810EF794F67C874D2A172E5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal4-g5/build.binlog",
+    "Bytes": 232185,
+    "Sha256": "6336FE0D3F265296623B2C6318BA6AE5907FF268DB183033598CB9476C5C151B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal4-g6/build.binlog",
+    "Bytes": 232200,
+    "Sha256": "25DF8972EC8CC829F8165FC9CD2AAAF5F051FE27B2A757A41B83174FD2F93DE1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal5-g1/build.binlog",
+    "Bytes": 232458,
+    "Sha256": "1ED297775E01480E613A28C660598412B26DA9492A3FD6E1B3859353014202A8"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal5-g2/build.binlog",
+    "Bytes": 232132,
+    "Sha256": "68DCB35EAE3FDDBA122670FDA24D5B58A7BD0D97DD7A54CD5CA30003FB18A4BE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal5-g3/build.binlog",
+    "Bytes": 232116,
+    "Sha256": "3C0108DF318F22D005ECED8CA1328417C6867625A940956BF682FB21688BB2B9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal5-g4/build.binlog",
+    "Bytes": 232262,
+    "Sha256": "4D622334D1BEB80212D324CBF9BAC6E4F2627068F88E03EDC207B221D91F32FB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal5-g5/build.binlog",
+    "Bytes": 232272,
+    "Sha256": "D6D72D9FD691CD95FFA48B776091DC8B85692DC04653655149F926CDA84F8984"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal6-g1/build.binlog",
+    "Bytes": 232286,
+    "Sha256": "82E0DB8E4F0393D96F8A198B7FA8CF69F2EA3F3E4D6F529363DC49E15849D7F3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal6-g2/build.binlog",
+    "Bytes": 232444,
+    "Sha256": "DE9B7314ECD28574C011720D99DC98D7CF58B5D68B7FB085BE1E1FA49B46E981"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal6-g3/build.binlog",
+    "Bytes": 232350,
+    "Sha256": "97AEAC75C6690FB45FE6029EE33F8145B8F7C2D85FC52B8C78173885CD40A24D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal6-g4/build.binlog",
+    "Bytes": 232304,
+    "Sha256": "C277A71954635EDC36FB8A72B994F22211C4B83115F974DE93424EA2C3833552"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal6-g5/build.binlog",
+    "Bytes": 232131,
+    "Sha256": "366B7E958E0A6294F89D117636BAF0770B9508563BAC7614C16587B43EC3DC30"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal7-g1/build.binlog",
+    "Bytes": 232298,
+    "Sha256": "6FC4719EDC2649E3FE8FB8EF3C922904A475CA60BB0768DDF5B898D6882919B4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal7-g2/build.binlog",
+    "Bytes": 232385,
+    "Sha256": "B33422D5F21CE53298F9E0B34CD351B24FCCE21F29CC4534B275A1F1D1A32845"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal7-g3/build.binlog",
+    "Bytes": 232172,
+    "Sha256": "36D5A2AFA057D5B536870B1213CF917AC310A97172D1423C30062355C89E1599"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal7-g4/build.binlog",
+    "Bytes": 232301,
+    "Sha256": "B1E95C91DCBC4401EDC8215E77761ED5914EEF89D0544D7BA8C01B6CC1EDC656"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal7-g5/build.binlog",
+    "Bytes": 232233,
+    "Sha256": "6485FDCAD148EFCBFFACE89005B7899B38F41F3E63129A0EA92E7E332F269750"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal8-g1/build.binlog",
+    "Bytes": 232188,
+    "Sha256": "F9C23EB431FE9B9BCF55B9EA45FAD2BE1DA01CB8D233C05CA6E209C0F9D24FF6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal8-g2/build.binlog",
+    "Bytes": 232267,
+    "Sha256": "8ECE319EF39DAE657A02A814A5CFA6643AAD65753DA6EB69465D8705875637BE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal8-g3/build.binlog",
+    "Bytes": 232137,
+    "Sha256": "944ADC1DB709F27ED251239D648647A6BE773A6F0BB948CEA36B3E57919D4B6E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal8-g4/build.binlog",
+    "Bytes": 232170,
+    "Sha256": "566E6319BA340990D2FDD8F603CF98BB5E324B3D5012FEB384CFB045AFD9DDC3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-1/FINAL-H/normal8-g5/build.binlog",
+    "Bytes": 232371,
+    "Sha256": "BAA8897F3E5B966A5296D3CFD8FE52FA9A2103B14223DBC96A533843EC89DA25"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/injected-g1/build.binlog",
+    "Bytes": 232261,
+    "Sha256": "EF65E24D9F95450F6EFFE2D7BC412D5117D91E13846AF9D7CA991193DD4B8761"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal1-g1/build.binlog",
+    "Bytes": 232431,
+    "Sha256": "643DDA2800C43893276BD5C6BFF505A360F740070FC16459A9639B5B8519E563"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal1-g2/build.binlog",
+    "Bytes": 232214,
+    "Sha256": "B4E5CABCB210906518FCC71057C765EFBAA3C641914878A14C87C1B7BC84FDC8"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal1-g3/build.binlog",
+    "Bytes": 232256,
+    "Sha256": "E648E23A53BF28AA9CB0507D62FB6622CA21AD1B59D76D2ED9814C9BCA63D8BE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal1-g4/build.binlog",
+    "Bytes": 232196,
+    "Sha256": "FBEE6DEC23AF151EE980945FD73D8934367D943A37ECC614397A24CF11704543"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal1-g5/build.binlog",
+    "Bytes": 232157,
+    "Sha256": "0CE27F0FB57E7B0E67EE1969BA986BA8825FEDCF9DC85400D7E34770FCEA03ED"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal2-g1/build.binlog",
+    "Bytes": 232402,
+    "Sha256": "11AA20C36ED9BC10FFB4F3512D60A43B1CF1D5BF67636815F4EE2695EC7035D6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal2-g2/build.binlog",
+    "Bytes": 232144,
+    "Sha256": "5A279792E0CB0750BAEDBA0D01670D0EAA1126BF017E02CE92E1ADA87F7E0CE9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal2-g3/build.binlog",
+    "Bytes": 232266,
+    "Sha256": "F9C3F1E556FD0B917FFA7A794307AE828737F99B7FA58B4D3C113FD4956924EF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal2-g4/build.binlog",
+    "Bytes": 232349,
+    "Sha256": "7C00BF490FA8ACBCFF0630BEF1AD710527D76AB33A1A6D23EBBF9E805B73BA6D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal2-g5/build.binlog",
+    "Bytes": 232335,
+    "Sha256": "82AC7B5A2973428A5CA8AFCAA81679D7724CB1F5F2D0C965C412AEC40E4B7124"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal3-g1/build.binlog",
+    "Bytes": 232168,
+    "Sha256": "96F5B7A17B3A8EE9C64B3D2751C6F4D7E7AE27BBECEF155BE26337CBBFA3E6F9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal3-g2/build.binlog",
+    "Bytes": 232212,
+    "Sha256": "94C1E9ACBFB5DCFFE1AF3D220584A7CBB0DDE27EF4B8BB7544B5390064470D35"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal3-g3/build.binlog",
+    "Bytes": 232221,
+    "Sha256": "F4F814F3DFE2FCBC72CC8AD78E33850C9E3FE6F10A56C9AB6A9A912ADBF5B2DE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal3-g4/build.binlog",
+    "Bytes": 232217,
+    "Sha256": "7F95D0DC9376A43ADCACE532A1B2DD1410F79F490CEA2FC077138530029D588A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal3-g5/build.binlog",
+    "Bytes": 232152,
+    "Sha256": "352D09505D01BF1005CB14149E7F800BCB90BABAB8AD83B47B556234CC170831"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal4-g1/build.binlog",
+    "Bytes": 232217,
+    "Sha256": "8B2CE9D8076A33DAC324B2850953F5D68FAE8801B4F15CCD56F174D662B82BFD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal4-g2/build.binlog",
+    "Bytes": 232425,
+    "Sha256": "618E477B562135E3A58A9815ED00F4A79CDD767F4565501C590B2D98DDA19446"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal4-g3/build.binlog",
+    "Bytes": 232165,
+    "Sha256": "68E7DB35A57D3CEBBF38E4F85119E98642ADFF2AC5E447C27CCCDCC3C36972C3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal4-g4/build.binlog",
+    "Bytes": 232282,
+    "Sha256": "C518F82B1460084783A672C00BFFEAC0FCB0DAF779BC116145434764338A1185"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal4-g5/build.binlog",
+    "Bytes": 232097,
+    "Sha256": "21C558E5449FD90B63A8BAA87B253A25F2606E23AE6B7D8EDE8B5AAD518FB8C3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal5-g1/build.binlog",
+    "Bytes": 232227,
+    "Sha256": "77EC91756FEF4CAF6CAF6BB5FCEB689F3D018FCDB7AAEC9ECC99AA9039C9777D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal5-g2/build.binlog",
+    "Bytes": 232474,
+    "Sha256": "32E83F57C79064402C2E62528750E0788A072CA24E9CF0E387036413E31E5FDC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal5-g3/build.binlog",
+    "Bytes": 232334,
+    "Sha256": "84258D16D4EF913882D8A9F80592449887BA050CD12935F68CD016815509E89E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal5-g4/build.binlog",
+    "Bytes": 232138,
+    "Sha256": "D62BCEE9B31610C9A2D88990D873022338447319FEA98FBDD75D5C3F5052E236"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal5-g5/build.binlog",
+    "Bytes": 232128,
+    "Sha256": "CE6C4911F360A5BB5B28DCECE09F7747F2085E3D86302005CD66D2EE27E37ADB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal6-g1/build.binlog",
+    "Bytes": 232228,
+    "Sha256": "802E35E20BE56B5C815F2B8A0C8261957971E3BBF49E4D8AE01A572930903C05"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal6-g2/build.binlog",
+    "Bytes": 232266,
+    "Sha256": "B4D43FCE5358FE0164E13326D1D55D51A7D9AAE7E71501D0BF8E2A860D62FAC1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal6-g3/build.binlog",
+    "Bytes": 232228,
+    "Sha256": "A28758494023DDE8F0310AF8A5BA93B7CFEB4A73BC76C045589E0ECA8606C996"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal6-g4/build.binlog",
+    "Bytes": 232096,
+    "Sha256": "1918D29BC0FC1CBC501BD607942A52B96BBD74C2FD22FAC96DEE57352F782012"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal6-g5/build.binlog",
+    "Bytes": 232163,
+    "Sha256": "FDE40A6BB55BED33698856038A4FC8148B2D6A658FEE223B75212FFB999895F6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal7-g1/build.binlog",
+    "Bytes": 232267,
+    "Sha256": "31355393121C7E68156120793A590473B94D392EBB095E49083E11959EEFB268"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal7-g2/build.binlog",
+    "Bytes": 232167,
+    "Sha256": "15894CF32EF9291784F09AB05589086064E63CC8AF69FB5D93BCFA2A083172E2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal7-g3/build.binlog",
+    "Bytes": 232292,
+    "Sha256": "CA13AEA14A49DAF675FA4E604FE39913BA41F0E55654D42D45873FBDE6CEE66E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal7-g4/build.binlog",
+    "Bytes": 232347,
+    "Sha256": "2CDBBB26EB4945E8D6C8D99201D3BAB408009F47A26CA2C61EA4C35956DB6C59"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal7-g5/build.binlog",
+    "Bytes": 232223,
+    "Sha256": "99837617EC4127ADFF925E8A35296B23A8E0B7A6B9A44F1F2C3042AC4339C44E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal8-g1/build.binlog",
+    "Bytes": 232217,
+    "Sha256": "1A7B97BA3ADA9E67DA30897C50291D9DD9B71652060DB072AE59B89E89AAEB36"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal8-g2/build.binlog",
+    "Bytes": 232223,
+    "Sha256": "43CB39F8937337DCE052DFB59849DD63F269DFA17D17AE97EC4CC26361F52556"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal8-g3/build.binlog",
+    "Bytes": 232189,
+    "Sha256": "410FB9C3E777BE31A75B0065F210A99ADF34352A2E66229DF92E8B26177BBDAB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-2/FINAL-N/normal8-g4/build.binlog",
+    "Bytes": 232192,
+    "Sha256": "8E5BF614B0BB8AF11366A121CF60C116E6B21D44FC88E4712B4AAF0224E1BFA0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/injected-g1/build.binlog",
+    "Bytes": 232245,
+    "Sha256": "C1559DE5ACE452DEB763F32A34DA6EAEBEA310E0345ABEF90F7D2A6D3283C640"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal1-g1/build.binlog",
+    "Bytes": 232041,
+    "Sha256": "C00A389164B91833F16815718949F1F0498B1336B40C46D5CBC8EFC82240C830"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal1-g2/build.binlog",
+    "Bytes": 232419,
+    "Sha256": "966033C7CB4C299820224FA2990BA0BCFD8CE53BF11E1F6968F0820E8D3A5980"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal1-g3/build.binlog",
+    "Bytes": 232181,
+    "Sha256": "4FBB6EBA03349FFAD67F07718F401D5B1786E4BA0CC93A804FA6B9E0EA588783"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal1-g4/build.binlog",
+    "Bytes": 232305,
+    "Sha256": "8EB609DD5E55BF52148DD9F674D0B4D254FB453971F0BE43B38ABE54BF4D7FE6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal1-g5/build.binlog",
+    "Bytes": 232184,
+    "Sha256": "035D52C61FF618918F259BF926BB535BF6EFC2461E0082E3DE7A7BE7D409CA49"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal2-g1/build.binlog",
+    "Bytes": 232133,
+    "Sha256": "8465AD12BD486CBDA69616D289225C3A4A76A97364D7261BA3F75280DDC9691F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal2-g2/build.binlog",
+    "Bytes": 232437,
+    "Sha256": "12DB432C6EF806A1C0378FC7B39CEF0003528E2F7B5960D09592A7E7BA82E25B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal2-g3/build.binlog",
+    "Bytes": 232134,
+    "Sha256": "5EB19366A21B928201358FAAB66FCDFEE7131012E174CFCE39C2A08DFEE9854D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal2-g4/build.binlog",
+    "Bytes": 232303,
+    "Sha256": "AA49B767FED9EBA2D8C5995B125EAF6A69624757B0545B370940AB700722AD2C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal2-g5/build.binlog",
+    "Bytes": 232096,
+    "Sha256": "E7E58812E6ECD7C9F4C5F7E153DA826065125A176237447EF1622B2FFA17AFFF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal3-g1/build.binlog",
+    "Bytes": 232489,
+    "Sha256": "5A89ADE2C64340EB7A22C7FBDDE0D66B2675D9566E266AD72DB02A3713EC8C5F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal3-g2/build.binlog",
+    "Bytes": 232193,
+    "Sha256": "685272802339A54E4FCDE4B935A6A5A1F13FF49CE71CEE387B321D660D300D8D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal3-g3/build.binlog",
+    "Bytes": 232219,
+    "Sha256": "BDA6BAD1B38E5D3A5829F46E44A2F4C2ED3CF4A5972D25242F87D52C7B3632EF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal3-g4/build.binlog",
+    "Bytes": 232224,
+    "Sha256": "163E293953FCBECB9159CAE9582D1E1DE6BA284BEAD3C4356F6501AFB712C8F6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal3-g5/build.binlog",
+    "Bytes": 232402,
+    "Sha256": "97DDE9EA4CF0C73D80B2224C48AF93E8BC93F7F393788F50F66198615E8919DA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal3-g6/build.binlog",
+    "Bytes": 232332,
+    "Sha256": "372F69CAA37C6E5CB6ADB4EF0DBD8FDBCF16B829B44D5DC9F1A3962556C72DAA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal4-g1/build.binlog",
+    "Bytes": 232409,
+    "Sha256": "B1B49DC44667BF1DD915AE78B7143D90E3C61AC71997B5725E9207DE8BAEA536"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal4-g2/build.binlog",
+    "Bytes": 232204,
+    "Sha256": "27A91B82DFFD21846560E9063B6DB07521C22779D694C79C339DA28E40286460"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal4-g3/build.binlog",
+    "Bytes": 232389,
+    "Sha256": "9419D629F7E952CF9A5E57B31077ACADE8620AA6D96CEF491C5735E308F81CDA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal4-g4/build.binlog",
+    "Bytes": 232167,
+    "Sha256": "C5D8AEBEE4D142A11D0BFC224A14824D2644F162FFCE82816099E9BBBEA0405F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal4-g5/build.binlog",
+    "Bytes": 232243,
+    "Sha256": "ED0C594BCF3411FAC857975E29D8CE559834000B83AEFA2230B7A60ABEE17130"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal5-g1/build.binlog",
+    "Bytes": 232420,
+    "Sha256": "6FAC0A6949AFD08790220EF19FF1AC8E74100DF25DD566108C0332964C751DBD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal5-g2/build.binlog",
+    "Bytes": 232358,
+    "Sha256": "35A3133FD9019989CA29FC2B48D03C4C6D50699E61D84CBA628184D56A148BA9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal5-g3/build.binlog",
+    "Bytes": 232285,
+    "Sha256": "E01815BC8CB2B36373B8E8F02EACBD370A6C5404A43E6020A24F7F121339F447"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal5-g4/build.binlog",
+    "Bytes": 232301,
+    "Sha256": "585F2E1D434DC9CBB6DD8718F48C99961B26C32061B01E37B8D4976AC88CF52A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal6-g1/build.binlog",
+    "Bytes": 232181,
+    "Sha256": "91EB1D623EF35A7885FEA39CA8A60E2DAD0AE06B30A040B5EC001635D4C4D7BC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal6-g2/build.binlog",
+    "Bytes": 232148,
+    "Sha256": "6C86E18EA0026A0F709ECEA5F49741E4659120374705165DACA8A1D45E1C159B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal6-g3/build.binlog",
+    "Bytes": 232344,
+    "Sha256": "150459F3A040A5528596CD1E1BF400D1A7F9D52D6A66154E192CAD35E90B66EB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal6-g4/build.binlog",
+    "Bytes": 232208,
+    "Sha256": "965BBF1CE27E7312C6B02BC1C100C4C32238A2434E611A23848C179F3BDA5DC7"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal6-g5/build.binlog",
+    "Bytes": 232158,
+    "Sha256": "78A6284642328F323E7B29C88D0E52834B707D0137B17F797BF463297B79CF62"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal7-g1/build.binlog",
+    "Bytes": 232202,
+    "Sha256": "93104BDA39BC4B353C8B09C5ABEFA053FA07A7E7E560DF2CFA9E08F4C5899013"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal7-g2/build.binlog",
+    "Bytes": 232246,
+    "Sha256": "EA38D675F63589A462C0A3D58852F0223A3120D33376A02595394FBF259E3391"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal7-g3/build.binlog",
+    "Bytes": 232279,
+    "Sha256": "9C9CA202C9AD8DB01EC13E521C962EA43CE8BC3D3DD2E96B2AC1675488AF15AA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal7-g4/build.binlog",
+    "Bytes": 232416,
+    "Sha256": "B9F1DE171DDCB8E69352FDFB864588E1BAA4A56352332532DD60F8AC99641C6C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal8-g1/build.binlog",
+    "Bytes": 232246,
+    "Sha256": "4965FEBA81B903A62865FDDDDB3E9886E0741C7249576CB76DF3AD87FBE05AA8"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal8-g2/build.binlog",
+    "Bytes": 232268,
+    "Sha256": "42F4EBCC3AE9960968178CC826D8283396AF17B52A3E0791C187107E209D55A2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal8-g3/build.binlog",
+    "Bytes": 232268,
+    "Sha256": "9E520462826D3E0EBBA7337AF4944AA6ED889572382C4E1F96EF30590F317A37"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal8-g4/build.binlog",
+    "Bytes": 232374,
+    "Sha256": "80F5B0271D73C9AAB801F464A3C87113E02A93C9777AA667C0A0001132F2F796"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-2/FINAL-H/normal8-g5/build.binlog",
+    "Bytes": 232220,
+    "Sha256": "C743365E31A706C715C828C252A9ED77324F9B288A3EF51660E8D7BBA1333775"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/injected-g1/build.binlog",
+    "Bytes": 232474,
+    "Sha256": "BCA0E4BD6EF2AA0DBFD49A0C77F0908D5D85A628A8183F8C0211A6B9740DAEF5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal1-g1/build.binlog",
+    "Bytes": 232379,
+    "Sha256": "E053C121460AD3BCCC4F4A3000EBAC8E166215F7F35B41043230D8A28277F243"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal1-g2/build.binlog",
+    "Bytes": 232444,
+    "Sha256": "E8C5440CC948EB6B84265D75FA1886C905B268AC703EBFC45DBD4D1E7AD79531"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal1-g3/build.binlog",
+    "Bytes": 232493,
+    "Sha256": "B1B5C1217168CCB2AD729980EB84945A6284C635A62043D7E26F2F11F1ABC0E8"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal1-g4/build.binlog",
+    "Bytes": 232475,
+    "Sha256": "D8E36E975623D7217CA6942B15D2E454F60E358F964ECF5F3D63B29A2E7EC549"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal1-g5/build.binlog",
+    "Bytes": 232490,
+    "Sha256": "6AFC1AB7B49331F417E0847E390BFF93B97126EA0E916D8F46D2CC47F33F71ED"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal1-g6/build.binlog",
+    "Bytes": 232397,
+    "Sha256": "7BADEE51B34F8B36CB2CF79A80C68C27C9BDEF2FD1427ADA7FB80B33FAFD856C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal2-g1/build.binlog",
+    "Bytes": 231853,
+    "Sha256": "D78CE07F2B86EB535428C4DE69CDCE5F93EF55BD4D5D62BAAEE35544F66005A1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal2-g2/build.binlog",
+    "Bytes": 232444,
+    "Sha256": "138516908B11B412A2A93E7AF089548A345F82B385D851629EA413502E256C9D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal2-g3/build.binlog",
+    "Bytes": 232342,
+    "Sha256": "9418174FC9DBF20784BC61B11704E8BFB8BC845E22FAF6EEBB5D91FD6B337BDE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal2-g4/build.binlog",
+    "Bytes": 232581,
+    "Sha256": "4DBE33B87954F4ED367B27801276725D43EB59B6F3AB54C339C50A91077D0C69"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal2-g5/build.binlog",
+    "Bytes": 232311,
+    "Sha256": "84A5F014060CA1E897CE1CFE6B021C8CEDE44F0F424794641062CFDDFF7A0E27"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal2-g6/build.binlog",
+    "Bytes": 232348,
+    "Sha256": "906D53C8BC881DC8DBA469CCFEF85D8B782EF5CD211D0D57072866E670FEBE74"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal2-g7/build.binlog",
+    "Bytes": 232531,
+    "Sha256": "BE49644116A1B16A077F5CCB192CBE05825655410B9A6D564DD84C1976F6C8BB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal3-g1/build.binlog",
+    "Bytes": 232423,
+    "Sha256": "FE847A38E8842EA4387DC0856F5107B641E76F1312CA0B4EA3C4C30EE0E7FAFE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal3-g2/build.binlog",
+    "Bytes": 232550,
+    "Sha256": "72318EFC1C720EED1CBF295B925BC8807C3BB760CB3C1E5BC358F7AE3C935903"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal3-g3/build.binlog",
+    "Bytes": 232161,
+    "Sha256": "5FC7309E916CEA49DE3D4E3CF457785ED7DB57F2AFB656C4470B5BAAF5308241"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal3-g4/build.binlog",
+    "Bytes": 232553,
+    "Sha256": "BD83205933DACDF6F577CFC7D8F98BA5665D178A3B6C9FD0593164D8AEEBE768"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal3-g5/build.binlog",
+    "Bytes": 232227,
+    "Sha256": "FD360B0C0432CBCCBB1FEF05583E62BCA4A5D9E9A1546E287FABC383544F302B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal3-g6/build.binlog",
+    "Bytes": 232582,
+    "Sha256": "A7D163CEE2BD8E28DCBA08676C2D170829C557F3CA2BD34496C280DB517B849A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal3-g7/build.binlog",
+    "Bytes": 232312,
+    "Sha256": "4B4B49B5C29B8EAD57426075A0C9CBA3100AED8634655CD9A3EE8266E40F845B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal4-g1/build.binlog",
+    "Bytes": 232405,
+    "Sha256": "BBBB10BAA4F270A219C1400D6ADC06DC2FCC0A8B70B31011B78F81511431327F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal4-g2/build.binlog",
+    "Bytes": 232530,
+    "Sha256": "E2D1E58686C7210BA20044937A8B59FE189C4375D1C57912715EBEEE42C71CC0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal4-g3/build.binlog",
+    "Bytes": 232677,
+    "Sha256": "685A7361C3B12C4A5631864E30286E33D6506B7536D2C8552E6032E8F1E3C033"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal4-g4/build.binlog",
+    "Bytes": 232452,
+    "Sha256": "371209C2E4087D0B569C1233EE369D2146A50BD9F32354F1C20087AB6D8CC581"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal4-g5/build.binlog",
+    "Bytes": 232227,
+    "Sha256": "5C1102D76993DD65611FE739FE03D8CDAC876E146A492A8EDEEB0A2950D8897F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal4-g6/build.binlog",
+    "Bytes": 232257,
+    "Sha256": "BEAF0E6B2627CE93E0013F42E78B96DF7BE00789D749A83BCAA113E82F2EC7F0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal5-g1/build.binlog",
+    "Bytes": 232442,
+    "Sha256": "ACC139A4B344E3E5C160091A31E8F728C14B47142CAF5C91C8608C7E7FB63665"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal5-g2/build.binlog",
+    "Bytes": 232070,
+    "Sha256": "C920AD5E7D41F8840317340FD996898B9104FF8F5FD0C716589C778BC9C64A84"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal5-g3/build.binlog",
+    "Bytes": 232384,
+    "Sha256": "F826377A5819D065BB5C6473CFEC5DEDC5EFADDCA6F9BEF462D2A94A5AAE7D24"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal5-g4/build.binlog",
+    "Bytes": 232147,
+    "Sha256": "9106C21752AC3B03D56AF2F2C50725FE460758FA3EF404A2F58EFF4D6B659350"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal5-g5/build.binlog",
+    "Bytes": 232404,
+    "Sha256": "6AF41277A8A72B7315D3BA8D4BD19007E38D1C7298AEBE402D3E93C985DED6E1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal5-g6/build.binlog",
+    "Bytes": 232230,
+    "Sha256": "85F6108B0CBE7F6B0152FA0BEFD8AF73FD9B9EA45031891973D60164FAF355D5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal5-g7/build.binlog",
+    "Bytes": 232295,
+    "Sha256": "DFD30A367A03AC03B6D9E1CAD1F1B84C6388A5611C46DCBD1C6B91AAA3DEAD2D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal6-g1/build.binlog",
+    "Bytes": 232429,
+    "Sha256": "6B51E9CE33FE6F0EBBAE1FA9CB9751B0C9F7296FF7C310A58C7D21F3D9FE27EA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal6-g2/build.binlog",
+    "Bytes": 232363,
+    "Sha256": "CAF21C4D5B529944E41AA5F39E8FB8145347AC4D2D25D7C769FA85A67D968FD7"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal6-g3/build.binlog",
+    "Bytes": 232228,
+    "Sha256": "8A8F05B4E8BDF83A1134F1F5AB6078577878A3BC61B0944165CBFDBC27D1AF5A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal6-g4/build.binlog",
+    "Bytes": 232438,
+    "Sha256": "5A952BDA34E12C5C444908465AD832F5875D711296F685CB8B3233ED67E02F56"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal6-g5/build.binlog",
+    "Bytes": 232315,
+    "Sha256": "A916ED6192CBA4449FEE6A4C32B5C1AA270A796E0FE1EDE8256EF8BDED8772AC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal6-g6/build.binlog",
+    "Bytes": 232170,
+    "Sha256": "F84BB89CEECFE73FDF60EE16A297C3B8657D6FC635ACBB0D6ACDA8D115EA098B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal7-g1/build.binlog",
+    "Bytes": 232314,
+    "Sha256": "2CBD213AC181323AE2A9D4F0AF04BE688621B8BB8F5D298C6561235FB54ECC62"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal7-g2/build.binlog",
+    "Bytes": 232169,
+    "Sha256": "321FD3A12CE0BA48679B9DBBC28D6DB18BAC0AC1ACCC14C0EED7C2F6A8E23EE1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal7-g3/build.binlog",
+    "Bytes": 232593,
+    "Sha256": "7DE0458CCEAB930A928BA35A90D44DB10D99CB7F2CBB2873665C2F45A797E01D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal7-g4/build.binlog",
+    "Bytes": 232406,
+    "Sha256": "67B85767DF4242E6F3531195EEFE302BEBA5B71182DE959CB4CA8A96A25C854A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal7-g5/build.binlog",
+    "Bytes": 232332,
+    "Sha256": "941BB2D88FE3A73787C057A983C8193290F964C8E211DBCA1A3C16C98D5E1ADE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal7-g6/build.binlog",
+    "Bytes": 232307,
+    "Sha256": "A808E2CAF49459E1779FB3707D1B83842C783B64779A733BE54F6868B3847BFD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal8-g1/build.binlog",
+    "Bytes": 232369,
+    "Sha256": "A02F27E979A4B9DAF0F2DF8D4EF8494D6155B24B3AA755759D55D2A8E3718D55"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal8-g2/build.binlog",
+    "Bytes": 232344,
+    "Sha256": "D26B46E3AEA35DB0845AFB0E96C0192D7B2046DFA9D19F5EF3D67FCBEC69B92C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal8-g3/build.binlog",
+    "Bytes": 232312,
+    "Sha256": "A4DBCAE626DA01D0E98E89D821A46FA2E54D7249F82B26326C5915DE5705E3D0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal8-g4/build.binlog",
+    "Bytes": 232441,
+    "Sha256": "133A3E7221067F93C058CF85A8FD380A5B0C207040F85B6A8EEC6B8674B42BE4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal8-g5/build.binlog",
+    "Bytes": 232412,
+    "Sha256": "3B55DC0E00FCA55112312CC694F24A79681F7D61DBF667ED2CE1933D37659B71"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-2/BASE/normal8-g6/build.binlog",
+    "Bytes": 232407,
+    "Sha256": "D8BDDEA00C424FD9F51227F981DC0337F69717B0A43271FD060032B89B016E21"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/injected-g1/build.binlog",
+    "Bytes": 232610,
+    "Sha256": "37CDC0F3CC5320067DA98D72DD697F55F9BCAABBDB826A0407ECFEFC92298C4E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal1-g1/build.binlog",
+    "Bytes": 232148,
+    "Sha256": "4AF5A31E01B14E086CBD589114706FC543BFA720234A9670B02A46EFD4B680CB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal1-g2/build.binlog",
+    "Bytes": 232331,
+    "Sha256": "37182B7A21D5114FC7D144761680A1750BFAD72F92B19663A44694DCC6CF962C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal1-g3/build.binlog",
+    "Bytes": 232155,
+    "Sha256": "317A4BE0CF21ABF15BCEC2AB33CDE7F02FF3607F38ADD9C7A4E811E075E3099C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal1-g4/build.binlog",
+    "Bytes": 232399,
+    "Sha256": "7FCA5AAB7A586EE08E7A48EC64A05C6208C634FF4D2FA4DA2DCC3B42D47C91D4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal1-g5/build.binlog",
+    "Bytes": 232262,
+    "Sha256": "A81AA9604FFF570B948F900332A1B0B9354ED8AEF44CBC04F2A42197E0944FD5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal2-g1/build.binlog",
+    "Bytes": 232044,
+    "Sha256": "965376EBB4791FBA5DE9C6CC1B7F9A7C3059500C3A8B6D1D6DACD606490B2654"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal2-g2/build.binlog",
+    "Bytes": 232350,
+    "Sha256": "539301DEAEF08FC587030BC048913EDDBCD1F33591C63B2B58EC2B7D5F9D6EA2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal2-g3/build.binlog",
+    "Bytes": 232249,
+    "Sha256": "AD60D1FD677922CF3C722738B37FE9FD435947C64C8658D1361A4864CEB2D62A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal2-g4/build.binlog",
+    "Bytes": 232260,
+    "Sha256": "A6264A83118EC319584F03D410324B5EC57773C33208496B7C048FA579F7691D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal2-g5/build.binlog",
+    "Bytes": 232115,
+    "Sha256": "A44CC368C783C7D141EBDEEFDE093F3E2F270AAAA8407F8EEBE2B8CABBC1459A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal3-g1/build.binlog",
+    "Bytes": 232117,
+    "Sha256": "AAFA4E06689B6CF0F7916CB1BEB36512A0DC317DCEB9BE7582066A7EB1BE7EFF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal3-g2/build.binlog",
+    "Bytes": 232132,
+    "Sha256": "84DCEA9D9D8F90D081C00ADF74258BE07ED579AD2E37842863443971C10B0991"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal3-g3/build.binlog",
+    "Bytes": 232310,
+    "Sha256": "E4377F8076E8A534C0F31F7780DFAA9B5F48DE709680747B838A1A146FC26F11"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal3-g4/build.binlog",
+    "Bytes": 232299,
+    "Sha256": "AA421FDEDA962757D1F19B7246FB61DB8A8E02250E9D88BD35E49C80C5376FB3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal3-g5/build.binlog",
+    "Bytes": 232239,
+    "Sha256": "069DC9D556ADCE8451ED9C8B700D9AC98703E0FD5F2477AD614614B61224666C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal4-g1/build.binlog",
+    "Bytes": 232226,
+    "Sha256": "E4CCA48184B5E3BC0FA4EB84A771278037C78EC65C61D6CAA41D16E0A1C82D06"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal4-g2/build.binlog",
+    "Bytes": 232332,
+    "Sha256": "6D9C80AF5B40EDE432E0F0A1C4AFC727ED0E17AE8BD494A413FDA2A897BBB99A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal4-g3/build.binlog",
+    "Bytes": 232185,
+    "Sha256": "B58A7F45CD014F0E270303B886F1CA67E70CF1511219FF37A9966F281877F620"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal4-g4/build.binlog",
+    "Bytes": 232287,
+    "Sha256": "1F9B2D1A8FA74F29B10753D6F5F6D1E8A15B7A166CB5A75EC51AFD192C3D7B55"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal4-g5/build.binlog",
+    "Bytes": 232202,
+    "Sha256": "A115632E7F3D18B8D11F1F405EB34FDB429221AF8FFB8C6A8D5732AE9953100A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal5-g1/build.binlog",
+    "Bytes": 232251,
+    "Sha256": "FD95AE6AF9A606B5D803097D9CEF748DA83386C793B14FA6A0EE791DA8AC977F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal5-g2/build.binlog",
+    "Bytes": 232326,
+    "Sha256": "322E30E1D7BF44634BD0EFE8ACD26AEED443F88EE5604CD1E63DFC3C9C1581AA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal5-g3/build.binlog",
+    "Bytes": 232242,
+    "Sha256": "0A799EFDA736638F2A8630FFA81714A5AFF3702A40BC32608C8194D97CCC40A5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal5-g4/build.binlog",
+    "Bytes": 232171,
+    "Sha256": "415F3115AE4B565BEAAC174DCF250D4B327494E400187CB9155E364FA25A7115"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal5-g5/build.binlog",
+    "Bytes": 232404,
+    "Sha256": "48DA562DCC141787E8CE83ABDA9952A5E34105D91CCB2AC5DFE367106FD0AFD7"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal6-g1/build.binlog",
+    "Bytes": 232230,
+    "Sha256": "5EDA7C14192C9E3C941C9093C140254543F1F9DACA54562E0AB59420C1832DA6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal6-g2/build.binlog",
+    "Bytes": 232122,
+    "Sha256": "133E625A8111D849A68E78367D5DEDE04A5FCC18A6DCD3C6EDCF11B49547087D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal6-g3/build.binlog",
+    "Bytes": 232091,
+    "Sha256": "95B85B1E3661FA879D3CC6336F412A3DE30583659EBBF009BACAEFF1B249050D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal6-g4/build.binlog",
+    "Bytes": 232254,
+    "Sha256": "E0076E825DC5C15EC890FB2D7ECA7967E3D0A6A1A58D3782BDF8420D467B41A4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal6-g5/build.binlog",
+    "Bytes": 232105,
+    "Sha256": "F817CE4005D374DBD7AF6F3EA0949F99670A8295B8129ED908321C8653372F77"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal7-g1/build.binlog",
+    "Bytes": 232279,
+    "Sha256": "F40A5FE735ECFDC18D3765943DFDCAD21A95636E6B0EB1C20D0CC7AA5B60C8A8"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal7-g2/build.binlog",
+    "Bytes": 232212,
+    "Sha256": "CD498575A90D3C63DB9E6DC78F441BF8116A8B56A566C667F3B02B06FA8BA3E5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal7-g3/build.binlog",
+    "Bytes": 232274,
+    "Sha256": "6B9D1319240D6153D477E2FB946F3C0863178DA85B75B34832E3034DD183EDEC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal7-g4/build.binlog",
+    "Bytes": 232243,
+    "Sha256": "776CDDDA055F6EF2D652891891F2BCFE755F214CD32314DDDFD7AB834BE289CA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal7-g5/build.binlog",
+    "Bytes": 232234,
+    "Sha256": "166F499E1DE66F8CECAD4E09126ADE72C170F41A7DCA3EE515D046AAE56C5D0F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal8-g1/build.binlog",
+    "Bytes": 232339,
+    "Sha256": "E688E363FF8B7E014D8B3F47A7CDA17EDF093D3C8FA9926B7E2C37DF758C9C1C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal8-g2/build.binlog",
+    "Bytes": 232213,
+    "Sha256": "9FBB5DAFF3AC2A18CFE97B32FB723FACFF0EAFD00C4551D2B5B3A1218BF01E1D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal8-g3/build.binlog",
+    "Bytes": 232243,
+    "Sha256": "AD5F5E1ACBB62D817E78E28B7D8F00A0371B06B207D7129B5474FC00900D14CC"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal8-g4/build.binlog",
+    "Bytes": 232324,
+    "Sha256": "E017F7D1DD6FEFEF87B69ABA12E80E6F804741DD719ECAF82A9AECF5D9AD3629"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-H",
+    "LogicalPath": "aspire/block-3/FINAL-H/normal8-g5/build.binlog",
+    "Bytes": 232254,
+    "Sha256": "10D91F206E19D646AE0E21C9593D7469B7ABFFB5E6EB12CBDF470F050BBED98F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/injected-g1/build.binlog",
+    "Bytes": 232473,
+    "Sha256": "232F29B6E17D8A37B01975FF053566A88EC2692EBEAE12071A40125628051FD6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal1-g1/build.binlog",
+    "Bytes": 232356,
+    "Sha256": "88C24F75550C6167843B4351DC445A2C690F4AABC73620F6841526F6FE8A9247"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal1-g2/build.binlog",
+    "Bytes": 232441,
+    "Sha256": "5F7BB03BA55BCCF99B5ABB29DC07A2E16C4A6DDB5E5CE7831857A0D3EEA9C064"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal1-g3/build.binlog",
+    "Bytes": 232494,
+    "Sha256": "09DAEAE588FBD891B5BCD9D0061975A41F4EBCFB0778A1CD6DF6E02A74792A0B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal1-g4/build.binlog",
+    "Bytes": 232363,
+    "Sha256": "3BE350B7BD8CD319A883A9F97AEC3881E2D13A1D50693EBCA166FCFF3A716CCD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal1-g5/build.binlog",
+    "Bytes": 232480,
+    "Sha256": "79F7509573350B8989458A73BD9C38AAB60B29C27B47EF99ADE57E866372A39A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal1-g6/build.binlog",
+    "Bytes": 232410,
+    "Sha256": "2E56E7242D4EDD2FAC53DDEDBB8B0A9F66CD098AB2CA61281E0D2DF42777E9B3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal2-g1/build.binlog",
+    "Bytes": 232000,
+    "Sha256": "3340A18CB3FDF478FE627D1DFA150297C816A2CDDCDF57F809680A379D0F4632"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal2-g2/build.binlog",
+    "Bytes": 232468,
+    "Sha256": "0999D1057037668FB9A9E6D34DD5125E22B43B434EDFA5770AF2D6F620BB67AE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal2-g3/build.binlog",
+    "Bytes": 232357,
+    "Sha256": "AF4B4690310F9C28C3AAE9ADE686EFC434F9950747E2BA79B9AC3514D1550F3D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal2-g4/build.binlog",
+    "Bytes": 232445,
+    "Sha256": "2B0D90BDDA31CEDC7CB66610CF92B12534563C49CF82F2054141D84AE778896B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal2-g5/build.binlog",
+    "Bytes": 232416,
+    "Sha256": "F77F6FD7915B89A575674CD5DD861B62FCE22687035972579D4B7721825DA399"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal2-g6/build.binlog",
+    "Bytes": 232520,
+    "Sha256": "B17AE8DA9DB5E03AE75BA7EB6E89BF96F1EDD2843ADA5311BE237A479C124BDF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal2-g7/build.binlog",
+    "Bytes": 232271,
+    "Sha256": "D97BF556A514EC2988AF0849A0871EEC36C16B3E901114E288CE9B6F27979B43"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal3-g1/build.binlog",
+    "Bytes": 232382,
+    "Sha256": "6D639D11D9F04E81767FAA9BF22A4F575157AA6D3BD214D9339E941B89BF6D13"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal3-g2/build.binlog",
+    "Bytes": 232290,
+    "Sha256": "409FAA26917744E39BD6A31F8D951402F434902F7DCD9906AF61ADE992C06162"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal3-g3/build.binlog",
+    "Bytes": 232357,
+    "Sha256": "C247B532125858024469EB31759823EB13E4633F256741ECBCF9312174F6D5C0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal3-g4/build.binlog",
+    "Bytes": 232464,
+    "Sha256": "311814AE455DF0FC948ABC2429C89AFD015B0E5D034B2B1DE179B103B858443F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal3-g5/build.binlog",
+    "Bytes": 232514,
+    "Sha256": "C30E9C9A91EF912B616BBCE93E17419DD96BA9C5C663BEE61D0DD3062C8C2373"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal3-g6/build.binlog",
+    "Bytes": 232403,
+    "Sha256": "A14E363D7CC1D68683CD5DB48145812B17EBC7916E4621F947ED9017F76A3AB6"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal4-g1/build.binlog",
+    "Bytes": 232383,
+    "Sha256": "22B02CED461C12E1A92170E2EB593144AA6EEC186CFD2B84C5AAD4DD61294945"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal4-g2/build.binlog",
+    "Bytes": 232516,
+    "Sha256": "AD419D7664595C7189E30E0FD460D8BA79A82915BD40DE981C092FA4280B27B1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal4-g3/build.binlog",
+    "Bytes": 232316,
+    "Sha256": "6065CF3CEBA76F922C10B5B414307D2F499A0CB6F018E676F35E3DA0C3059C44"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal4-g4/build.binlog",
+    "Bytes": 232298,
+    "Sha256": "6F6C39F35568DA930A530FD2BD3C4BCCFC0A4D1EC741FD374B30EC74B821B83B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal4-g5/build.binlog",
+    "Bytes": 232486,
+    "Sha256": "BABA65482BE8C0E7F72217D4AC46A28BE6647C221B26BEAADAC5CD94382F1217"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal4-g6/build.binlog",
+    "Bytes": 232470,
+    "Sha256": "FC3A5C351D4441A4754D36DC389805358078B9B76925A6A019EF1A7FD112FE1C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal4-g7/build.binlog",
+    "Bytes": 232189,
+    "Sha256": "A21D120FA181292AEF6D0F5FFB6897F5855B3A4D7C359E59E20C97972A72336F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal5-g1/build.binlog",
+    "Bytes": 232437,
+    "Sha256": "C19C99D576AC17253D40EDD2A4D7C60400D91A366CB76F2612FB78C81E2E65FF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal5-g2/build.binlog",
+    "Bytes": 232332,
+    "Sha256": "39E9C2A24F92A3FC3B1D552D83A18AC8CE07F168687C67804AB0F2A61CA5CA8D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal5-g3/build.binlog",
+    "Bytes": 232395,
+    "Sha256": "D2E8D561FBB7B8EC6DC377F34012101E0345B510E1F0B68C57283C30D7A3192C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal5-g4/build.binlog",
+    "Bytes": 232500,
+    "Sha256": "5A5FBC59BD644112F74C371AFBEA4833AC14AE3A967F87036905D40295E739C9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal5-g5/build.binlog",
+    "Bytes": 232497,
+    "Sha256": "BCA7BE9413FA176F5EC4F82EC8A7FFF5F82088EAF8F45512A628C641130F0167"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal6-g1/build.binlog",
+    "Bytes": 232346,
+    "Sha256": "338845899FE87127EAD8D0209F62E6AA6B5220064AE418710299F9EDE40FDBC0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal6-g2/build.binlog",
+    "Bytes": 232339,
+    "Sha256": "A5F5C9B68563F6CCF9462BCB91F05FEE7D47B07C6DEB53AD8186994863FF1621"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal6-g3/build.binlog",
+    "Bytes": 232363,
+    "Sha256": "33C1F68199760256EB974090D27F3283F788D87856CCB680864AFF4350A668C3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal6-g4/build.binlog",
+    "Bytes": 232520,
+    "Sha256": "12CEA95E9C27C73800FC1F2951B2FDFEC0EF1EDB0E9110B85025DA95DD1A176B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal6-g5/build.binlog",
+    "Bytes": 232314,
+    "Sha256": "153031D9C45E45E7FA755990163168C8215F764DE1206CA1FF3986690522C530"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal6-g6/build.binlog",
+    "Bytes": 232305,
+    "Sha256": "4A5EA554A5B4696D5532207DAB2C1B3962738D14740CF2300F01EDA50796E77C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal7-g1/build.binlog",
+    "Bytes": 232438,
+    "Sha256": "4CB63E67F5196F31E9EB4E7979FDC83742E6B9BF570AA72B68BC0EE0736A1930"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal7-g2/build.binlog",
+    "Bytes": 232502,
+    "Sha256": "B363BF57C6B1F06DC0FD5E5081AE758B10B714512238D0D09EE799DB1F0DC697"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal7-g3/build.binlog",
+    "Bytes": 232449,
+    "Sha256": "CA4FF7BEC7A8C9000F2F39AE37D411F28518502B86138715BE397546DB38AB1C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal7-g4/build.binlog",
+    "Bytes": 232493,
+    "Sha256": "D55E5BB2D6B78E516CEB5D9B51A02229ACE0CD927BCF69E51E9B2E5393A1D571"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal7-g5/build.binlog",
+    "Bytes": 232312,
+    "Sha256": "C520E38CA59ECD1A626F808C4073E39B9F58B77D9C93D94BCC92A4BAE50CF618"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal7-g6/build.binlog",
+    "Bytes": 232421,
+    "Sha256": "FB2F73F05CF23B44AB612536D817CB3E2BD20D0F3FFCC76A89FEE4E1B7862A0C"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal8-g1/build.binlog",
+    "Bytes": 232290,
+    "Sha256": "429EC3BEFE6BBF53838D652963C9E0E8F772E3026A2B4A597E56C52FF08563CE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal8-g2/build.binlog",
+    "Bytes": 232281,
+    "Sha256": "F7A72746295E9FE37AFE05D4643627DCAEEE139E16DBD1CE35FC75AD1E9AFC2F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal8-g3/build.binlog",
+    "Bytes": 232317,
+    "Sha256": "6FC0CE4CB70020F08F791ACC89C9289B245F08BC9B284B97D02C3825BBFAD706"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal8-g4/build.binlog",
+    "Bytes": 232339,
+    "Sha256": "3BADE418D1153EC987B35EA87FD528E534A5FF50866D54DA2D55BDB7B5D08BD9"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal8-g5/build.binlog",
+    "Bytes": 232442,
+    "Sha256": "C49FF9301DC769CC0C4D936DCAA81C0999BE55460F038EEDC2F1DFEE6329597B"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "BASE",
+    "LogicalPath": "aspire/block-3/BASE/normal8-g6/build.binlog",
+    "Bytes": 232378,
+    "Sha256": "D44297C3298A5F510EEC524D83281CB724532A84A8E15CC5B133B2F7285F7E50"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/injected-g1/build.binlog",
+    "Bytes": 232193,
+    "Sha256": "C4A9878D2A73DBD493F0110EEAFA4DABC04ADCAC4D42A81F6E428E70D274588E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal1-g1/build.binlog",
+    "Bytes": 232208,
+    "Sha256": "F3E17E210D2ABAE0AE89E7B2C95F28E2D27CDBDE89F9C975F75317176CF9F796"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal1-g2/build.binlog",
+    "Bytes": 232171,
+    "Sha256": "76BCC0B0BF93FBF8752715606B3DCBFEB0E1C4558EB9D0C9F12DF949A1C1E07F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal1-g3/build.binlog",
+    "Bytes": 232331,
+    "Sha256": "0892DEA5AEED7DA8FCBECF9DDD28D04DDFBA676A10526C69B29BC526AC7EFDF3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal1-g4/build.binlog",
+    "Bytes": 232307,
+    "Sha256": "86464B4DFDD94B6138B8F63842D309297FF8E099432EB422D9A270B2CBB0D85F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal1-g5/build.binlog",
+    "Bytes": 232157,
+    "Sha256": "A712DEE7CE6ED8E111BF00145BB8C9D49983DFAA5F52B455123C51768B6120A2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal2-g1/build.binlog",
+    "Bytes": 232134,
+    "Sha256": "7910D7698D0CA44D2ED4B5A44D7056E75631D31F1920C112A578DDEADF0F0583"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal2-g2/build.binlog",
+    "Bytes": 232174,
+    "Sha256": "F463B29A4780BEC44267FE08532F11BA942FD61637E32AB6AE50B899581002BE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal2-g3/build.binlog",
+    "Bytes": 232140,
+    "Sha256": "A9425F5B61492FDCFDD06A30597F316731B1F6A2A6A38DC38DAF34F01632D433"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal2-g4/build.binlog",
+    "Bytes": 232192,
+    "Sha256": "73E7F393B50E38ABB464AA2CE35B27724CF1F23D9A28CC6D37706353026F5F6E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal2-g5/build.binlog",
+    "Bytes": 232211,
+    "Sha256": "62E99EBEB7BE1FE8759155662E226CCE167747DD8A400CB530554D458B712AEE"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal3-g1/build.binlog",
+    "Bytes": 232310,
+    "Sha256": "A7758F4D56AC282761196D91D26231293A513C8212009207DF11439E00EEC5AA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal3-g2/build.binlog",
+    "Bytes": 232124,
+    "Sha256": "5F0C985AC183E4787B79B9A2AE30FF05E204B9B782648BEEF0CBDEF4214D6F58"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal3-g3/build.binlog",
+    "Bytes": 232152,
+    "Sha256": "190E70A661335A54ADCB57B7F2615E0A5114CBDF659B95DF45E5F52258280794"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal3-g4/build.binlog",
+    "Bytes": 232301,
+    "Sha256": "EDE551DF59C6E338E9DFB035DAA63C5418345D1EFCABE5BDF017F482CD50DC47"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal3-g5/build.binlog",
+    "Bytes": 232260,
+    "Sha256": "DAA2F1DF44794B7F528BA1CAB3CDB3A9A58CAFEA2A59D1EB9946B6ACBE4D9DB4"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal4-g1/build.binlog",
+    "Bytes": 232387,
+    "Sha256": "E2AA2C69DAE8158A782B984A01B648511EAABBB3A1ABB120E061DA685F04F6CA"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal4-g2/build.binlog",
+    "Bytes": 232275,
+    "Sha256": "A0EDEBCAA90566B9187566B7D2B2085D9F03F1F478443D3BDFCD6E08E51EB3BD"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal4-g3/build.binlog",
+    "Bytes": 232178,
+    "Sha256": "4BC818D67B83E77E7C295320313D80838404E93ED19E2AF764AB2918E29C4BD5"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal4-g4/build.binlog",
+    "Bytes": 232197,
+    "Sha256": "9FA5ED9C2960AD5996B509830E6E9C178DC10D47A8A8AE86AFC5266AE149088D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal4-g5/build.binlog",
+    "Bytes": 232170,
+    "Sha256": "315972F857FEB36114D39FB2896F16BBB39B7B1C272BD515744B30E9DA050DB1"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal5-g1/build.binlog",
+    "Bytes": 232239,
+    "Sha256": "FAE8B42AB00D7B6D081CA73F59A11EC259085CA22B6C66CD25FC4709D13EB0F0"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal5-g2/build.binlog",
+    "Bytes": 232243,
+    "Sha256": "4DFDEAF13B80837C9D79EEE9B21DFD4861398B88B8DE0990B4C6E990526F2E4A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal5-g3/build.binlog",
+    "Bytes": 232284,
+    "Sha256": "6EB15AE1D2D8FE1371676E0FAD90E5982F799877B185CF09ADB61A9C008CC80A"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal5-g4/build.binlog",
+    "Bytes": 232252,
+    "Sha256": "E437505B2F2A122E8EFC4DD976D57D83161D135F5005D0CB2D902A376739F8B2"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal5-g5/build.binlog",
+    "Bytes": 232221,
+    "Sha256": "31E9F4023AD1E3FB5CBD54C8374B93D8749621C2507E3ECC4F49A5819127A497"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal6-g1/build.binlog",
+    "Bytes": 232201,
+    "Sha256": "BC90CBECDBA4B051F653C42D713814BC3CEB2112816FA35DEDEF56047B94083F"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal6-g2/build.binlog",
+    "Bytes": 232322,
+    "Sha256": "DB727A6A091E9C21B527EC91F790773A893B37635252038A27F4C0D16A977D84"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal6-g3/build.binlog",
+    "Bytes": 232150,
+    "Sha256": "C184AC061BAE63225E8D7518F4E704B882FD6C5A9479518AD1F0D6D650732030"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal6-g4/build.binlog",
+    "Bytes": 232240,
+    "Sha256": "0C8EF1EC70B943E8F62F94106289B192EC40EFBA15E2A6ADCAE0EEBFF423003D"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal6-g5/build.binlog",
+    "Bytes": 232247,
+    "Sha256": "B9EE0826E28ACD762356759FD4852CA76370E3ACB59291030338CB48F06E7793"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal7-g1/build.binlog",
+    "Bytes": 232176,
+    "Sha256": "18EA13945E31A6DBE30152E1A3F6D0D83783E6323837DA7D8D01354BC28A893E"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal7-g2/build.binlog",
+    "Bytes": 232177,
+    "Sha256": "6ED59CE90278F2644F0D2B414AEDAB946694538E1FF34CA562C1696896CB77D3"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal7-g3/build.binlog",
+    "Bytes": 232395,
+    "Sha256": "A8A6A5512AA5B8F7CE02B9751E577165C914E42BE9742355D41091D3616E6270"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal7-g4/build.binlog",
+    "Bytes": 232247,
+    "Sha256": "A0F6327E3A93D6AD74BCCBCFE632849A053EF14C037CE9BF2AF0E204435DEDDB"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal7-g5/build.binlog",
+    "Bytes": 232126,
+    "Sha256": "17B2FAD980890C5DE225D4A91C1889EA4400A0C03C8E606BE7529DF3320234EF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal8-g1/build.binlog",
+    "Bytes": 232292,
+    "Sha256": "C6C73F9FA6297A44CBEF552DF5EEA4988F7FC4F87CF3E13B384B6406AC7E8351"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal8-g2/build.binlog",
+    "Bytes": 232152,
+    "Sha256": "D1AE961A64A1B033978F5F8B652A60990563F919EDB9FC72B20E4DFF471DBADF"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal8-g3/build.binlog",
+    "Bytes": 232218,
+    "Sha256": "CDDDBE3BB62522C2EC7804B3244D74B8494692EDE2827D432D126BA69AD96915"
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Condition": "FINAL-N",
+    "LogicalPath": "aspire/block-3/FINAL-N/normal8-g4/build.binlog",
+    "Bytes": 232247,
+    "Sha256": "C47CE9F4ECD3370C0CF105EDAFF7DFD7E4EF624823C72ABE304E5E92958E894B"
+  }
+]

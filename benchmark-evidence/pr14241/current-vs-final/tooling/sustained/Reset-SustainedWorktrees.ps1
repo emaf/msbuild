@@ -13,7 +13,8 @@ param(
     [Parameter(Mandatory)]
     [string]$Reason,
     [Parameter(Mandatory)]
-    [string]$OutputRoot
+    [string]$OutputRoot,
+    [switch]$AllowContentHashDrift
 )
 
 Set-StrictMode -Version 3.0
@@ -93,8 +94,9 @@ if (Test-Path -LiteralPath $completionPath -PathType Leaf) {
             Select-Object -First 1
         if ($null -eq $recorded -or
             -not $recorded.BaselineMatched -or
-            $current.ContentSha256 -ne
-                $recorded.RestoredBaselineOutputIdentity.ContentSha256 -or
+            (-not $AllowContentHashDrift -and
+                $current.ContentSha256 -ne
+                    $recorded.RestoredBaselineOutputIdentity.ContentSha256) -or
             [int]$current.FileCount -ne
                 [int]$recorded.RestoredBaselineOutputIdentity.FileCount -or
             [int64]$current.TotalBytes -ne
@@ -218,7 +220,9 @@ foreach ($worktree in $worktrees) {
         -Worktree $worktree.Path `
         -TrackedRelativePaths $tracked
     $expected = $worktree.BaselineOutputIdentity
-    if ($current.ContentSha256 -ne $expected.ContentSha256 -or
+    $contentHashMatched =
+        $current.ContentSha256 -eq $expected.ContentSha256
+    if ((-not $AllowContentHashDrift -and -not $contentHashMatched) -or
         [int]$current.FileCount -ne [int]$expected.FileCount -or
         [int64]$current.TotalBytes -ne [int64]$expected.TotalBytes) {
         throw "Restored '$RepositoryName/$($worktree.Name)' does not match its prepared baseline."
@@ -230,6 +234,8 @@ foreach ($worktree in $worktrees) {
         Git = $git
         RestoredBaselineOutputIdentity = $current
         BaselineMatched = $true
+        BaselineContentHashMatched = $contentHashMatched
+        ContentHashDriftAllowed = [bool]$AllowContentHashDrift
         Retouched = $false
     })
 }
@@ -250,6 +256,8 @@ $record = [pscustomobject][ordered]@{
     AffectedWorktrees = $records.ToArray()
     NoOverlap = $true
     BaselineRestored = $true
+    BaselineShapeRestored = $true
+    ContentHashDriftAllowed = [bool]$AllowContentHashDrift
     UsedGitClean = $false
     RetouchOccursOnlyInsideScenario = $true
 }

@@ -1,0 +1,30 @@
+{
+  "SchemaVersion": 1,
+  "Original": {
+    "StartedUtc": "2026-08-14T21:39:43.4930899Z",
+    "HardDeadlineUtc": "2026-08-15T01:39:43.4930899-04:00",
+    "FinalStatus": "Failed",
+    "ValidMeasuredScenarios": 12,
+    "Limitation": "Host suspension caused approximately 36,182-second telemetry gaps during the partial Aspire block 2 FINAL-N scenario; it was excluded."
+  },
+  "Supplemental": {
+    "StartedUtc": "2026-08-17T16:21:13.4132563Z",
+    "HardDeadlineUtc": "2026-08-17T16:21:13.4132563-04:00",
+    "CompletedUtc": "2026-08-17T13:33:59.2009146-04:00",
+    "FinalStatus": "Succeeded",
+    "Blocks": [
+      2,
+      3
+    ],
+    "ValidMeasuredScenarios": 6,
+    "AutomaticRelaunch": false
+  },
+  "Combination": {
+    "AcceptedScenarioCount": 18,
+    "BlocksPerRepository": 3,
+    "DuplicateAcceptedRows": 0,
+    "OriginalAccepted": "All Roslyn blocks and Aspire block 1",
+    "SupplementalAccepted": "Aspire blocks 2 and 3",
+    "PartialScenarioReuse": false
+  }
+}

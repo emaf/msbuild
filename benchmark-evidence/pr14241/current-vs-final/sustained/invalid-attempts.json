@@ -1,0 +1,12 @@
+{
+  "Source": "original",
+  "RelativePath": "measured\\aspire\\block-02\\attempt-01\\01-FINAL-N",
+  "Condition": "FINAL-N",
+  "Errors": [
+    "system telemetry gap 36182.899s exceeded the 30s hard limit.",
+    "process telemetry gap 36182.159s exceeded the 15s hard limit.",
+    "probe telemetry gap 36182.138s exceeded the 15s hard limit.",
+    "Probe injection missed its fixed offset by more than two seconds."
+  ],
+  "Excluded": true
+}

@@ -1,0 +1,423 @@
+{
+  "SchemaVersion": 1,
+  "GeneratedUtc": "2026-08-17T17:37:03.0344044+00:00",
+  "FileCount": 83,
+  "TotalBytes": 2099991.0,
+  "Files": [
+    {
+      "Path": "README.md",
+      "Bytes": 761,
+      "Sha256": "948E5DFCC918C1F9500F0B7C04A675E77101012127BF1F9792779C65933DF8E9"
+    },
+    {
+      "Path": "sustained/binlog-hash-index.json",
+      "Bytes": 159479,
+      "Sha256": "D51DD67D734775360901A2BE2172ECBCD060DC0301F370E23ED75B946BD17F7F"
+    },
+    {
+      "Path": "sustained/condition-summaries.json",
+      "Bytes": 3639,
+      "Sha256": "4378457DA7411C6BE5A40A780D531CB687A9FECFB73243F0049265BE744B5E68"
+    },
+    {
+      "Path": "sustained/identities-and-configuration.json",
+      "Bytes": 1502,
+      "Sha256": "8D0C26DD48122ED14D363910AD0805D5D51439C713D9216898682DD93141140A"
+    },
+    {
+      "Path": "sustained/invalid-attempts.json",
+      "Bytes": 452,
+      "Sha256": "8C6BF7095D88E664948656B24F6732FD5CF750F312768E5A5656B9B5D0B9EDEE"
+    },
+    {
+      "Path": "sustained/launch-and-validity.json",
+      "Bytes": 1002,
+      "Sha256": "BFF2DBC778E3A6F82AD127CC52B276EAAE90E06F16F9ED36B5ACA2170B2A9889"
+    },
+    {
+      "Path": "sustained/package-manifest.json",
+      "Bytes": 4008,
+      "Sha256": "3C9A354A1E57753B759B9BBD124BF9473FC1C8C3293CDA701A36981674FEAE75"
+    },
+    {
+      "Path": "sustained/paired-estimates.csv",
+      "Bytes": 48086,
+      "Sha256": "B0B8D972E5F9BB9A692C5222FD8B3CBBA9A9691857AC2A386ABDEDC41EC8B234"
+    },
+    {
+      "Path": "sustained/paired-estimates.json",
+      "Bytes": 100127,
+      "Sha256": "D9D72D78350E0161CB5D1EDA9C7609E8A3F52EAF0E17C74F50B4C4142E663E31"
+    },
+    {
+      "Path": "sustained/paired-raw-values.json",
+      "Bytes": 60571,
+      "Sha256": "024B713FC58403578EC3AD95098B023242758E9476B5ACFFFC1095C0ED0FF5E4"
+    },
+    {
+      "Path": "sustained/raw-scenarios.csv",
+      "Bytes": 6530,
+      "Sha256": "AA10C30D83FA81D0D7797C67B6C9C161EF635A3257BFA080403482AD427A823D"
+    },
+    {
+      "Path": "sustained/raw-scenarios.json",
+      "Bytes": 21688,
+      "Sha256": "7D952714C9F7FA1AA1197B49F0F4BAF15271AC1F44891C5A7D103E6EEAA7C89A"
+    },
+    {
+      "Path": "sustained/report.md",
+      "Bytes": 11599,
+      "Sha256": "15DF97A35B31FF2B895F78C4622F96D2378899843E5E18D518DE2EDA47E0FF66"
+    },
+    {
+      "Path": "sustained/tooling-hash-index.json",
+      "Bytes": 1583,
+      "Sha256": "64872A6011E8F56326F4E370BEDC09E801C06580A1B75D228A343A668AABC13D"
+    },
+    {
+      "Path": "sustained/tooling/Analysis.Common.ps1",
+      "Bytes": 7858,
+      "Sha256": "2F0BB8D61ADCD1A42235DA8BAB637FEE3AE203C0C14254C313F486A4BA05CD24"
+    },
+    {
+      "Path": "sustained/tooling/Analyze-SimpleSustainedCombined.ps1",
+      "Bytes": 21728,
+      "Sha256": "733FE74838F2FE310421FCE0728BE5ED9E69A9236098855CDAE4B74FB1A00FEF"
+    },
+    {
+      "Path": "sustained/tooling/Campaign.Common.ps1",
+      "Bytes": 142146,
+      "Sha256": "7C81E3C0C5DEC609156DA237A4291B71B6C18121F4E3F4FF99E3F083F9AA5A15"
+    },
+    {
+      "Path": "sustained/tooling/CoordinatorTrace.ps1",
+      "Bytes": 33761,
+      "Sha256": "4129D8F8E2E3F72A586E9FD66536B3EC306CBE6C9943A9EABEC7B2367AA8E821"
+    },
+    {
+      "Path": "sustained/tooling/Invoke-GrantReplay.ps1",
+      "Bytes": 5622,
+      "Sha256": "9F4BE24D706EECDFDC20095E03D7E4449271B265DC4C536759FC1764379547B5"
+    },
+    {
+      "Path": "sustained/tooling/Invoke-SimpleSustainedScenario.ps1",
+      "Bytes": 42286,
+      "Sha256": "C962D27CCEA7A05E2C8040310D472911366BA15BAE9B9F1417BA79A5586F7795"
+    },
+    {
+      "Path": "sustained/tooling/Monitor-Campaign.ps1",
+      "Bytes": 1640,
+      "Sha256": "CD295EC7B85F7E1AB4F9D445A73A05584A270A18EFB86BD7F1632A2BC0954074"
+    },
+    {
+      "Path": "sustained/tooling/Run-SimpleSustainedCampaign.ps1",
+      "Bytes": 11369,
+      "Sha256": "78B8AA35A7D03CD829F7D466E39062E9AB062254DADF7E4A3BE39C0CD3745C24"
+    },
+    {
+      "Path": "sustained/tooling/Run-SimpleSustainedSupplement.ps1",
+      "Bytes": 7848,
+      "Sha256": "650EADF0B044796D996042F749897260A7841A17C98DBF0281F93E81A1D5C13F"
+    },
+    {
+      "Path": "sustained/tooling/Scenario.Common.ps1",
+      "Bytes": 124319,
+      "Sha256": "428E06DF86F412C6056FEC4D52EDEE180DEB962082CA1CEE12ED641E2143CBBE"
+    },
+    {
+      "Path": "sustained/tooling/SustainedCampaign.Common.ps1",
+      "Bytes": 39344,
+      "Sha256": "31C8FEB6CDBC8E0DF70E5CAE01E1DFB349614C8010A840A1C6EC7811DE8B932B"
+    },
+    {
+      "Path": "tooling/Analysis.Common.ps1",
+      "Bytes": 7858,
+      "Sha256": "2F0BB8D61ADCD1A42235DA8BAB637FEE3AE203C0C14254C313F486A4BA05CD24"
+    },
+    {
+      "Path": "tooling/Analyze-Campaign.ps1",
+      "Bytes": 20731,
+      "Sha256": "78C59CA9A4046EC0209E29E12002382BA3A7963C5D5905507B498A770D305609"
+    },
+    {
+      "Path": "tooling/Build-ExactRevisions.ps1",
+      "Bytes": 11304,
+      "Sha256": "889AFDB1376408E6E508AD3DA99B24561522F5033EBCDEF29589551DDD2DA410"
+    },
+    {
+      "Path": "tooling/Campaign.Common.ps1",
+      "Bytes": 142146,
+      "Sha256": "7C81E3C0C5DEC609156DA237A4291B71B6C18121F4E3F4FF99E3F083F9AA5A15"
+    },
+    {
+      "Path": "tooling/ControllerValidation.ps1",
+      "Bytes": 10475,
+      "Sha256": "40358C4F94903E2A962F47A4D5041DEE51BED07AB51C02B8D3E62BA83AF4158A"
+    },
+    {
+      "Path": "tooling/CoordinatorTrace.ps1",
+      "Bytes": 33761,
+      "Sha256": "4129D8F8E2E3F72A586E9FD66536B3EC306CBE6C9943A9EABEC7B2367AA8E821"
+    },
+    {
+      "Path": "tooling/fixtures/base-valid-runs.json",
+      "Bytes": 455,
+      "Sha256": "F60228E89BCB3594816706BA59804A4887DBB18B6FD336BE05CF3D09EB2A73C2"
+    },
+    {
+      "Path": "tooling/fixtures/base-valid.trace",
+      "Bytes": 1964,
+      "Sha256": "A04C5C07366C8ABFC1FB397B467301237CA58AD1E743F2421D31D6A499CF7C50"
+    },
+    {
+      "Path": "tooling/fixtures/controller-invalid-late-launch.json",
+      "Bytes": 1033,
+      "Sha256": "B173E5D4283FE89BA8205AEB248227BDCF3919891BF20BAD2DAC027668B6E159"
+    },
+    {
+      "Path": "tooling/fixtures/controller-invalid-nonexistent-completion.json",
+      "Bytes": 853,
+      "Sha256": "FC2A8274FBC4E8D560F1F9E1DB871684EC431495BDF571DD3E33DB7653B1106E"
+    },
+    {
+      "Path": "tooling/fixtures/controller-model.json",
+      "Bytes": 173,
+      "Sha256": "CCD40F3C86F7B6C4AF1F093282D921B42847CAF02DBFF16D349D5CB6F2B47F14"
+    },
+    {
+      "Path": "tooling/fixtures/coordinator-job-membership.json",
+      "Bytes": 1727,
+      "Sha256": "70E3ABF20C2EF2E74D17A7DAF6AFB0DB3FBAB5CF37C0F6EFFF4F22490790E9EE"
+    },
+    {
+      "Path": "tooling/fixtures/final-missing-root-runs.json",
+      "Bytes": 351,
+      "Sha256": "8C067F6CE937688E0AB3F9430A21BCC4D981E1CC230D15861F68ED46DA642951"
+    },
+    {
+      "Path": "tooling/fixtures/final-valid-runs.json",
+      "Bytes": 677,
+      "Sha256": "244CED45268C7552AE8B408F3249BB9465B664303CB91E74D90C059CCC3FA7A6"
+    },
+    {
+      "Path": "tooling/fixtures/final-valid.trace",
+      "Bytes": 1835,
+      "Sha256": "96600AACA6C88AE8A8096EFAEE8E68D3218A18F83333AA0264D662F4F0DA5751"
+    },
+    {
+      "Path": "tooling/fixtures/invalid.trace",
+      "Bytes": 262,
+      "Sha256": "46D084B840D94C747FB45212192258C8A67DFC2520706D0A6B93843F25CA6E08"
+    },
+    {
+      "Path": "tooling/fixtures/scenario-identity-swapped.json",
+      "Bytes": 1166,
+      "Sha256": "A3EDF46581BCF84A640A4AB6ACFB9F8D3C7DC37D9897F33961C064A121FE18D3"
+    },
+    {
+      "Path": "tooling/fixtures/sustained-churn-runs.json",
+      "Bytes": 1225,
+      "Sha256": "B3D6438F22B5FCE0BCF3735D02BF4B6D5E67E29DA97C156DD3C95D1953183658"
+    },
+    {
+      "Path": "tooling/fixtures/sustained-churn.trace",
+      "Bytes": 4586,
+      "Sha256": "64BE599671F098C976F78416F1435AE3BD18DB78451CE81C9E70429CA2E3778A"
+    },
+    {
+      "Path": "tooling/fixtures/utc-offset-window.json",
+      "Bytes": 142,
+      "Sha256": "4958B56C26E35A30B6D0E594BE104E0C161E1E03C1FCBC838B0B951C278501BC"
+    },
+    {
+      "Path": "tooling/Get-CampaignStatus.ps1",
+      "Bytes": 2224,
+      "Sha256": "EA717F7474EA3C6819162FC3438D2392743757DC6BD8F08288B0411E24DABC57"
+    },
+    {
+      "Path": "tooling/GrantReplay/GrantReplay.csproj",
+      "Bytes": 627,
+      "Sha256": "EDF634E9F0D2DC25C195CD6FD5EA02D179B8C4D0EC5BC150C7CAF4CF74DFD95A"
+    },
+    {
+      "Path": "tooling/GrantReplay/Program.cs",
+      "Bytes": 2948,
+      "Sha256": "0DE551BED2BC51CDA0DD1DD10C6037C3EC3C3D11072F8BC3383F6EA749C2175F"
+    },
+    {
+      "Path": "tooling/Invoke-GrantReplay.ps1",
+      "Bytes": 5622,
+      "Sha256": "9F4BE24D706EECDFDC20095E03D7E4449271B265DC4C536759FC1764379547B5"
+    },
+    {
+      "Path": "tooling/Invoke-Scenario.ps1",
+      "Bytes": 46602,
+      "Sha256": "66EA7070A3200882BAB11B1960480B7B47F689DDEB2431F1E7D2B81562255BE1"
+    },
+    {
+      "Path": "tooling/Launch-Campaign.ps1",
+      "Bytes": 7051,
+      "Sha256": "4AD08C2FD91ED02562CE05AD75601773855AD36D63650805D209BC59734E61CA"
+    },
+    {
+      "Path": "tooling/Monitor-Campaign.ps1",
+      "Bytes": 1640,
+      "Sha256": "CD295EC7B85F7E1AB4F9D445A73A05584A270A18EFB86BD7F1632A2BC0954074"
+    },
+    {
+      "Path": "tooling/PhaseOneDisposablePreflight.Common.ps1",
+      "Bytes": 68857,
+      "Sha256": "23469611038BF6C8B1288A89A06214A5D9C47D34331348966C5640D24EE1B9F5"
+    },
+    {
+      "Path": "tooling/Prepare-Workloads.ps1",
+      "Bytes": 14225,
+      "Sha256": "3677CD910D3D2922977FF99DE1BB550F0E07EEEFC3AB311E0DCB31AC3CEBE933"
+    },
+    {
+      "Path": "tooling/Publish-Evidence.ps1",
+      "Bytes": 8664,
+      "Sha256": "7B3C5635C50D871DF4265C4BA3CD8B263DEAC3B377CA0E3E7668F3211B486FFA"
+    },
+    {
+      "Path": "tooling/README.md",
+      "Bytes": 12776,
+      "Sha256": "F0CE71DFA438AF225409BC65CA577139D9777636B4F0D599B6F34250EEC8D30E"
+    },
+    {
+      "Path": "tooling/Reset-PreparedWorktrees.ps1",
+      "Bytes": 11411,
+      "Sha256": "C57DB819B656919CFB3672C39DB79BF08FF7D50C2F3E552090692B76F044AD70"
+    },
+    {
+      "Path": "tooling/Run-Campaign.ps1",
+      "Bytes": 35577,
+      "Sha256": "576C0C483D399AD65CB4488BDB0406CBF4F3C3307F1531E9422871A6ACC221BF"
+    },
+    {
+      "Path": "tooling/Run-DirectProjectSmoke.ps1",
+      "Bytes": 7603,
+      "Sha256": "5EC14B243CDAF4749AE860B52F082B5051CBF8AAA2F1ABDF4EC7D25B67B02CEB"
+    },
+    {
+      "Path": "tooling/Run-PhaseOneDisposablePreflight.ps1",
+      "Bytes": 77875,
+      "Sha256": "8DE3C1BF13B8FCA409F0CCD7BC6C47519EC63F64E280F7B0B3F022A9B7BCABDA"
+    },
+    {
+      "Path": "tooling/Run-PreflightValidation.ps1",
+      "Bytes": 16832,
+      "Sha256": "DDF1D6D9E0B96E01ECF394DDFCE7E9EFCB2C6C124F9CA30ACA7B6C5C775FA2CF"
+    },
+    {
+      "Path": "tooling/Run-ProjectTimingGate.ps1",
+      "Bytes": 17659,
+      "Sha256": "8E21E1B2AAE859F3180A66B491B6C0AB78C75B6BD94099967144E7329E856114"
+    },
+    {
+      "Path": "tooling/Scenario.Common.ps1",
+      "Bytes": 124319,
+      "Sha256": "428E06DF86F412C6056FEC4D52EDEE180DEB962082CA1CEE12ED641E2143CBBE"
+    },
+    {
+      "Path": "tooling/simple/Analyze-SimpleSustainedCampaign.ps1",
+      "Bytes": 11060,
+      "Sha256": "17D2D30649631688DEF4260FAEDF6EB44B9564B3EB82A68EC6E0577DCACA51AA"
+    },
+    {
+      "Path": "tooling/simple/Analyze-SimpleSustainedCombined.ps1",
+      "Bytes": 21728,
+      "Sha256": "733FE74838F2FE310421FCE0728BE5ED9E69A9236098855CDAE4B74FB1A00FEF"
+    },
+    {
+      "Path": "tooling/simple/Invoke-SimpleSustainedScenario.ps1",
+      "Bytes": 42286,
+      "Sha256": "C962D27CCEA7A05E2C8040310D472911366BA15BAE9B9F1417BA79A5586F7795"
+    },
+    {
+      "Path": "tooling/simple/Run-SimpleSustainedCampaign.ps1",
+      "Bytes": 11369,
+      "Sha256": "78B8AA35A7D03CD829F7D466E39062E9AB062254DADF7E4A3BE39C0CD3745C24"
+    },
+    {
+      "Path": "tooling/simple/Run-SimpleSustainedSupplement.ps1",
+      "Bytes": 7848,
+      "Sha256": "650EADF0B044796D996042F749897260A7841A17C98DBF0281F93E81A1D5C13F"
+    },
+    {
+      "Path": "tooling/sustained/Analyze-SustainedCampaign.ps1",
+      "Bytes": 26131,
+      "Sha256": "9C98B132A61C13D24F240D70E4AF5716D27A83B99DBDBC29D8F595B00C585BE2"
+    },
+    {
+      "Path": "tooling/sustained/Build-SustainedExactRevisions.ps1",
+      "Bytes": 15321,
+      "Sha256": "A746BC9FD3BC241F5232C912F0705DF577EDAB0CE90D917F3944EAE07758211E"
+    },
+    {
+      "Path": "tooling/sustained/Invoke-SustainedWindowScenario.ps1",
+      "Bytes": 57470,
+      "Sha256": "90E7437F800FB24C368B774004DAC7D0516BC4C70ECF9D917BF714057364340A"
+    },
+    {
+      "Path": "tooling/sustained/Launch-SustainedCampaign.ps1",
+      "Bytes": 11973,
+      "Sha256": "B7D5E9296ACC9819EF905D69AC730BCBF95DFA925E87B4758F0F9C773ECADEE8"
+    },
+    {
+      "Path": "tooling/sustained/Prepare-SustainedWorkloads.ps1",
+      "Bytes": 15976,
+      "Sha256": "B1B457088F85CBA51603755556AF7FD77C5247C384F346B815DE4DC2D17ACA16"
+    },
+    {
+      "Path": "tooling/sustained/Publish-SustainedEvidence.ps1",
+      "Bytes": 8369,
+      "Sha256": "98C43A03927A62C70CA426BF0B66A665FEBA8CBFDFD206A2D27C4363E5338FBF"
+    },
+    {
+      "Path": "tooling/sustained/README.md",
+      "Bytes": 4985,
+      "Sha256": "CC039CF24BB8E3D0708F84581F09C2899D4AEB58CB35019EF599C6C06D6DC55D"
+    },
+    {
+      "Path": "tooling/sustained/Reset-SustainedWorktrees.ps1",
+      "Bytes": 10319,
+      "Sha256": "B34B4AAA3CB9AD074C8D1CE4C1F0DACD2BFE06E5B845385FA9EFBDE56FFF4296"
+    },
+    {
+      "Path": "tooling/sustained/Run-SustainedCampaign.ps1",
+      "Bytes": 23945,
+      "Sha256": "94AA05F41D0229611CBD3ADBD39EE87202EB5D1DA577F1580EB446A25CB91E17"
+    },
+    {
+      "Path": "tooling/sustained/Run-SustainedPilots.ps1",
+      "Bytes": 12070,
+      "Sha256": "59D41BD11A33317A4B2B1A36ECDD4524F5CD38662EE0BBD9F519F9A81843A0C7"
+    },
+    {
+      "Path": "tooling/sustained/SustainedCampaign.Common.ps1",
+      "Bytes": 39344,
+      "Sha256": "31C8FEB6CDBC8E0DF70E5CAE01E1DFB349614C8010A840A1C6EC7811DE8B932B"
+    },
+    {
+      "Path": "tooling/sustained/Test-SustainedCampaign.ps1",
+      "Bytes": 35823,
+      "Sha256": "EB0069FAE2B0BD0DAC8B19C7520F15E11F56AFDF81AB1D940754C60E29861757"
+    },
+    {
+      "Path": "tooling/sustained/Watch-SustainedCampaignDeadline.ps1",
+      "Bytes": 5074,
+      "Sha256": "14341DC08723AFFD51927939FE76EE16E6391AD2E7ED8EAE5CBBEE2BC7C426C0"
+    },
+    {
+      "Path": "tooling/SyntheticWork.proj",
+      "Bytes": 358,
+      "Sha256": "1A00892CDD753528912C3ED460EF8087D32CE2107BBBC33E2DD06F6DD1B8C23E"
+    },
+    {
+      "Path": "tooling/Test-Tooling.ps1",
+      "Bytes": 174358,
+      "Sha256": "16A59CB714AF2392CC1107008BFC7270E38D98E18DA296FE84AB17A33E55C613"
+    }
+  ]
+}

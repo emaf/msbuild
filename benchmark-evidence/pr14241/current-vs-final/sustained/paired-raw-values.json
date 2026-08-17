@@ -1,0 +1,2270 @@
+[
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 14.0,
+    "CandidateValue": 12.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 14.0,
+    "CandidateValue": 11.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 14.0,
+    "CandidateValue": 12.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.75,
+    "CandidateValue": 1.5
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.75,
+    "CandidateValue": 1.375
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.75,
+    "CandidateValue": 1.5
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 274.26687389999995,
+    "CandidateValue": 286.6881751833333
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 274.9480198499999,
+    "CandidateValue": 307.3705394727273
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 278.5518905428571,
+    "CandidateValue": 286.2936108083333
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 123.9164179,
+    "CandidateValue": 229.3021605
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 120.0759882,
+    "CandidateValue": 224.0773382
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 128.2511867,
+    "CandidateValue": 217.7284627
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 345.3570781,
+    "CandidateValue": 349.032659
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 341.50221,
+    "CandidateValue": 338.1372882
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 343.3632956,
+    "CandidateValue": 331.8589596
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 6.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 6.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 6.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.992601802083334,
+    "CandidateValue": 11.999870096666665
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.999888297291667,
+    "CandidateValue": 11.999884855000001
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.997569235625,
+    "CandidateValue": 11.999849816666666
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.007398197916666667,
+    "CandidateValue": 4.000129903333335
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.00011170270833333334,
+    "CandidateValue": 4.000115145
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.0024307643749999996,
+    "CandidateValue": 4.000150183333334
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 93.46197068403909,
+    "CandidateValue": 64.49925935828878
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 92.5925793103448,
+    "CandidateValue": 63.33800000000003
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 92.07650949367086,
+    "CandidateValue": 64.50825593667544
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 24723034112.0,
+    "CandidateValue": 18649718784.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 24984768512.0,
+    "CandidateValue": 18181271552.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 24200077312.0,
+    "CandidateValue": 18237583360.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 12071915520.0,
+    "CandidateValue": 5627813888.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 12295221248.0,
+    "CandidateValue": 6036910080.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 11999555584.0,
+    "CandidateValue": 5564735488.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 10557100032.0,
+    "CandidateValue": 5010702336.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 10921222144.0,
+    "CandidateValue": 4906876928.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 10532737024.0,
+    "CandidateValue": 5096120320.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 46.0,
+    "CandidateValue": 30.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 73.0,
+    "CandidateValue": 55.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 46.0,
+    "CandidateValue": 35.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 5421.327000000002,
+    "CandidateValue": 3886.2639999999997
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 5453.341999999995,
+    "CandidateValue": 3812.636000000001
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 5317.517000000002,
+    "CandidateValue": 3928.901999999999
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 12.0,
+    "CandidateValue": 10.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 11.0,
+    "CandidateValue": 11.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 12.0,
+    "CandidateValue": 11.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.5,
+    "CandidateValue": 1.25
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.375,
+    "CandidateValue": 1.375
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.5,
+    "CandidateValue": 1.375
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 286.6881751833333,
+    "CandidateValue": 282.57101361
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 307.3705394727273,
+    "CandidateValue": 289.3723235636363
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 286.2936108083333,
+    "CandidateValue": 288.23298034545456
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 229.3021605,
+    "CandidateValue": 0.5627984
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 224.0773382,
+    "CandidateValue": 0.6418364
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 217.7284627,
+    "CandidateValue": 1.4105819
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 349.032659,
+    "CandidateValue": 134.1002689
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 338.1372882,
+    "CandidateValue": 133.4062572
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 331.8589596,
+    "CandidateValue": 141.7954982
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 6.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 6.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 6.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 11.999870096666665,
+    "CandidateValue": 13.112546879166667
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 11.999884855000001,
+    "CandidateValue": 13.1060310875
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 11.999849816666666,
+    "CandidateValue": 13.169482505
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 4.000129903333335,
+    "CandidateValue": 2.887453120833334
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 4.000115145,
+    "CandidateValue": 2.8939689124999997
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 4.000150183333334,
+    "CandidateValue": 2.830517495000001
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 64.49925935828878,
+    "CandidateValue": 65.26559999999999
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 63.33800000000003,
+    "CandidateValue": 66.6586902887139
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 64.50825593667544,
+    "CandidateValue": 66.9160991735537
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 18649718784.0,
+    "CandidateValue": 18978893824.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 18181271552.0,
+    "CandidateValue": 19584217088.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 18237583360.0,
+    "CandidateValue": 18087370752.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 5627813888.0,
+    "CandidateValue": 6324850688.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 6036910080.0,
+    "CandidateValue": 6616465408.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 5564735488.0,
+    "CandidateValue": 6016643072.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 5010702336.0,
+    "CandidateValue": 5501349888.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 4906876928.0,
+    "CandidateValue": 5843984384.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 5096120320.0,
+    "CandidateValue": 5093965824.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 30.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 55.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 35.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 3886.2639999999997,
+    "CandidateValue": 3998.841999999999
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 3812.636000000001,
+    "CandidateValue": 4003.48
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 3928.901999999999,
+    "CandidateValue": 4128.999000000001
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 14.0,
+    "CandidateValue": 10.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 14.0,
+    "CandidateValue": 11.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 14.0,
+    "CandidateValue": 11.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.75,
+    "CandidateValue": 1.25
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.75,
+    "CandidateValue": 1.375
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 1.75,
+    "CandidateValue": 1.375
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 274.26687389999995,
+    "CandidateValue": 282.57101361
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 274.9480198499999,
+    "CandidateValue": 289.3723235636363
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 278.5518905428571,
+    "CandidateValue": 288.23298034545456
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 123.9164179,
+    "CandidateValue": 0.5627984
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 120.0759882,
+    "CandidateValue": 0.6418364
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 128.2511867,
+    "CandidateValue": 1.4105819
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 345.3570781,
+    "CandidateValue": 134.1002689
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 341.50221,
+    "CandidateValue": 133.4062572
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 343.3632956,
+    "CandidateValue": 141.7954982
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.992601802083334,
+    "CandidateValue": 13.112546879166667
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.999888297291667,
+    "CandidateValue": 13.1060310875
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.997569235625,
+    "CandidateValue": 13.169482505
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.007398197916666667,
+    "CandidateValue": 2.887453120833334
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.00011170270833333334,
+    "CandidateValue": 2.8939689124999997
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.0024307643749999996,
+    "CandidateValue": 2.830517495000001
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 93.46197068403909,
+    "CandidateValue": 65.26559999999999
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 92.5925793103448,
+    "CandidateValue": 66.6586902887139
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 92.07650949367086,
+    "CandidateValue": 66.9160991735537
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 24723034112.0,
+    "CandidateValue": 18978893824.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 24984768512.0,
+    "CandidateValue": 19584217088.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 24200077312.0,
+    "CandidateValue": 18087370752.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 12071915520.0,
+    "CandidateValue": 6324850688.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 12295221248.0,
+    "CandidateValue": 6616465408.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 11999555584.0,
+    "CandidateValue": 6016643072.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 10557100032.0,
+    "CandidateValue": 5501349888.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 10921222144.0,
+    "CandidateValue": 5843984384.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 10532737024.0,
+    "CandidateValue": 5093965824.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 46.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 73.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 46.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 5421.327000000002,
+    "CandidateValue": 3998.841999999999
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 5453.341999999995,
+    "CandidateValue": 4003.48
+  },
+  {
+    "Repository": "roslyn",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 5317.517000000002,
+    "CandidateValue": 4128.999000000001
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 40.0,
+    "CandidateValue": 32.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 42.0,
+    "CandidateValue": 29.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 40.0,
+    "CandidateValue": 30.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 5.0,
+    "CandidateValue": 4.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 5.25,
+    "CandidateValue": 3.625
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 5.0,
+    "CandidateValue": 3.75
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 91.7959039275,
+    "CandidateValue": 117.890236909375
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 94.42779378809523,
+    "CandidateValue": 127.41640623448276
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 98.211602275,
+    "CandidateValue": 123.64584129333335
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 18.6182055,
+    "CandidateValue": 67.6083491
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 39.6579587,
+    "CandidateValue": 89.3632244
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 35.2748543,
+    "CandidateValue": 88.5447318
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 104.4924402,
+    "CandidateValue": 111.1096074
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 125.202814,
+    "CandidateValue": 136.4043192
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 133.8611852,
+    "CandidateValue": 135.2567762
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 6.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 6.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 3.0,
+    "CandidateValue": 6.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.958113907708332,
+    "CandidateValue": 11.9996975025
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.955551442708334,
+    "CandidateValue": 11.999650991666666
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.969246832916667,
+    "CandidateValue": 11.999653371666666
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.04188609229166666,
+    "CandidateValue": 4.0003024975
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.04444855729166664,
+    "CandidateValue": 4.000349008333334
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.030753167083333335,
+    "CandidateValue": 4.000346628333334
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 83.41290432098769,
+    "CandidateValue": 57.26396052631577
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 87.40061587301588,
+    "CandidateValue": 62.5410284237726
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 87.47155555555557,
+    "CandidateValue": 62.598545698924724
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 18893590528.0,
+    "CandidateValue": 15277486080.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 20868321280.0,
+    "CandidateValue": 17544855552.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 21226582016.0,
+    "CandidateValue": 18018586624.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 6339629056.0,
+    "CandidateValue": 2751287296.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 5922623488.0,
+    "CandidateValue": 3045462016.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 7419973632.0,
+    "CandidateValue": 4324880384.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 5066936320.0,
+    "CandidateValue": 2095726592.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 4643749888.0,
+    "CandidateValue": 2104233984.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 6076440576.0,
+    "CandidateValue": 3360428032.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 34.0,
+    "CandidateValue": 24.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 34.0,
+    "CandidateValue": 32.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 70.0,
+    "CandidateValue": 51.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 4597.987999999999,
+    "CandidateValue": 3465.964
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 4921.822,
+    "CandidateValue": 3325.201
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-N",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 4697.548999999998,
+    "CandidateValue": 3382.017
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 32.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 29.0,
+    "CandidateValue": 30.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 30.0,
+    "CandidateValue": 30.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 4.0,
+    "CandidateValue": 4.25
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 3.625,
+    "CandidateValue": 3.75
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 3.75,
+    "CandidateValue": 3.75
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 117.890236909375,
+    "CandidateValue": 111.59457499999999
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 127.41640623448276,
+    "CandidateValue": 121.75725474333333
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 123.64584129333335,
+    "CandidateValue": 121.91794022999999
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 67.6083491,
+    "CandidateValue": 3.0885938
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 89.3632244,
+    "CandidateValue": 0.486696
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 88.5447318,
+    "CandidateValue": 1.0159735
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 111.1096074,
+    "CandidateValue": 51.346458
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 136.4043192,
+    "CandidateValue": 52.2533223
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 135.2567762,
+    "CandidateValue": 52.7651407
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 6.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 6.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 6.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 11.9996975025,
+    "CandidateValue": 12.400505826666668
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 11.999650991666666,
+    "CandidateValue": 12.430956286666667
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 11.999653371666666,
+    "CandidateValue": 12.430808286666666
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 4.0003024975,
+    "CandidateValue": 3.5994941733333317
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 4.000349008333334,
+    "CandidateValue": 3.5690437133333335
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 4.000346628333334,
+    "CandidateValue": 3.5691917133333333
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 57.26396052631577,
+    "CandidateValue": 59.19265384615389
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 62.5410284237726,
+    "CandidateValue": 60.39615625000005
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 62.598545698924724,
+    "CandidateValue": 62.619306878306894
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 15277486080.0,
+    "CandidateValue": 15335108608.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 17544855552.0,
+    "CandidateValue": 18229596160.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 18018586624.0,
+    "CandidateValue": 17797570560.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 2751287296.0,
+    "CandidateValue": 2836033536.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 3045462016.0,
+    "CandidateValue": 3337854976.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 4324880384.0,
+    "CandidateValue": 2875604992.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 2095726592.0,
+    "CandidateValue": 2189922304.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 2104233984.0,
+    "CandidateValue": 2485481472.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 3360428032.0,
+    "CandidateValue": 2148282368.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 24.0,
+    "CandidateValue": 27.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 32.0,
+    "CandidateValue": 32.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 51.0,
+    "CandidateValue": 26.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 3465.964,
+    "CandidateValue": 3393.5170000000003
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 3325.201,
+    "CandidateValue": 3388.582000000001
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "FINAL-N",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 3382.017,
+    "CandidateValue": 3473.984
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 40.0,
+    "CandidateValue": 34.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 42.0,
+    "CandidateValue": 30.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "MeasuredNormalCompletionCount",
+    "BaselineValue": 40.0,
+    "CandidateValue": 30.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 5.0,
+    "CandidateValue": 4.25
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 5.25,
+    "CandidateValue": 3.75
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "NormalThroughputPerMinute",
+    "BaselineValue": 5.0,
+    "CandidateValue": 3.75
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 91.7959039275,
+    "CandidateValue": 111.59457499999999
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 94.42779378809523,
+    "CandidateValue": 121.75725474333333
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageCompletedNormalLatencySeconds",
+    "BaselineValue": 98.211602275,
+    "CandidateValue": 121.91794022999999
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 18.6182055,
+    "CandidateValue": 3.0885938
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 39.6579587,
+    "CandidateValue": 0.486696
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToGrantSeconds",
+    "BaselineValue": 35.2748543,
+    "CandidateValue": 1.0159735
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 104.4924402,
+    "CandidateValue": 51.346458
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 125.202814,
+    "CandidateValue": 52.2533223
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "InjectedRequestToCompletionSeconds",
+    "BaselineValue": 133.8611852,
+    "CandidateValue": 52.7651407
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 2.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "QueueDepthP95",
+    "BaselineValue": 3.0,
+    "CandidateValue": 5.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.958113907708332,
+    "CandidateValue": 12.400505826666668
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.955551442708334,
+    "CandidateValue": 12.430956286666667
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageAllocatedNodes",
+    "BaselineValue": 15.969246832916667,
+    "CandidateValue": 12.430808286666666
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.04188609229166666,
+    "CandidateValue": 3.5994941733333317
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.04444855729166664,
+    "CandidateValue": 3.5690437133333335
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "AverageUnusedNodes",
+    "BaselineValue": 0.030753167083333335,
+    "CandidateValue": 3.5691917133333333
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 83.41290432098769,
+    "CandidateValue": 59.19265384615389
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 87.40061587301588,
+    "CandidateValue": 60.39615625000005
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.AverageSystemCpuPercent",
+    "BaselineValue": 87.47155555555557,
+    "CandidateValue": 62.619306878306894
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 18893590528.0,
+    "CandidateValue": 15335108608.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 20868321280.0,
+    "CandidateValue": 18229596160.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakCommittedBytes",
+    "BaselineValue": 21226582016.0,
+    "CandidateValue": 17797570560.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 6339629056.0,
+    "CandidateValue": 2836033536.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 5922623488.0,
+    "CandidateValue": 3337854976.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantWorkingSetBytes",
+    "BaselineValue": 7419973632.0,
+    "CandidateValue": 2875604992.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 5066936320.0,
+    "CandidateValue": 2189922304.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 4643749888.0,
+    "CandidateValue": 2485481472.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantPrivateBytes",
+    "BaselineValue": 6076440576.0,
+    "CandidateValue": 2148282368.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 34.0,
+    "CandidateValue": 27.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 34.0,
+    "CandidateValue": 32.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.PeakDescendantProcessCount",
+    "BaselineValue": 70.0,
+    "CandidateValue": 26.0
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 1,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 4597.987999999999,
+    "CandidateValue": 3393.5170000000003
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 2,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 4921.822,
+    "CandidateValue": 3388.582000000001
+  },
+  {
+    "Repository": "aspire",
+    "AnalysisBlock": 3,
+    "Baseline": "BASE",
+    "Candidate": "FINAL-H",
+    "Metric": "SteadyResource.DescendantCpuSeconds",
+    "BaselineValue": 4697.548999999998,
+    "CandidateValue": 3473.984
+  }
+]

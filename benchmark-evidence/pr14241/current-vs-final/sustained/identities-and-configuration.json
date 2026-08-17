@@ -1,0 +1,37 @@
+{
+  "SchemaVersion": 1,
+  "Base": {
+    "Commit": "ff5b281f0c5828dec0d092fcd1b682019de7d1ca",
+    "ProductVersion": "18.11.0-dev.26411.1+ff5b281f0c5828dec0d092fcd1b682019de7d1ca",
+    "ContentSha256": "2E843FFB657539A9C0DAD9DEE9777F132D5776A49A1D3658A9108D2D881D8CE5",
+    "FileCount": 5547,
+    "TotalBytes": 825800702.0,
+    "DotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18",
+    "MSBuildSha256": "29F1590DEC9CFD9CB479401245209E08177841DDBD9A86DAB017D8AAC8CB5AC4"
+  },
+  "Final": {
+    "Commit": "432466e41a95f9bbb25cad7ff9bd1b89b4a6bcef",
+    "ProductVersion": "18.11.0-dev.26413.1+432466e41a95f9bbb25cad7ff9bd1b89b4a6bcef",
+    "ContentSha256": "3B4AF511ED65521803284E02FCFC68938BC2E0A96F593A53AB7622C728173FEB",
+    "FileCount": 5547,
+    "TotalBytes": 825835723.0,
+    "DotNetSha256": "C9223FD508FA6707F3E78F7174CF481402B93B325B35D56CA711BB7D5D921F18",
+    "MSBuildSha256": "A1E516AFD49B167B8ACEF1ED6E9F7219F39F2D684452ADCA45290B2E4A163912"
+  },
+  "Workloads": {
+    "RoslynCommit": "bc396b5e5d67af28d2aef6bfd4ab2fa8577eb44b",
+    "AspireCommit": "110a63da8357af437a00d9efc5887ffdcbdfbb3c"
+  },
+  "Configuration": {
+    "WorkerCount": 8,
+    "NodeBudget": 16,
+    "MSBuildMaximumNodes": 16,
+    "NodeReuse": false,
+    "SharedCompilation": false,
+    "BinlogProjectImports": "None",
+    "MeasuredWindowSeconds": 480,
+    "InjectionOffsetSeconds": 240,
+    "QueueNonemptyMinimum": 0.9,
+    "MaximumWholeBlockAttempts": 2
+  }
+}
