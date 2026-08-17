@@ -1,9 +1,94 @@
 {
   "SchemaVersion": 1,
-  "GeneratedUtc": "2026-08-17T17:37:03.0344044+00:00",
-  "FileCount": 83,
-  "TotalBytes": 2099991.0,
+  "GeneratedUtc": "2026-08-17T17:38:54.0747269+00:00",
+  "FileCount": 99,
+  "TotalBytes": 2250240.0,
   "Files": [
+    {
+      "Path": "isolated/comparisons.csv",
+      "Bytes": 1161,
+      "Sha256": "139CB1FE66AA42D14B36C299D4BE6DF2443B68EAB44CA29176BC0D10101D1B19"
+    },
+    {
+      "Path": "isolated/grant-summary.csv",
+      "Bytes": 3255,
+      "Sha256": "E7DAE7A57D38A8E9FB96FABA5AF7C6EF4D127CD5F204C6B66B4413BF1BCC2951"
+    },
+    {
+      "Path": "isolated/identities.json",
+      "Bytes": 1012,
+      "Sha256": "098482081BFA64F85F62FCD3667347C0BEAC001D87D2BC4182FB434232254E9A"
+    },
+    {
+      "Path": "isolated/invalid-attempts.csv",
+      "Bytes": 1199,
+      "Sha256": "B30825C8D2A259D91B2BC7C42C8A6479DEB2B544C52114D7CECD8648FFF3556F"
+    },
+    {
+      "Path": "isolated/manifest.csv",
+      "Bytes": 1664,
+      "Sha256": "52E4E33B205FDD1F6AD99A60FA1709A54B710F4578D64EC0358E1BE0C713B775"
+    },
+    {
+      "Path": "isolated/matrix-plan.csv",
+      "Bytes": 1887,
+      "Sha256": "99F8D510E6C49037B736BCB3FA584BC085B6820ED84227FF56EE3D30B0541FA3"
+    },
+    {
+      "Path": "isolated/plan-validation.json",
+      "Bytes": 560,
+      "Sha256": "922FE2CF111B8ECDFCB4C7DAF5ECA4BB65D791F474AB2158E9FDCD80B70A2B18"
+    },
+    {
+      "Path": "isolated/pressure-summary.csv",
+      "Bytes": 831,
+      "Sha256": "544EA1C0E738134615B7B021495BBA832C3EB959D36D7FD991BD338B308666D4"
+    },
+    {
+      "Path": "isolated/README.md",
+      "Bytes": 1055,
+      "Sha256": "CF4203FD9D625CB58F1E8C7FF570B914EA3E74FDD29B56AC3EA253EE6FE12134"
+    },
+    {
+      "Path": "isolated/scenario-metrics.csv",
+      "Bytes": 8539,
+      "Sha256": "E75C6262B83F4DB98A8BCFAF45FA54AD86D3503B1B1717638A568FFCF9B9A00D"
+    },
+    {
+      "Path": "isolated/SHA256SUMS.csv",
+      "Bytes": 696,
+      "Sha256": "18EB5D5EE6FED53B87F6EFABB8181F5D5C4F5C3D94753A859B82AE6CD9843A01"
+    },
+    {
+      "Path": "isolated/tooling/Analyze-IsolatedMatrix.ps1",
+      "Bytes": 12397,
+      "Sha256": "D2EFFDA44076332388C0CE99137AAD6255EFF0DFFAB1BDA1114F5C2E99EBCABE"
+    },
+    {
+      "Path": "isolated/tooling/Launch-IsolatedMatrix.ps1",
+      "Bytes": 3583,
+      "Sha256": "697AF1D90692BBAF7C912EB72FE0AAAF7BB304A1D85F9029C42821E9E041977E"
+    },
+    {
+      "Path": "isolated/tooling/Monitor-PublicRepoCoordinatorBenchmark.ps1",
+      "Bytes": 17347,
+      "Sha256": "25F47D8059512C5B67A79B88AFBCBAC4093A1B14419F9F27C2919ED724502D96"
+    },
+    {
+      "Path": "isolated/tooling/Run-PublicRepoCoordinatorBenchmark.ps1",
+      "Bytes": 30153,
+      "Sha256": "51B116BE139536D329AB722D0C609E727A699BE03685BD402133FE2A1A49104F"
+    },
+    {
+      "Path": "isolated/tooling/Run-PublicRepoCoordinatorMatrix.ps1",
+      "Bytes": 65468,
+      "Sha256": "A0E11717F5F605E357CD8344AD107E5090F6D845CF651671BE862D5161A3A13E"
+    },
+    {
+      "Path": "isolated/validated-report.md",
+      "Bytes": 3450,
+      "Sha256": "E7DFDC7F9468857C51DCACC305F8D7B2C1F1FADE54242CDB95D7C4F6F798933B"
+    },
     {
       "Path": "README.md",
       "Bytes": 761,
@@ -33,11 +118,6 @@
       "Path": "sustained/launch-and-validity.json",
       "Bytes": 1002,
       "Sha256": "BFF2DBC778E3A6F82AD127CC52B276EAAE90E06F16F9ED36B5ACA2170B2A9889"
-    },
-    {
-      "Path": "sustained/package-manifest.json",
-      "Bytes": 4008,
-      "Sha256": "3C9A354A1E57753B759B9BBD124BF9473FC1C8C3293CDA701A36981674FEAE75"
     },
     {
       "Path": "sustained/paired-estimates.csv",

@@ -2,6 +2,12 @@
 
 Start with [`validated-report.md`](validated-report.md).
 
+New contemporaneous isolated current-vs-final evidence:
+[`current-vs-final/isolated/validated-report.md`](current-vs-final/isolated/validated-report.md).
+
+Completed sustained-contention current-vs-final evidence:
+[`current-vs-final/sustained/report.md`](current-vs-final/sustained/report.md).
+
 - Recompute all requested comparisons:
   `pwsh ./scripts/Recompute-PortableComparisons.ps1`
 - Verify included files:
@@ -13,4 +19,6 @@ Start with [`validated-report.md`](validated-report.md).
 
 The 1.3 GB raw-binlog archive is intentionally not committed. `raw-binlog-index.csv` indexes all authoritative priority, node-count, and idle-burst binlogs by relative path and SHA-256. The archive can be supplied on request with SHA-256 `68BDCE1E5DD7830FB3F72219C50110A083434F1A113B3DB2F0CC06A1B331E8BD`.
 
-No benchmark or product test was rerun to create this package.
+The sustained package was produced from a contemporaneous fixed-window campaign
+and one preauthorized supplemental run after a host suspension. Product branches
+were not modified.
